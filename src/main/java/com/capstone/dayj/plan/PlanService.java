@@ -18,16 +18,18 @@ public class PlanService {
     private final AppUserRepository appUserRepository;
     
     @Transactional
-    public void createPlan(int userId, PlanDto.Request dto) {
-        AppUser appUser = appUserRepository.findById(userId)
+    public void createPlan(int user_id, PlanDto.Request dto) {
+        AppUser appUser = appUserRepository.findById(user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         dto.setAppUser(appUser);
         planRepository.save(dto.toEntity());
     }
     
     @Transactional
-    public List<PlanDto.Response> readAllPlan() {
-        List<Plan> plans = planRepository.findAll();
+    public List<PlanDto.Response> readAllPlan(int user_id) {
+        AppUser findAppUser = appUserRepository.findById(user_id)
+                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+        List<Plan> plans = planRepository.findAllByAppUser(findAppUser);
         
         if (plans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
@@ -56,8 +58,9 @@ public class PlanService {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         
-        plan.update(dto.getPlanAlarmDate(), dto.getPlanTag(),
-                dto.getGoal(), dto.getPlanPhoto(), dto.getPlanTime(), dto.getPlanDay(), dto.isPublic(), dto.isComplete());
+        plan.update(dto.getPlanTag(), dto.getGoal(), dto.getPlanPhoto(), dto.isPublic(), dto.isComplete(),
+                dto.getPlanAlarmTime(), dto.getPlanStartTime(), dto.getPlanEndTime(),
+                dto.getPlanRepeatStartDate(), dto.getPlanRepeatEndDate());
     }
     
     @Transactional

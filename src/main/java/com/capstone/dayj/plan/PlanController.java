@@ -20,13 +20,13 @@ public class PlanController {
     }
     
     @GetMapping
-    public List<PlanDto.Response> readAllPlan() {
-        return planService.readAllPlan();
+    public List<PlanDto.Response> readAllPlan(@PathVariable int user_id) {
+        return planService.readAllPlan(user_id);
     }
     
-    @GetMapping("/{id}")
-    public PlanDto.Response readPlanById(@PathVariable int id) {
-        return planService.readPlanById(id);
+    @GetMapping("/{post_id}")
+    public PlanDto.Response readPlanById(@PathVariable int post_id) {
+        return planService.readPlanById(post_id);
     }
     
     @GetMapping("tag/{plan_tag}")
@@ -34,13 +34,13 @@ public class PlanController {
         return planService.readPlanByPlanTag(plan_tag);
     }
     
-    @PatchMapping("/{id}")
-    public void patchPlan(@PathVariable int id, @Valid @RequestBody PlanDto.Request dto) {
-        planService.updatePlan(id, dto);
+    @PatchMapping("/{plan_id}")
+    public void patchPlan(@PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) {
+        planService.updatePlan(plan_id, dto);
     }
     
-    @DeleteMapping("/{id}")
-    public void deletePlanById(@PathVariable int id) {
-        planService.deletePlanById(id);
+    @DeleteMapping("/{plan_id}")
+    public void deletePlanById(@PathVariable int plan_id) {
+        planService.deletePlanById(plan_id);
     }
 }

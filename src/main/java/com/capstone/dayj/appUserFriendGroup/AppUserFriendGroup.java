@@ -1,18 +1,16 @@
 package com.capstone.dayj.appUserFriendGroup;
 
 import com.capstone.dayj.appUser.AppUser;
+import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.friendGroup.FriendGroup;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@ToString(exclude = {"appUser"})
-public class AppUserFriendGroup {
+@ToString(callSuper = true, exclude = {"appUser", "friendGroup"})
+public class AppUserFriendGroup extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

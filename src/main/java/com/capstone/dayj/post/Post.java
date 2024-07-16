@@ -2,12 +2,10 @@ package com.capstone.dayj.post;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.comment.Comment;
+import com.capstone.dayj.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,9 +13,8 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-@ToString(exclude = {"comment", "appUser"})
-public class Post {
+@ToString(callSuper = true, exclude = {"comment", "appUser"})
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -35,19 +32,10 @@ public class Post {
     private String postContent;
     private String postTag;
     
-    @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private LocalDateTime postCreateDate;
-    
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime postUpdateDate;
-    
     @Column(nullable = false)
     @ColumnDefault("1")
     private boolean postIsAnonymous;
-
+    
     @Column
     private String postPhoto;
     
@@ -82,8 +70,6 @@ public class Post {
         this.postTitle = postTitle;
         this.postContent = postContent;
         this.postTag = postTag;
-        this.postCreateDate = postCreateDate;
-        this.postUpdateDate = postUpdateDate;
         this.postIsAnonymous = postIsAnonymous;
         this.postPhoto = postPhoto;
         this.comment = comment;

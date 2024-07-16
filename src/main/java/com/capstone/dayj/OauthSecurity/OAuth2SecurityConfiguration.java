@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class OAuth2SecurityConfiguration {
     private final OAuth2AppUserService oAuth2AppUserService;
-    
+
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{

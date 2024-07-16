@@ -1,13 +1,11 @@
 package com.capstone.dayj.friendGroup;
 
 import com.capstone.dayj.appUserFriendGroup.AppUserFriendGroup;
+import com.capstone.dayj.common.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
@@ -15,8 +13,8 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
-public class FriendGroup {
+@ToString(callSuper = true, exclude = {"appUserFriendGroup"})
+public class FriendGroup extends BaseEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,11 +34,11 @@ public class FriendGroup {
     @Column(nullable = false)
     @ColumnDefault("0")
     private boolean groupExit;
-
+    
     public void update(String groupName) {
         this.groupName = groupName;
     }
-
+    
     @Builder
     public FriendGroup(int id, List<AppUserFriendGroup> appUserFriendGroup, String groupGoal, String groupName, boolean groupExit) {
         this.id = id;

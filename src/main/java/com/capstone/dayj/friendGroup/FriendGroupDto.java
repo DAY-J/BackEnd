@@ -12,7 +12,6 @@ public class FriendGroupDto {
     @NoArgsConstructor
     @Builder
     public static class Request {
-
         private int id;
         private String groupGoal;
         private String groupName;

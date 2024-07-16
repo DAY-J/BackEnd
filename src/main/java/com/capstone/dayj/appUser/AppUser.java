@@ -2,6 +2,7 @@ package com.capstone.dayj.appUser;
 
 import com.capstone.dayj.appUserFriendGroup.AppUserFriendGroup;
 import com.capstone.dayj.comment.Comment;
+import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.post.Post;
 import com.capstone.dayj.setting.Setting;
@@ -14,9 +15,9 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"appUserFriendGroup", "plans", "posts", "comments", "setting"})
-public class AppUser {
-
+@ToString(callSuper = true, exclude = {"appUserFriendGroup", "plans", "posts", "comments", "setting"})
+public class AppUser extends BaseEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; //기본키
@@ -28,29 +29,29 @@ public class AppUser {
     private String role; //유저 권한
     private String provider; //공급자
     private String providerId; //공급 아이디
-
+    
     //유저 닉네임 설정하는 기능 구현 필요
-
+    
     @OneToMany(mappedBy = "appUser")
     @JsonIgnore
     private List<AppUserFriendGroup> appUserFriendGroup;
-
+    
     @OneToMany(mappedBy = "appUser")
     private List<Plan> plans;
-
+    
     @OneToMany(mappedBy = "appUser")
     private List<Post> posts;
-
+    
     @OneToMany(mappedBy = "appUser")
     private List<Comment> comments;
-
+    
     @OneToOne(mappedBy = "appUser")
     private Setting setting;
-
+    
     public void update(String nickname) {
         this.nickname = nickname;
     }
-
+    
     @Builder
     public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, List<AppUserFriendGroup> appUserFriendGroup, List<Plan> plans, List<Post> posts, List<Comment> comments, Setting setting) {
         this.id = id;

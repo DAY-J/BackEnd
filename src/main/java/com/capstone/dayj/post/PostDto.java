@@ -5,7 +5,6 @@ import com.capstone.dayj.comment.CommentDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +20,10 @@ public class PostDto {
         private String postTitle;
         private String postContent;
         private String postTag;
-        private LocalDateTime postCreateDate;
-        private LocalDateTime postUpdateDate;
         private boolean postIsAnonymous;
         private String postPhoto;
         private AppUser appUser;
-
-
+        
         public Post toEntity() {
             return Post.builder()
                     .id(id)
@@ -36,15 +32,13 @@ public class PostDto {
                     .postTitle(postTitle)
                     .postContent(postContent)
                     .postTag(postTag)
-                    .postCreateDate(postCreateDate)
-                    .postUpdateDate(postUpdateDate)
                     .postIsAnonymous(postIsAnonymous)
                     .postPhoto(postPhoto)
                     .appUser(appUser)
                     .build();
         }
     }
-
+    
     @Getter
     public static class Response {
         private final int id;
@@ -53,15 +47,13 @@ public class PostDto {
         private final String postTitle;
         private final String postContent;
         private final String postTag;
-        private final LocalDateTime postCreateDate;
-        private final LocalDateTime postUpdateDate;
         private final boolean postIsAnonymous;
         private final String postPhoto;
         @JsonIgnore
         private final AppUser appUser;
         @JsonIgnore
         private final List<CommentDto.Response> comment;
-
+        
         /* Entity -> Dto */
         public Response(Post post) {
             this.id = post.getId();
@@ -70,8 +62,6 @@ public class PostDto {
             this.postTitle = post.getPostTitle();
             this.postContent = post.getPostContent();
             this.postTag = post.getPostTag();
-            this.postCreateDate = post.getPostCreateDate();
-            this.postUpdateDate = post.getPostUpdateDate();
             this.postIsAnonymous = post.isPostIsAnonymous();
             this.postPhoto = post.getPostPhoto();
             this.appUser = post.getAppUser();
