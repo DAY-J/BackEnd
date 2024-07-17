@@ -18,6 +18,7 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final SettingRepository settingRepository;
     
+    @Transactional
     public AppUser createAppUser(AppUserDto.Request dto) {
         AppUser appUser = appUserRepository.save(dto.toEntity());
         SettingDto.Request setting = SettingDto.Request.builder()

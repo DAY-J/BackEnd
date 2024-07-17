@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SettingService {
-    private SettingRepository settingRepository;
+    private final SettingRepository settingRepository;
     
     @Transactional
     public SettingDto.Response readSettingById(int app_user_id) {

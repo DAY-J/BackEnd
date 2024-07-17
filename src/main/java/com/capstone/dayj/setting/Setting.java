@@ -27,15 +27,16 @@ public class Setting extends BaseEntity {
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     private AppUser appUser;
     
-    public void update(List<AlarmSetting> alarmSettings, String profilePhoto) {
-        this.alarmSettings = alarmSettings;
-        this.profilePhoto = profilePhoto;
-    }
-    
     @Transactional
     @PrePersist
     public void prePersist() {
-        this.alarmSettings = List.of(AlarmSetting.ALL, AlarmSetting.PLAN, AlarmSetting.FRIEND_GROUP, AlarmSetting.POST, AlarmSetting.APP);
+        this.alarmSettings = List.of(AlarmSetting.ALL, AlarmSetting.PLAN,
+                AlarmSetting.FRIEND_GROUP, AlarmSetting.POST, AlarmSetting.APP);
+    }
+    
+    public void update(List<AlarmSetting> alarmSettings, String profilePhoto) {
+        this.alarmSettings = alarmSettings;
+        this.profilePhoto = profilePhoto;
     }
     
     @Builder

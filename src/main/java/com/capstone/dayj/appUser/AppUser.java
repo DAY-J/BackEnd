@@ -5,12 +5,9 @@ import com.capstone.dayj.comment.Comment;
 import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.post.Post;
-import com.capstone.dayj.setting.AlarmSetting;
 import com.capstone.dayj.setting.Setting;
-import com.capstone.dayj.setting.SettingDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
 
 import java.util.List;
@@ -53,21 +50,6 @@ public class AppUser extends BaseEntity {
     
     public void update(String nickname) {
         this.nickname = nickname;
-    }
-    
-    @Transactional
-    @PrePersist
-    public void prePersist() {
-    
-    }
-    
-    @Transactional
-    @PostPersist
-    public void postPersist() {
-        SettingDto.Request setting = SettingDto.Request.builder()
-                .alarmSettings(List.of(AlarmSetting.ALL, AlarmSetting.PLAN, AlarmSetting.FRIENDGROUP, AlarmSetting.POST, AlarmSetting.APP))
-                .appUser(this)
-                .build();
     }
     
     @Builder
