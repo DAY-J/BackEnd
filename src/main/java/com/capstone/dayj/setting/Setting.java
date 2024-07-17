@@ -35,7 +35,7 @@ public class Setting extends BaseEntity {
     @Transactional
     @PrePersist
     public void prePersist() {
-        this.alarmSettings = List.of(AlarmSetting.ALL, AlarmSetting.PLAN, AlarmSetting.FRIENDGROUP, AlarmSetting.POST, AlarmSetting.APP);
+        this.alarmSettings = List.of(AlarmSetting.ALL, AlarmSetting.PLAN, AlarmSetting.FRIEND_GROUP, AlarmSetting.POST, AlarmSetting.APP);
     }
     
     @Builder
