@@ -15,7 +15,7 @@ public class AppUserController {
     }
 
     @PostMapping
-    public void createAppUser(@Valid @RequestBody AppUser appUser) {
+    public void createAppUser(@Valid @RequestBody AppUserDto.Request appUser) {
         appUserService.createAppUser(appUser);
     }
 

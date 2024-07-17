@@ -4,8 +4,10 @@ package com.capstone.dayj.setting;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -16,43 +18,30 @@ public class Setting extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private boolean planAlarm;
-    
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private boolean friendGroupAlarm;
-    
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private boolean postAlarm;
-    
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private boolean appAlarm;
-    
     private String profilePhoto;
+    
+    @Column(nullable = false)
+    private List<AlarmSetting> alarmSettings;
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     private AppUser appUser;
     
-    public void update(boolean planAlarm, boolean friendGroupAlarm, boolean postAlarm, boolean appAlarm, String profilePhoto) {
-        this.planAlarm = planAlarm;
-        this.friendGroupAlarm = friendGroupAlarm;
-        this.postAlarm = postAlarm;
-        this.appAlarm = appAlarm;
+    public void update(List<AlarmSetting> alarmSettings, String profilePhoto) {
+        this.alarmSettings = alarmSettings;
         this.profilePhoto = profilePhoto;
     }
     
+    @Transactional
+    @PrePersist
+    public void prePersist() {
+        this.alarmSettings = List.of(AlarmSetting.ALL, AlarmSetting.PLAN, AlarmSetting.FRIENDGROUP, AlarmSetting.POST, AlarmSetting.APP);
+    }
+    
     @Builder
-    public Setting(int id, boolean planAlarm, boolean friendGroupAlarm, boolean postAlarm, boolean appAlarm, String profilePhoto, AppUser appUser) {
+    public Setting(int id, List<AlarmSetting> alarmSettings, String profilePhoto, AppUser appUser) {
         this.id = id;
-        this.planAlarm = planAlarm;
-        this.friendGroupAlarm = friendGroupAlarm;
-        this.postAlarm = postAlarm;
-        this.appAlarm = appAlarm;
+        this.alarmSettings = alarmSettings;
         this.profilePhoto = profilePhoto;
         this.appUser = appUser;
     }
