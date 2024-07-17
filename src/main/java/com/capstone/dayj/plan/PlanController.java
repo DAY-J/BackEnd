@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/app-user/{user_id}/plan")
+@RequestMapping("/api/app-user/{app_user_id}/plan")
 public class PlanController {
     private final PlanService planService;
     
@@ -15,32 +15,32 @@ public class PlanController {
     }
     
     @PostMapping
-    public void createPlan(@PathVariable int user_id, @Valid @RequestBody PlanDto.Request dto) {
-        planService.createPlan(user_id, dto);
+    public void createPlan(@PathVariable int app_user_id, @Valid @RequestBody PlanDto.Request dto) {
+        planService.createPlan(app_user_id, dto);
     }
     
     @GetMapping
-    public List<PlanDto.Response> readAllPlan(@PathVariable int user_id) {
-        return planService.readAllPlan(user_id);
+    public List<PlanDto.Response> readAllPlan(@PathVariable int app_user_id) {
+        return planService.readAllPlan(app_user_id);
     }
     
     @GetMapping("/{post_id}")
-    public PlanDto.Response readPlanById(@PathVariable int post_id) {
-        return planService.readPlanById(post_id);
+    public PlanDto.Response readPlanById(@PathVariable int app_user_id, @PathVariable int post_id) {
+        return planService.readPlanById(app_user_id, post_id);
     }
     
     @GetMapping("tag/{plan_tag}")
-    public PlanDto.Response readByPlanTag(@PathVariable String plan_tag) {
-        return planService.readPlanByPlanTag(plan_tag);
+    public PlanDto.Response readByPlanTag(@PathVariable int app_user_id, @PathVariable String plan_tag) {
+        return planService.readPlanByPlanTag(app_user_id, plan_tag);
     }
     
     @PatchMapping("/{plan_id}")
-    public void patchPlan(@PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) {
-        planService.updatePlan(plan_id, dto);
+    public void patchPlan(@PathVariable int app_user_id, @PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) {
+        planService.updatePlan(app_user_id, plan_id, dto);
     }
     
     @DeleteMapping("/{plan_id}")
-    public void deletePlanById(@PathVariable int plan_id) {
-        planService.deletePlanById(plan_id);
+    public void deletePlanById(@PathVariable int app_user_id, @PathVariable int plan_id) {
+        planService.deletePlanById(app_user_id, plan_id);
     }
 }

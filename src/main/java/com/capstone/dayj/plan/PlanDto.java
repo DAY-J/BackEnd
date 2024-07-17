@@ -1,13 +1,11 @@
 package com.capstone.dayj.plan;
 
 import com.capstone.dayj.appUser.AppUser;
+import com.capstone.dayj.planOption.PlanOption;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 public class PlanDto {
-    
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -19,11 +17,7 @@ public class PlanDto {
         private String goal;
         private boolean isComplete;
         private boolean isPublic;
-        private LocalDateTime planAlarmTime;
-        private LocalDateTime planStartTime;
-        private LocalDateTime planEndTime;
-        private LocalDateTime planRepeatStartDate;
-        private LocalDateTime planRepeatEndDate;
+        private PlanOption planOption;
         private AppUser appUser;
         
         public Plan toEntity() {
@@ -34,11 +28,7 @@ public class PlanDto {
                     .goal(goal)
                     .isComplete(isComplete)
                     .isPublic(isPublic)
-                    .planAlarmTime(planAlarmTime)
-                    .planStartTime(planStartTime)
-                    .planEndTime(planEndTime)
-                    .planRepeatStartDate(planRepeatStartDate)
-                    .planRepeatEndDate(planRepeatEndDate)
+                    .planOption(planOption)
                     .appUser(appUser)
                     .build();
         }
@@ -52,11 +42,8 @@ public class PlanDto {
         private final String goal;
         private final boolean isComplete;
         private final boolean isPublic;
-        private final LocalDateTime planAlarmTime;
-        private final LocalDateTime planStartTime;
-        private final LocalDateTime planEndTime;
-        private final LocalDateTime planRepeatStartDate;
-        private final LocalDateTime planRepeatEndDate;
+        @JsonIgnore
+        private final PlanOption planOption;
         @JsonIgnore
         private final AppUser appUser;
         
@@ -68,11 +55,7 @@ public class PlanDto {
             this.goal = plan.getGoal();
             this.isComplete = plan.isComplete();
             this.isPublic = plan.isPublic();
-            this.planAlarmTime = plan.getPlanAlarmTime();
-            this.planStartTime = plan.getPlanStartTime();
-            this.planEndTime = plan.getPlanEndTime();
-            this.planRepeatStartDate = plan.getPlanRepeatStartDate();
-            this.planRepeatEndDate = plan.getPlanRepeatEndDate();
+            this.planOption = plan.getPlanOption();
             this.appUser = plan.getAppUser();
         }
     }
