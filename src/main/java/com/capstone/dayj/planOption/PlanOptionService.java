@@ -1,44 +1,31 @@
 package com.capstone.dayj.planOption;
 
-import com.capstone.dayj.appUser.AppUser;
-import com.capstone.dayj.appUser.AppUserRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.plan.Plan;
+import com.capstone.dayj.plan.PlanRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PlanOptionService {
-    private final PlanOptionRepository planRepository;
-    private final AppUserRepository appUserRepository;
+    private final PlanRepository planRepository;
     
     @Transactional
-    public List<PlanOptionDto.Response> readAllPlanDate(int user_id, int plan_id) {
-        AppUser findAppUser = appUserRepository.findById(user_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        List<Plan> plans = planRepository.findAllByAppUser(findAppUser);
+    public PlanOptionDto.Response readPlanDate(int app_user_id, int plan_id) {
+        Plan findPlan = planRepository.findByAppUserIdAndId(app_user_id, plan_id)
+                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         
-        if (plans.isEmpty())
-            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
-        
-        List<PlanOption> planOptions = plans.stream()
-                .map(Plan::getPlanOption)
-                .toList();
-        
-        return planOptions.stream().map(PlanOptionDto.Response::new).collect(Collectors.toList());
+        return new PlanOptionDto.Response(findPlan.getPlanOption());
     }
     
     @Transactional
-    public void updatePlan(int user_id, int plan_id, PlanOptionDto.Request dto) {
-        AppUser findAppUser = appUserRepository.findById(user_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        List<Plan> plans = planRepository.findAllByAppUser(findAppUser);
+    public void updatePlan(int app_user_id, int plan_id, PlanOptionDto.Request dto) {
+        List<Plan> plans = planRepository.findAllByAppUserId(app_user_id);
         
         if (plans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);

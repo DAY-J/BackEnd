@@ -4,6 +4,8 @@ import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.appUser.AppUserRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.planOption.PlanOptionDto;
+import com.capstone.dayj.planOption.PlanOptionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PlanService {
     private final PlanRepository planRepository;
+    private final PlanOptionRepository planOptionRepository;
     private final AppUserRepository appUserRepository;
     
     @Transactional
     public void createPlan(int app_user_id, PlanDto.Request dto) {
         AppUser appUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+        
         dto.setAppUser(appUser);
-        planRepository.save(dto.toEntity());
+        Plan savedPlan = planRepository.save(dto.toEntity());
+        
+        PlanOptionDto.Request newPlanOption = PlanOptionDto.Request.builder()
+                .plan(savedPlan)
+                .build();
+        planOptionRepository.save(newPlanOption.toEntity());
     }
     
     @Transactional

@@ -20,13 +20,13 @@ public class AppUserService {
     
     @Transactional
     public AppUser createAppUser(AppUserDto.Request dto) {
-        AppUser appUser = appUserRepository.save(dto.toEntity());
-        SettingDto.Request setting = SettingDto.Request.builder()
-                .appUser(appUser)
+        AppUser savedAppUser = appUserRepository.save(dto.toEntity());
+        SettingDto.Request newSetting = SettingDto.Request.builder()
+                .appUser(savedAppUser)
                 .build();
-        settingRepository.save(setting.toEntity());
+        settingRepository.save(newSetting.toEntity());
         
-        return appUser;
+        return savedAppUser;
     }
     
     public List<AppUserDto.Response> readAllAppUser() {

@@ -4,6 +4,7 @@ import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.plan.Plan;
 import jakarta.persistence.*;
 import lombok.*;
+import org.aspectj.lang.annotation.RequiredTypes;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -16,9 +17,7 @@ import java.util.List;
 public class PlanOption extends BaseEntity {
     @Id
     private int id;
-    @Column(nullable = false)
     private LocalDateTime planStartTime;
-    @Column(nullable = false)
     private LocalDateTime planEndTime;
     private LocalDateTime planAlarmTime;
     private LocalDateTime planRepeatStartDate;
