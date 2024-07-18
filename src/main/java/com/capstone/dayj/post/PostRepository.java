@@ -15,6 +15,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findByPostTitleContainingOrPostContentContaining(String titleKeyword, String contentKeyword);
 
     @Modifying
+    @Query("UPDATE Post p set p.postView = p.postView + 1 where p.id = :postId")
+    void incrementPostView(@Param("postId") int postId);
+
+    @Modifying
     @Query("UPDATE Post p set p.postLike = p.postLike + 1 where p.id = :postId")
-    void incrementPostLike (@Param("postId") int postId);
+    void incrementPostLike(@Param("postId") int postId);
 }

@@ -54,14 +54,6 @@ public class Post extends BaseEntity {
         this.postPhoto = postPhoto;
     }
 
-    public void setPostView(int postView){
-        this.postView = postView;
-    }
-
-    public void setPostLike(int postLike){
-        this.postLike = postLike;
-    }
-    
     @Builder
     public Post(int id, int postView, int postLike, String postTitle, String postContent, String postTag, LocalDateTime postCreateDate, LocalDateTime postUpdateDate, boolean postIsAnonymous, String postPhoto, List<Comment> comment, AppUser appUser) {
         this.id = id;
