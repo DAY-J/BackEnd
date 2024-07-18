@@ -34,7 +34,7 @@ public class PostService {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
 
         return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
-    } //// TODO 페이징 처리 필요함
+    }
 
     @Transactional
     public PostDto.Response readPostById(int id) {
@@ -80,12 +80,11 @@ public class PostService {
         return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
     }
 
-
+    @Transactional
     public void likePost(int postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        post.setPostLike(post.getPostLike() + 1);
-        postRepository.save(post);
+        postRepository.incrementPostLike(postId);
     }
 }

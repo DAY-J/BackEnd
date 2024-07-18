@@ -16,9 +16,9 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/{post_id}/app-user/{user_id}/comment")
-    public void createComment(@PathVariable int post_id, @PathVariable int user_id, @Valid @RequestBody CommentDto.Request dto){
-        commentService.createComment(post_id, user_id, dto);
+    @PostMapping("/{post_id}/app-user/{app_user_id}/comment")
+    public void createComment(@PathVariable int post_id, @PathVariable int app_user_id, @Valid @RequestBody CommentDto.Request dto){
+        commentService.createComment(post_id, app_user_id, dto);
     }
 
     @GetMapping("/{post_id}/comment")

@@ -14,9 +14,9 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/app-user/{user_id}")
-    public void createPost(@PathVariable int user_id, @Valid @RequestBody PostDto.Request dto) {
-        postService.createPost(dto, user_id);
+    @PostMapping("/app-user/{app_user_id}")
+    public void createPost(@PathVariable int app_user_id, @Valid @RequestBody PostDto.Request dto) {
+        postService.createPost(dto, app_user_id);
     }
 
     @GetMapping
@@ -52,4 +52,5 @@ public class PostController {
     public void likePost (@PathVariable int post_id) {
         postService.likePost(post_id);
     }
+
 }
