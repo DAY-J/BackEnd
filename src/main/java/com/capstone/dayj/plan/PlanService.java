@@ -36,12 +36,12 @@ public class PlanService {
     
     @Transactional
     public List<PlanDto.Response> readAllPlan(int app_user_id) {
-        List<Plan> plans = planRepository.findAllByAppUserId(app_user_id);
+        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id);
         
-        if (plans.isEmpty())
+        if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
         
-        return plans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
+        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
     }
     
     @Transactional
@@ -53,11 +53,13 @@ public class PlanService {
     }
     
     @Transactional
-    public PlanDto.Response readPlanByPlanTag(int app_user_id, String planTag) {
-        Plan plan = planRepository.findByAppUserIdAndPlanTag(app_user_id, planTag)
-                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+    public List<PlanDto.Response> readPlanByPlanTag(int app_user_id, String planTag) {
+        List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, planTag);
         
-        return new PlanDto.Response(plan);
+        if (findPlans.isEmpty())
+            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+        
+        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
     }
     
     @Transactional
@@ -72,7 +74,6 @@ public class PlanService {
     public void deletePlanById(int app_user_id, int plan_id) {
         Plan plan = planRepository.findByAppUserIdAndId(app_user_id, plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-        PlanDto.Response planDto = new PlanDto.Response(plan);
-        planRepository.deleteById(planDto.getId());
+        planRepository.delete(plan);
     }
 }

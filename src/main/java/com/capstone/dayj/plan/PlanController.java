@@ -30,7 +30,7 @@ public class PlanController {
     }
     
     @GetMapping("tag/{plan_tag}")
-    public PlanDto.Response readByPlanTag(@PathVariable int app_user_id, @PathVariable String plan_tag) {
+    public List<PlanDto.Response> readByPlanTag(@PathVariable int app_user_id, @PathVariable String plan_tag) {
         return planService.readPlanByPlanTag(app_user_id, plan_tag);
     }
     

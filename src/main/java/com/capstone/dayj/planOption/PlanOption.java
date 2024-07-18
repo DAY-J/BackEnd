@@ -4,7 +4,6 @@ import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.plan.Plan;
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.lang.annotation.RequiredTypes;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ import java.util.List;
 @ToString(callSuper = true, exclude = {"plan"})
 public class PlanOption extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private LocalDateTime planStartTime;
     private LocalDateTime planEndTime;
@@ -24,7 +24,7 @@ public class PlanOption extends BaseEntity {
     private LocalDateTime planRepeatEndDate;
     private List<DayOfWeek> planDaysOfWeek;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "plan_id", referencedColumnName = "id")
     private Plan plan;
     

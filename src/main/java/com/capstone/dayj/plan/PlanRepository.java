@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface PlanRepository extends JpaRepository<Plan, Integer> {
-    Optional<Plan> findByAppUserIdAndPlanTag(int appUserId, String planTag);
     Optional<Plan> findByAppUserIdAndId(Integer appUserId, Integer planId);
+    List<Plan> findAllByAppUserIdAndPlanTag(int appUserId, String planTag);
     List<Plan> findAllByAppUserId(Integer appUserId);
 }

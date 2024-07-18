@@ -39,13 +39,13 @@ public class AppUser extends BaseEntity {
     @OneToMany(mappedBy = "appUser")
     private List<Plan> plans;
     
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Post> posts;
     
     @OneToMany(mappedBy = "appUser")
     private List<Comment> comments;
     
-    @OneToOne(mappedBy = "appUser")
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
     private Setting setting;
     
     public void update(String nickname) {

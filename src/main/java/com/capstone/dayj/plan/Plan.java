@@ -30,7 +30,7 @@ public class Plan extends BaseEntity {
     @ColumnDefault("0")
     private boolean isPublic;
     
-    @OneToOne(mappedBy = "plan")
+    @OneToOne(mappedBy = "plan", cascade = CascadeType.ALL)
     private PlanOption planOption;
     
     @ManyToOne(fetch = FetchType.LAZY)
