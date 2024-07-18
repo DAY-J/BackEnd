@@ -39,10 +39,10 @@ public class AppUser extends BaseEntity {
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private List<Plan> plans;
     
-    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private List<Post> posts;
     
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
     
     @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE)
