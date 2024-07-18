@@ -48,7 +48,7 @@ public class PostController {
         return postService.searchPostsByKeyword(keyword);
     }
 
-    @PatchMapping("/{post_id}/like")
+    @PatchMapping("like/{post_id}")
     public void likePost (@PathVariable int post_id) {
         postService.likePost(post_id);
     }
