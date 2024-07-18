@@ -35,7 +35,7 @@ public class FriendGroup extends BaseEntity {
     @ColumnDefault("0")
     private boolean groupExit;
     
-    public void update(String groupName) {
+    public void updateGroupName(String groupName) {
         this.groupName = groupName;
     }
 

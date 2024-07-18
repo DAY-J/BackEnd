@@ -60,7 +60,7 @@ public class FriendGroupService {
         FriendGroup existingFriendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id, group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
-        existingFriendGroup.update(dto.getGroupName());
+        existingFriendGroup.updateGroupName(dto.getGroupName());
     }
 
     @Transactional
