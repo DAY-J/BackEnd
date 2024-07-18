@@ -1,4 +1,4 @@
-package com.capstone.dayj.appUserFriendGroup;
+package com.capstone.dayj.groupMember;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
@@ -10,7 +10,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"appUser", "friendGroup"})
-public class AppUserFriendGroup extends BaseEntity {
+public class GroupMember extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -22,9 +22,9 @@ public class AppUserFriendGroup extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_group_id", referencedColumnName = "id")
     private FriendGroup friendGroup;
-    
+
     @Builder
-    public AppUserFriendGroup(int id, AppUser appUser, FriendGroup friendGroup) {
+    public GroupMember(int id, AppUser appUser, FriendGroup friendGroup) {
         this.id = id;
         this.appUser = appUser;
         this.friendGroup = friendGroup;

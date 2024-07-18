@@ -5,9 +5,9 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.setting.SettingDto;
 import com.capstone.dayj.setting.SettingRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,18 +26,27 @@ public class AppUserService {
                 .build();
         settingRepository.save(newSetting.toEntity());
     }
-    
+
+    @Transactional(readOnly = true)
     public List<AppUserDto.Response> readAllAppUser() {
         List<AppUser> appUsers = appUserRepository.findAll();
         
         return appUsers.stream().map(AppUserDto.Response::new).collect(Collectors.toList());
     }
     
-    @Transactional
+    @Transactional(readOnly = true)
     public AppUserDto.Response readAppUserById(int id) {
         AppUser appUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
+        return new AppUserDto.Response(appUser);
+    }
+
+    @Transactional(readOnly = true)
+    public AppUserDto.Response readAppUserByEmail(String email) {
+        AppUser appUser = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+
         return new AppUserDto.Response(appUser);
     }
     
@@ -55,13 +64,5 @@ public class AppUserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
         appUserRepository.deleteById(appUser.getId());
-    }
-    
-    @Transactional
-    public AppUserDto.Response readAppUserByEmail(String email) {
-        AppUser appUser = appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        
-        return new AppUserDto.Response(appUser);
     }
 }

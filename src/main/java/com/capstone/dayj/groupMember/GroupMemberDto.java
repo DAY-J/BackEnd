@@ -1,11 +1,11 @@
-package com.capstone.dayj.appUserFriendGroup;
+package com.capstone.dayj.groupMember;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.friendGroup.FriendGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-public class AppUserFriendGroupDto {
+public class GroupMemberDto {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -15,8 +15,8 @@ public class AppUserFriendGroupDto {
         private AppUser appUser;
         private FriendGroup friendGroup;
         
-        public AppUserFriendGroup toEntity() {
-            return AppUserFriendGroup.builder()
+        public GroupMember toEntity() {
+            return GroupMember.builder()
                     .id(id)
                     .appUser(appUser)
                     .friendGroup(friendGroup)
@@ -32,10 +32,10 @@ public class AppUserFriendGroupDto {
         @JsonIgnore
         private final FriendGroup friendGroup;
         
-        public Response(AppUserFriendGroup appUserFriendGroup) {
-            this.id = appUserFriendGroup.getId();
-            this.appUser = appUserFriendGroup.getAppUser();
-            this.friendGroup = appUserFriendGroup.getFriendGroup();
+        public Response(GroupMember groupMember) {
+            this.id = groupMember.getId();
+            this.appUser = groupMember.getAppUser();
+            this.friendGroup = groupMember.getFriendGroup();
         }
         
     }

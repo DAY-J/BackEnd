@@ -1,6 +1,6 @@
 package com.capstone.dayj.appUser;
 
-import com.capstone.dayj.appUserFriendGroup.AppUserFriendGroup;
+import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.comment.Comment;
 import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.plan.Plan;
@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true, exclude = {"appUserFriendGroup", "plans", "posts", "comments", "setting"})
+@ToString(callSuper = true, exclude = {"groupMembers", "plans", "posts", "comments", "setting"})
 public class AppUser extends BaseEntity {
     
     @Id
@@ -32,9 +32,9 @@ public class AppUser extends BaseEntity {
     
     //유저 닉네임 설정하는 기능 구현 필요
     
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private List<AppUserFriendGroup> appUserFriendGroup;
+    private List<GroupMember> groupMembers;
     
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private List<Plan> plans;
@@ -53,7 +53,7 @@ public class AppUser extends BaseEntity {
     }
     
     @Builder
-    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, List<AppUserFriendGroup> appUserFriendGroup, List<Plan> plans, List<Post> posts, List<Comment> comments, Setting setting) {
+    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, Setting setting) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
@@ -62,7 +62,7 @@ public class AppUser extends BaseEntity {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
-        this.appUserFriendGroup = appUserFriendGroup;
+        this.groupMembers = groupMembers;
         this.plans = plans;
         this.posts = posts;
         this.comments = comments;

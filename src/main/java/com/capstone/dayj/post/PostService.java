@@ -4,7 +4,7 @@ import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.appUser.AppUserRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final AppUserRepository appUserRepository;
     
+
     @Transactional
     public void createPost(PostDto.Request dto, int userId) {
         AppUser appUser = appUserRepository.findById(userId)
@@ -25,6 +26,7 @@ public class PostService {
         postRepository.save(dto.toEntity());
     }
 
+    @Transactional(readOnly = true)
     public List<PostDto.Response> readAllPost() {
         List<Post> posts = postRepository.findAll();
 
@@ -44,7 +46,7 @@ public class PostService {
         return new PostDto.Response(post);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostDto.Response> readPostByTag(String tag){
         List<Post> posts = postRepository.findByPostTag(tag);
 
@@ -52,6 +54,24 @@ public class PostService {
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
 
         return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostDto.Response> searchPostsByKeyword(String keyword) {
+        List<Post> posts = postRepository.findByPostTitleContainingOrPostContentContaining(keyword, keyword);
+
+        if (posts.isEmpty())
+            throw new CustomException(ErrorCode.POST_NOT_FOUND);
+
+        return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void likePost(int postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+
+        postRepository.incrementPostLike(postId);
     }
 
     @Transactional
@@ -68,22 +88,5 @@ public class PostService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         postRepository.deleteById(post.getId());
-    }
-
-    public List<PostDto.Response> searchPostsByKeyword(String keyword) {
-        List<Post> posts = postRepository.findByPostTitleContainingOrPostContentContaining(keyword, keyword);
-
-        if (posts.isEmpty())
-            throw new CustomException(ErrorCode.POST_NOT_FOUND);
-
-        return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void likePost(int postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-
-        postRepository.incrementPostLike(postId);
     }
 }

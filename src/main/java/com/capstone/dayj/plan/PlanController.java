@@ -24,9 +24,9 @@ public class PlanController {
         return planService.readAllPlan(app_user_id);
     }
     
-    @GetMapping("/{post_id}")
-    public PlanDto.Response readPlanById(@PathVariable int app_user_id, @PathVariable int post_id) {
-        return planService.readPlanById(app_user_id, post_id);
+    @GetMapping("/{plan_id}")
+    public PlanDto.Response readPlanById(@PathVariable int app_user_id, @PathVariable int plan_id) {
+        return planService.readPlanById(app_user_id, plan_id);
     }
     
     @GetMapping("tag/{plan_tag}")

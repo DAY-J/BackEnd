@@ -6,9 +6,9 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.post.Post;
 import com.capstone.dayj.post.PostRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +34,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentDto.Response> readAllComment(int postId) {
 
          Post post = postRepository.findById(postId)
@@ -44,7 +45,7 @@ public class CommentService {
         return comments.stream().map(CommentDto.Response::new).collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CommentDto.Response readCommentById(int postId, int commentId){
         Comment comment = commentRepository.findByPostIdAndId(postId, commentId)
                 .orElseThrow(()-> new CustomException(ErrorCode.COMMENT_NOT_FOUND));

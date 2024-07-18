@@ -1,12 +1,14 @@
 package com.capstone.dayj.friendGroup;
 
+import com.capstone.dayj.appUser.AppUser;
+import com.capstone.dayj.appUser.AppUserRepository;
+import com.capstone.dayj.groupMember.GroupMemberDto;
+import com.capstone.dayj.groupMember.GroupMemberRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
-import com.capstone.dayj.post.Post;
-import com.capstone.dayj.post.PostDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,13 +17,28 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FriendGroupService {
     private final FriendGroupRepository friendGroupRepository;
+    private final AppUserRepository appUserRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
-    public void createFriendGroup(FriendGroup group) {
-        friendGroupRepository.save(group);
+    @Transactional
+    public void createFriendGroup(int app_user_id, FriendGroupDto.Request dto) {
+        FriendGroup friendGroup = dto.toEntity();
+        friendGroupRepository.save(friendGroup);
+
+        AppUser user = appUserRepository.findById(app_user_id)
+                .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+
+        GroupMemberDto.Request groupMember = new GroupMemberDto.Request();
+        groupMember.setAppUser(user);
+        groupMember.setFriendGroup(friendGroup);
+
+        groupMemberRepository.save(groupMember.toEntity());
     }
-    
-    public List<FriendGroupDto.Response> readAllFriendGroup() {
-        List<FriendGroup> friendGroups = friendGroupRepository.findAll();
+
+    @Transactional(readOnly = true)
+    public List<FriendGroupDto.Response> readAllFriendGroup(int app_user_id) {
+
+        List<FriendGroup> friendGroups = friendGroupRepository.findFriendGroupByAppUserId(app_user_id);
 
         if (friendGroups.isEmpty())
             throw new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND);
@@ -29,26 +46,37 @@ public class FriendGroupService {
         return friendGroups.stream().map(FriendGroupDto.Response::new).collect(Collectors.toList());
     }
 
-    @Transactional
-    public FriendGroupDto.Response readFriendGroupById(int id) {
-        FriendGroup friendGroup = friendGroupRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
+    @Transactional(readOnly = true)
+    public FriendGroupDto.Response readFriendGroupById(int app_user_id, int group_id) {
+
+        FriendGroup friendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id, group_id)
+                .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         return new FriendGroupDto.Response(friendGroup);
     }
 
     @Transactional
-    public void updateFriendGroup(int id, FriendGroupDto.Request dto) {
-        FriendGroup existingFriendGroup = friendGroupRepository.findById(id)
+    public void updateGroupName(int app_user_id, int group_id, FriendGroupDto.Request dto) {
+        FriendGroup existingFriendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id, group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         existingFriendGroup.update(dto.getGroupName());
     }
-    
-    public void deleteFriendGroupById(int id) {
-        friendGroupRepository.findById(id)
+
+    @Transactional
+    public void updateGroupGoal(int app_user_id, int group_id, FriendGroupDto.Request dto){
+        FriendGroup friendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id,group_id)
+                .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
+
+        friendGroup.updateGroupGoal(dto.getGroupGoal());
+        friendGroupRepository.save(friendGroup);
+    }
+
+    @Transactional
+    public void deleteFriendGroupById(int group_id) {
+        friendGroupRepository.findById(group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
         
-        friendGroupRepository.deleteById(id);
+        friendGroupRepository.deleteById(group_id);
     }
 }

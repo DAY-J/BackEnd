@@ -35,7 +35,7 @@ public class AppUserController {
     }
     
     @PatchMapping("/{id}")
-    public void patchAppUser(@PathVariable int id, @Valid @RequestBody AppUserDto.Request dto) {
+    public void patchNickname(@PathVariable int id, @Valid @RequestBody AppUserDto.Request dto) {
         appUserService.updateAppUser(id, dto);
     }
     

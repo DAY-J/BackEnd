@@ -1,7 +1,7 @@
 package com.capstone.dayj.appUser;
 
-import com.capstone.dayj.appUserFriendGroup.AppUserFriendGroup;
 import com.capstone.dayj.comment.CommentDto;
+import com.capstone.dayj.groupMember.GroupMemberDto;
 import com.capstone.dayj.plan.PlanDto;
 import com.capstone.dayj.post.PostDto;
 import com.capstone.dayj.setting.Setting;
@@ -55,7 +55,7 @@ public class AppUserDto {
         private final String provider; //공급자
         private final String providerId; //공급 아이디
         @JsonIgnore
-        private final List<AppUserFriendGroup> appUserFriendGroup;
+        private final List<GroupMemberDto.Response> groupMembers;
         @JsonIgnore
         private final List<PlanDto.Response> plans;
         @JsonIgnore
@@ -75,7 +75,7 @@ public class AppUserDto {
             this.role = appUser.getRole();
             this.provider = appUser.getProvider();
             this.providerId = appUser.getProviderId();
-            this.appUserFriendGroup = appUser.getAppUserFriendGroup();
+            this.groupMembers = appUser.getGroupMembers().stream().map(GroupMemberDto.Response::new).collect(Collectors.toList());
             this.plans = appUser.getPlans().stream().map(PlanDto.Response::new).collect(Collectors.toList());
             this.posts = appUser.getPosts().stream().map(PostDto.Response::new).collect(Collectors.toList());
             this.comments = appUser.getComments().stream().map(CommentDto.Response::new).collect(Collectors.toList());

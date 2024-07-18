@@ -33,24 +33,25 @@ public class PostController {
     public List<PostDto.Response> readPostByTag(@PathVariable String post_tag){
         return postService.readPostByTag(post_tag);
     }
-    @PatchMapping("/{post_id}")
-    public void patchPost(@PathVariable int post_id, @Valid @RequestBody PostDto.Request post) {
-        postService.updatePost(post_id, post);
-    }
-
-    @DeleteMapping("/{post_id}")
-    public void deletePostById(@PathVariable int post_id) {
-        postService.deletePostById(post_id);
-    }
 
     @GetMapping("search/{keyword}")
     public List<PostDto.Response> readPostByKeyword(@PathVariable String keyword){
         return postService.searchPostsByKeyword(keyword);
     }
 
+    @PatchMapping("/{post_id}")
+    public void patchPost(@PathVariable int post_id, @Valid @RequestBody PostDto.Request post) {
+        postService.updatePost(post_id, post);
+    }
+
     @PatchMapping("like/{post_id}")
     public void likePost (@PathVariable int post_id) {
         postService.likePost(post_id);
+    }
+
+    @DeleteMapping("/{post_id}")
+    public void deletePostById(@PathVariable int post_id) {
+        postService.deletePostById(post_id);
     }
 
 }
