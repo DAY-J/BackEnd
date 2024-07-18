@@ -27,7 +27,7 @@ public class PlanService {
         
         dto.setAppUser(appUser);
         Plan savedPlan = planRepository.save(dto.toEntity());
-        
+
         PlanOptionDto.Request newPlanOption = PlanOptionDto.Request.builder()
                 .plan(savedPlan)
                 .build();

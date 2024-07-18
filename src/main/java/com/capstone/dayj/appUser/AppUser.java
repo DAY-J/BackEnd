@@ -36,16 +36,16 @@ public class AppUser extends BaseEntity {
     @JsonIgnore
     private List<AppUserFriendGroup> appUserFriendGroup;
     
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private List<Plan> plans;
     
-    @OneToMany(mappedBy = "appUser", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
     private List<Post> posts;
     
     @OneToMany(mappedBy = "appUser")
     private List<Comment> comments;
     
-    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private Setting setting;
     
     public void update(String nickname) {

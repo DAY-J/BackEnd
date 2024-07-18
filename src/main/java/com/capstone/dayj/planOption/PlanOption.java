@@ -24,7 +24,7 @@ public class PlanOption extends BaseEntity {
     private LocalDateTime planRepeatEndDate;
     private List<DayOfWeek> planDaysOfWeek;
     
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id", referencedColumnName = "id")
     private Plan plan;
     
