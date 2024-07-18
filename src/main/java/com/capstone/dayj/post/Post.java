@@ -39,7 +39,7 @@ public class Post extends BaseEntity {
     @Column
     private String postPhoto;
     
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> comment;
     
     @ManyToOne(fetch = FetchType.LAZY)
