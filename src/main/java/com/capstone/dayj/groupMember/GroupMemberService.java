@@ -38,7 +38,7 @@ public class GroupMemberService {
 
     @Transactional
     public List<AppUserDto.Response> readAllMemberInFriendGroup(int app_user_id, int group_id){
-        List<AppUser> appUsers = appUserRepository.findAppUsersByFriendGroupId(group_id);
+        List<AppUser> appUsers = appUserRepository.findByGroupMembers_FriendGroup_Id(group_id);
 
         AppUser me = appUserRepository.findById(app_user_id).orElseThrow(()->new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         appUsers.remove(me);

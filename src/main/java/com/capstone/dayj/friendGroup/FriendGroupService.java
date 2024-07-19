@@ -38,7 +38,7 @@ public class FriendGroupService {
     @Transactional(readOnly = true)
     public List<FriendGroupDto.Response> readAllFriendGroup(int app_user_id) {
 
-        List<FriendGroup> friendGroups = friendGroupRepository.findFriendGroupByAppUserId(app_user_id);
+        List<FriendGroup> friendGroups = friendGroupRepository.findByGroupMember_AppUser_Id(app_user_id);
 
         if (friendGroups.isEmpty())
             throw new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND);
@@ -49,7 +49,7 @@ public class FriendGroupService {
     @Transactional(readOnly = true)
     public FriendGroupDto.Response readFriendGroupById(int app_user_id, int group_id) {
 
-        FriendGroup friendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id, group_id)
+        FriendGroup friendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         return new FriendGroupDto.Response(friendGroup);
@@ -57,7 +57,7 @@ public class FriendGroupService {
 
     @Transactional
     public void updateGroupName(int app_user_id, int group_id, FriendGroupDto.Request dto) {
-        FriendGroup existingFriendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id, group_id)
+        FriendGroup existingFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         existingFriendGroup.updateGroupName(dto.getGroupName());
@@ -65,7 +65,7 @@ public class FriendGroupService {
 
     @Transactional
     public void updateGroupGoal(int app_user_id, int group_id, FriendGroupDto.Request dto){
-        FriendGroup friendGroup = friendGroupRepository.findFriendGroupByAppUserIdAndGroupId(app_user_id,group_id)
+        FriendGroup friendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id,group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         friendGroup.updateGroupGoal(dto.getGroupGoal());
