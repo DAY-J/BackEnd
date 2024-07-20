@@ -23,16 +23,18 @@ public class FriendGroupService {
     @Transactional
     public void createFriendGroup(int app_user_id, FriendGroupDto.Request dto) {
         FriendGroup friendGroup = dto.toEntity();
-        friendGroupRepository.save(friendGroup);
 
         AppUser user = appUserRepository.findById(app_user_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
 
-        GroupMemberDto.Request groupMember = new GroupMemberDto.Request();
-        groupMember.setAppUser(user);
-        groupMember.setFriendGroup(friendGroup);
+        new GroupMemberDto.Request();
+        GroupMemberDto.Request request = GroupMemberDto.Request.builder()
+                .appUser(user)
+                .friendGroup(friendGroup)
+                .build();
 
-        groupMemberRepository.save(groupMember.toEntity());
+        friendGroupRepository.save(friendGroup);
+        groupMemberRepository.save(request.toEntity());
     }
 
     @Transactional(readOnly = true)

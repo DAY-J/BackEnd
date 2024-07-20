@@ -28,21 +28,20 @@ public class GroupMemberService {
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         // 이미 그룹 회원이라면?
-
-        GroupMemberDto.Request dto = new GroupMemberDto.Request();
-        dto.setAppUser(member);
-        dto.setFriendGroup(friendGroup);
+        new GroupMemberDto.Request();
+        GroupMemberDto.Request dto = GroupMemberDto.Request.builder()
+                .appUser(member)
+                .friendGroup(friendGroup)
+                .build();
 
         groupMemberRepository.save(dto.toEntity());
     }
 
     @Transactional
     public List<AppUserDto.Response> readAllMemberInFriendGroup(int app_user_id, int group_id){
-        List<AppUser> appUsers = appUserRepository.findByGroupMembers_FriendGroup_Id(group_id);
-
-        AppUser me = appUserRepository.findById(app_user_id).orElseThrow(()->new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        appUsers.remove(me);
-        // 본인 제외한 AppUser 리스트 보여주기
+        List<AppUser> appUsers = appUserRepository.findByGroupMembers_FriendGroup_Id(group_id).stream()
+                .filter(appUser -> appUser.getId() != app_user_id)
+                .toList();
 
         if (appUsers.isEmpty())
             throw new CustomException(ErrorCode.APP_USER_NOT_FOUND);

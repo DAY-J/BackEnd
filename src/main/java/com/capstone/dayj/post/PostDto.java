@@ -5,6 +5,7 @@ import com.capstone.dayj.comment.CommentDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,8 @@ public class PostDto {
         private final String postTag;
         private final boolean postIsAnonymous;
         private final String postPhoto;
+        private final LocalDateTime createdAt;
+        private final LocalDateTime updatedAt;
         @JsonIgnore
         private final AppUser appUser;
         @JsonIgnore
@@ -64,6 +67,8 @@ public class PostDto {
             this.postTag = post.getPostTag();
             this.postIsAnonymous = post.isPostIsAnonymous();
             this.postPhoto = post.getPostPhoto();
+            this.createdAt = post.getCreatedAt();
+            this.updatedAt = post.getUpdatedAt();
             this.appUser = post.getAppUser();
             this.comment = post.getComment().stream().map(CommentDto.Response::new).collect(Collectors.toList());
         }

@@ -4,6 +4,7 @@ import com.capstone.dayj.groupMember.GroupMember;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FriendGroupDto {
@@ -36,6 +37,7 @@ public class FriendGroupDto {
         private final String groupGoal;
         private final String groupName;
         private final boolean groupExit;
+        private final LocalDateTime createdAt;
         @JsonIgnore
         private final List<GroupMember> groupMember;
         
@@ -45,6 +47,7 @@ public class FriendGroupDto {
             this.groupName = friendGroup.getGroupName();
             this.groupExit = friendGroup.isGroupExit();
             this.groupMember = friendGroup.getGroupMember();
+            this.createdAt = friendGroup.getCreatedAt();
         }
 
     }

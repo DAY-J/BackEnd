@@ -30,8 +30,7 @@ public class CommentService {
         dto.setAppUser(user);
         dto.setPost(post);
 
-        Comment comment = dto.toEntity();
-        commentRepository.save(comment);
+        commentRepository.save(dto.toEntity());
     }
 
     @Transactional(readOnly = true)
