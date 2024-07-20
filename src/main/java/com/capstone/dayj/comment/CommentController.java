@@ -26,10 +26,10 @@ public class CommentController {
         commentService.createReply(post_id, app_user_id, comment_id, dto);
     }
     
-    @GetMapping("comment/{comment_id}/reply")
-    public List<CommentDto.Response> readAllReplyByCommentId(@PathVariable int post_id, @PathVariable int comment_id) {
-        return commentService.readAllReplyByCommentId(post_id, comment_id);
-    }
+//    @GetMapping("comment/{comment_id}/reply")
+//    public List<CommentDto.Response> readAllReplyByCommentId(@PathVariable int post_id, @PathVariable int comment_id) {
+//        return commentService.readAllReplyByCommentId(post_id, comment_id);
+//    }
     
     @GetMapping("/comment")
     public List<CommentDto.Response> readAllComment(@PathVariable int post_id) {

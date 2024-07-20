@@ -3,16 +3,16 @@ package com.capstone.dayj.setting;
 
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SettingService {
     private final SettingRepository settingRepository;
     
-    @Transactional
+    @Transactional(readOnly = true)
     public SettingDto.Response readSettingById(int app_user_id) {
         Setting findSetting = settingRepository.findByAppUserId(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));

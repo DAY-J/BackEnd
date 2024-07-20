@@ -80,25 +80,25 @@ public class CommentService {
         return new CommentDto.Response(findComment);
     }
     
-    @Transactional(readOnly = true)
-    public List<CommentDto.Response> readAllReplyByCommentId(int post_id, int comment_id) {
-        Post findPost = postRepository.findById(post_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        List<Comment> findComments = findPost.getComment();
-        
-        if (findComments.isEmpty()) {
-            throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
-        }
-        
-        List<Comment> findReplies = findComments
-                .stream().filter(comment -> comment.getParentId() == comment_id).toList();
-        
-        if (findReplies.isEmpty()) {
-            throw new CustomException(ErrorCode.REPLY_NOT_FOUND);
-        }
-        
-        return findReplies.stream().map(CommentDto.Response::new).collect(Collectors.toList());
-    }
+//    @Transactional(readOnly = true)
+//    public List<CommentDto.Response> readAllReplyByCommentId(int post_id, int comment_id) {
+//        Post findPost = postRepository.findById(post_id)
+//                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+//        List<Comment> findComments = findPost.getComment();
+//
+//        if (findComments.isEmpty()) {
+//            throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
+//        }
+//
+//        List<Comment> findReplies = findComments
+//                .stream().filter(comment -> comment.getParentId() == comment_id).toList();
+//
+//        if (findReplies.isEmpty()) {
+//            throw new CustomException(ErrorCode.REPLY_NOT_FOUND);
+//        }
+//
+//        return findReplies.stream().map(CommentDto.Response::new).collect(Collectors.toList());
+//    }
     
     
     @Transactional

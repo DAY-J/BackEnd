@@ -6,7 +6,7 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.planOption.PlanOptionRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class PlanService {
         planOptionRepository.save(newPlanOption.toEntity());
     }
     
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PlanDto.Response> readAllPlan(int app_user_id) {
         List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id);
         
@@ -44,7 +44,7 @@ public class PlanService {
         return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
     }
     
-    @Transactional
+    @Transactional(readOnly = true)
     public PlanDto.Response readPlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
@@ -52,7 +52,7 @@ public class PlanService {
         return new PlanDto.Response(findPlan);
     }
     
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PlanDto.Response> readPlanByPlanTag(String planTag) {
         List<Plan> findPlans = planRepository.findAll()
                 .stream().filter(plan -> plan.getPlanTag().equals(planTag)).toList();
