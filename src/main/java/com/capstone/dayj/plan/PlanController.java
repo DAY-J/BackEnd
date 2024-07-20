@@ -25,13 +25,13 @@ public class PlanController {
     }
     
     @GetMapping("/{plan_id}")
-    public PlanDto.Response readPlanById(@PathVariable int app_user_id, @PathVariable int plan_id) {
-        return planService.readPlanById(app_user_id, plan_id);
+    public PlanDto.Response readPlanById(@PathVariable int plan_id) {
+        return planService.readPlanById(plan_id);
     }
     
     @GetMapping("tag/{plan_tag}")
-    public List<PlanDto.Response> readByPlanTag(@PathVariable int app_user_id, @PathVariable String plan_tag) {
-        return planService.readPlanByPlanTag(app_user_id, plan_tag);
+    public List<PlanDto.Response> readByPlanTag(@PathVariable String plan_tag) {
+        return planService.readPlanByPlanTag(plan_tag);
     }
     
     @PatchMapping("/{plan_id}")
@@ -40,7 +40,7 @@ public class PlanController {
     }
     
     @DeleteMapping("/{plan_id}")
-    public void deletePlanById(@PathVariable int app_user_id, @PathVariable int plan_id) {
-        planService.deletePlanById(app_user_id, plan_id);
+    public void deletePlanById(@PathVariable int plan_id) {
+        planService.deletePlanById(plan_id);
     }
 }

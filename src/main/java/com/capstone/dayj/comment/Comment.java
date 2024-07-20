@@ -19,14 +19,15 @@ public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int parentId;
     
     @Column(nullable = false)
     private String content;
     
-    
     @Column(nullable = false)
     @ColumnDefault("1")
     private boolean commentIsAnonymous;
+    
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
@@ -42,8 +43,9 @@ public class Comment extends BaseEntity {
     }
     
     @Builder
-    public Comment(int id, String content, LocalDateTime commentCreateDate, LocalDateTime commentUpdateDate, boolean commentIsAnonymous, AppUser appUser, Post post) {
+    public Comment(int id, int parentId, String content, LocalDateTime commentCreateDate, LocalDateTime commentUpdateDate, boolean commentIsAnonymous, AppUser appUser, Post post) {
         this.id = id;
+        this.parentId = parentId;
         this.content = content;
         this.commentIsAnonymous = commentIsAnonymous;
         this.appUser = appUser;

@@ -25,12 +25,12 @@ public class PlanOptionService {
     
     @Transactional
     public void updatePlan(int app_user_id, int plan_id, PlanOptionDto.Request dto) {
-        List<Plan> plans = planRepository.findAllByAppUserId(app_user_id);
+        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id);
         
-        if (plans.isEmpty())
+        if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
         
-        Plan findPlan = plans.stream().filter(plan -> plan.getId() == plan_id)
+        Plan findPlan = findPlans.stream().filter(plan -> plan.getId() == plan_id)
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         PlanOption findPlanOption = findPlan.getPlanOption();

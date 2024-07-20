@@ -13,6 +13,7 @@ public class CommentDto {
     @Builder
     public static class Request {
         private int id;
+        private int parentId;
         private String content;
         private boolean commentIsAnonymous;
         private AppUser appUser;
@@ -21,6 +22,7 @@ public class CommentDto {
         public Comment toEntity() {
             return Comment.builder()
                     .id(id)
+                    .parentId(parentId)
                     .content(content)
                     .commentIsAnonymous(commentIsAnonymous)
                     .appUser(appUser)
@@ -32,6 +34,7 @@ public class CommentDto {
     @Getter
     public static class Response {
         private final int id;
+        private final int parentId;
         private final String content;
         private final boolean commentIsAnonymous;
         @JsonIgnore
@@ -41,6 +44,7 @@ public class CommentDto {
         
         public Response(Comment comment) {
             this.id = comment.getId();
+            this.parentId = comment.getParentId();
             this.content = comment.getContent();
             this.commentIsAnonymous = comment.isCommentIsAnonymous();
             this.appUser = comment.getAppUser();
