@@ -4,10 +4,8 @@ package com.capstone.dayj.setting;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
-
-import java.util.List;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity
@@ -21,29 +19,23 @@ public class Setting extends BaseEntity {
     private String profilePhoto;
     
     @Column(nullable = false)
-    private List<AlarmSetting> alarmSettings;
+    @ColumnDefault("0")
+    private boolean alarm;
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     private AppUser appUser;
     
-    @Transactional
-    @PrePersist
-    public void prePersist() {
-        this.alarmSettings = List.of(AlarmSetting.ALL, AlarmSetting.PLAN,
-                AlarmSetting.FRIEND_GROUP, AlarmSetting.POST, AlarmSetting.APP);
-    }
-    
-    public void update(List<AlarmSetting> alarmSettings, String profilePhoto) {
-        this.alarmSettings = alarmSettings;
+    public void update(String profilePhoto, boolean alarm) {
         this.profilePhoto = profilePhoto;
+        this.alarm = alarm;
     }
     
     @Builder
-    public Setting(int id, List<AlarmSetting> alarmSettings, String profilePhoto, AppUser appUser) {
+    public Setting(int id, String profilePhoto, boolean alarm, AppUser appUser) {
         this.id = id;
-        this.alarmSettings = alarmSettings;
         this.profilePhoto = profilePhoto;
+        this.alarm = alarm;
         this.appUser = appUser;
     }
 }

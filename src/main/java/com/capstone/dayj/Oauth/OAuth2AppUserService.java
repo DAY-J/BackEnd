@@ -34,7 +34,7 @@ public class OAuth2AppUserService extends DefaultOAuth2UserService {
         Optional<AppUser> findAppUser = appUserRepository.findByName(username);
         
         if (findAppUser.isEmpty()) { //찾지 못했다면
-            AppUserDto.Request appUser = AppUserDto.Request.builder()
+            AppUserDto.Request newAppUser = AppUserDto.Request.builder()
                     .name(username)
                     .email(email)
                     .password(encoder.encode("password"))
@@ -43,7 +43,7 @@ public class OAuth2AppUserService extends DefaultOAuth2UserService {
                     .provider(provider)
                     .providerId(providerId)
                     .build();
-            appUserService.createAppUser(appUser);
+            appUserService.createAppUser(newAppUser);
         }
         return oAuth2User;
     }

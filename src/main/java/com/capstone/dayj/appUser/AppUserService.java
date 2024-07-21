@@ -26,7 +26,7 @@ public class AppUserService {
                 .build();
         settingRepository.save(newSetting.toEntity());
     }
-
+    
     @Transactional(readOnly = true)
     public List<AppUserDto.Response> readAllAppUser() {
         List<AppUser> appUsers = appUserRepository.findAll();
@@ -41,12 +41,12 @@ public class AppUserService {
         
         return new AppUserDto.Response(appUser);
     }
-
+    
     @Transactional(readOnly = true)
     public AppUserDto.Response readAppUserByEmail(String email) {
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-
+        
         return new AppUserDto.Response(appUser);
     }
     

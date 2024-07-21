@@ -1,8 +1,8 @@
 package com.capstone.dayj.appUser;
 
-import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.comment.Comment;
 import com.capstone.dayj.common.BaseEntity;
+import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.post.Post;
 import com.capstone.dayj.setting.Setting;

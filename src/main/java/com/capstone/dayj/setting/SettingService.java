@@ -13,7 +13,7 @@ public class SettingService {
     private final SettingRepository settingRepository;
     
     @Transactional(readOnly = true)
-    public SettingDto.Response readSettingById(int app_user_id) {
+    public SettingDto.Response readSettingByAppUserId(int app_user_id) {
         Setting findSetting = settingRepository.findByAppUserId(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         return new SettingDto.Response(findSetting);
@@ -24,6 +24,6 @@ public class SettingService {
         Setting findSetting = settingRepository.findByAppUserId(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
-        findSetting.update(dto.getAlarmSettings(), dto.getProfilePhoto());
+        findSetting.update(dto.getProfilePhoto(), dto.isAlarm());
     }
 }

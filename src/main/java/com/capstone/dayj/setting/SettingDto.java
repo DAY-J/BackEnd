@@ -4,8 +4,6 @@ import com.capstone.dayj.appUser.AppUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.util.List;
-
 public class SettingDto {
     @Data
     @AllArgsConstructor
@@ -13,15 +11,15 @@ public class SettingDto {
     @Builder
     public static class Request {
         private int id;
-        private List<AlarmSetting> alarmSettings;
         private String profilePhoto;
+        private boolean alarm;
         private AppUser appUser;
         
         public Setting toEntity() {
             return Setting.builder()
                     .id(id)
-                    .alarmSettings(alarmSettings)
                     .profilePhoto(profilePhoto)
+                    .alarm(alarm)
                     .appUser(appUser)
                     .build();
         }
@@ -30,15 +28,15 @@ public class SettingDto {
     @Getter
     public static class Response {
         private final int id;
-        private final List<AlarmSetting> alarmSettings;
         private final String profilePhoto;
+        private final boolean alarm;
         @JsonIgnore
         private final AppUser appUser;
         
         public Response(Setting setting) {
             this.id = setting.getId();
-            this.alarmSettings = setting.getAlarmSettings();
             this.profilePhoto = setting.getProfilePhoto();
+            this.alarm = setting.isAlarm();
             this.appUser = setting.getAppUser();
         }
         

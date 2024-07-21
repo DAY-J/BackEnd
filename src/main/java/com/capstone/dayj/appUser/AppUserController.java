@@ -29,19 +29,19 @@ public class AppUserController {
         return appUserService.readAppUserByEmail(email);
     }
     
-    @GetMapping("/{id}")
-    public AppUserDto.Response readAppUserById(@PathVariable int id) {
-        return appUserService.readAppUserById(id);
+    @GetMapping("/{app_user_id}")
+    public AppUserDto.Response readAppUserById(@PathVariable int app_user_id) {
+        return appUserService.readAppUserById(app_user_id);
     }
     
-    @PatchMapping("/{id}")
-    public void patchNickname(@PathVariable int id, @Valid @RequestBody AppUserDto.Request dto) {
-        appUserService.updateAppUser(id, dto);
+    @PatchMapping("/{app_user_id}")
+    public void patchNickname(@PathVariable int app_user_id, @Valid @RequestBody AppUserDto.Request dto) {
+        appUserService.updateAppUser(app_user_id, dto);
     }
     
-    @DeleteMapping("/{id}")
-    public void deleteAppUserById(@PathVariable int id) {
-        appUserService.deleteAppUserById(id);
+    @DeleteMapping("/{app_user_id}")
+    public void deleteAppUserById(@PathVariable int app_user_id) {
+        appUserService.deleteAppUserById(app_user_id);
     }
     
 }
