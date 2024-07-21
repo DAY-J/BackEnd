@@ -2,6 +2,7 @@ package com.capstone.dayj.planOption;
 
 import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.plan.Plan;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class PlanOption extends BaseEntity {
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id", referencedColumnName = "id")
+    @JsonBackReference
     private Plan plan;
     
     public void update(LocalDateTime planStartTime, LocalDateTime planEndTime, LocalDateTime planAlarmTime, LocalDateTime planRepeatStartDate, LocalDateTime planRepeatEndDate, List<DayOfWeek> planDaysOfWeek) {

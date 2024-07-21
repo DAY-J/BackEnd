@@ -34,6 +34,7 @@ public class PlanDto {
         }
     }
     
+    @ToString
     @Getter
     public static class Response {
         private final int id;
@@ -42,7 +43,6 @@ public class PlanDto {
         private final String goal;
         private final boolean isComplete;
         private final boolean isPublic;
-        @JsonIgnore
         private final PlanOption planOption;
         @JsonIgnore
         private final AppUser appUser;

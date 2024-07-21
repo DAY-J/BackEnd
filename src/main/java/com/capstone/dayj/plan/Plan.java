@@ -3,6 +3,7 @@ package com.capstone.dayj.plan;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.planOption.PlanOption;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,7 @@ public class Plan extends BaseEntity {
     private boolean isPublic;
     
     @OneToOne(mappedBy = "plan", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private PlanOption planOption;
     
     @ManyToOne(fetch = FetchType.LAZY)
