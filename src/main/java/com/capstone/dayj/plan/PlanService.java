@@ -67,8 +67,7 @@ public class PlanService {
     public void updatePlan(int app_user_id, int plan_id, PlanDto.Request dto) {
         Plan findPlan = planRepository.findByAppUserIdAndId(app_user_id, plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-        
-        findPlan.update(dto.getPlanTag(), dto.getGoal(), dto.getPlanPhoto(), dto.isPublic(), dto.isComplete());
+        findPlan.update(dto);
     }
     
     @Transactional

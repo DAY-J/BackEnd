@@ -37,8 +37,7 @@ public class CommentDto {
         private final int parentId;
         private final String content;
         private final boolean commentIsAnonymous;
-        @JsonIgnore
-        private final AppUser appUser;
+        private final String author;
         @JsonIgnore
         private final Post post;
         
@@ -47,7 +46,7 @@ public class CommentDto {
             this.parentId = comment.getParentId();
             this.content = comment.getContent();
             this.commentIsAnonymous = comment.isCommentIsAnonymous();
-            this.appUser = comment.getAppUser();
+            this.author = comment.getAppUser().getNickname();
             this.post = comment.getPost();
         }
     }

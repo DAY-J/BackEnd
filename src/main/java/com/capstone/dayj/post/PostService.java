@@ -77,8 +77,7 @@ public class PostService {
     public void updatePost(int postId, PostDto.Request dto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        
-        post.update(dto.getPostTitle(), dto.getPostContent(), dto.getPostTag(), dto.isPostIsAnonymous(), dto.getPostPhoto());
+        post.update(dto);
     }
     
     @Transactional

@@ -62,7 +62,6 @@ public class AppUserDto {
         private final List<PostDto.Response> posts;
         @JsonIgnore
         private final List<CommentDto.Response> comments;
-        @JsonIgnore
         private final Setting setting;
 
 

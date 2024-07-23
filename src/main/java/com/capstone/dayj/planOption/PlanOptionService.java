@@ -28,7 +28,7 @@ public class PlanOptionService {
         List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id);
         
         if (findPlans.isEmpty())
-            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+            throw new CustomException(ErrorCode.APP_USER_NOT_FOUND);
         
         Plan findPlan = findPlans.stream().filter(plan -> plan.getId() == plan_id)
                 .findFirst()

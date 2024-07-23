@@ -1,7 +1,6 @@
 package com.capstone.dayj.setting;
 
 import com.capstone.dayj.appUser.AppUser;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 public class SettingDto {
@@ -30,14 +29,11 @@ public class SettingDto {
         private final int id;
         private final String profilePhoto;
         private final boolean alarm;
-        @JsonIgnore
-        private final AppUser appUser;
         
         public Response(Setting setting) {
             this.id = setting.getId();
             this.profilePhoto = setting.getProfilePhoto();
             this.alarm = setting.isAlarm();
-            this.appUser = setting.getAppUser();
         }
         
     }

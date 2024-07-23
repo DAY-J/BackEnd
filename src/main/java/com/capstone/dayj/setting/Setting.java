@@ -3,6 +3,7 @@ package com.capstone.dayj.setting;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -24,11 +25,12 @@ public class Setting extends BaseEntity {
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
+    @JsonIgnore
     private AppUser appUser;
     
-    public void update(String profilePhoto, boolean alarm) {
-        this.profilePhoto = profilePhoto;
-        this.alarm = alarm;
+    public void update(SettingDto.Request dto) {
+        this.profilePhoto = dto.getProfilePhoto();
+        this.alarm = dto.isAlarm();
     }
     
     @Builder
