@@ -34,8 +34,6 @@ public class PlanOptionService {
                 .findFirst()
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         PlanOption findPlanOption = findPlan.getPlanOption();
-        
-        findPlanOption.update(dto.getPlanAlarmTime(), dto.getPlanStartTime(), dto.getPlanEndTime(),
-                dto.getPlanRepeatStartDate(), dto.getPlanRepeatEndDate(), dto.getPlanDaysOfWeek());
+        findPlanOption.update(dto);
     }
 }

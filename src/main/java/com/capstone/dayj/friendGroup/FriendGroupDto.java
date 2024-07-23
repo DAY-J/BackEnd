@@ -2,7 +2,6 @@ package com.capstone.dayj.friendGroup;
 
 import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.groupMember.GroupMemberDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FriendGroupDto {
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
