@@ -30,10 +30,8 @@ public class FriendGroup extends BaseEntity {
     @Column(nullable = false)
     private String groupName;
     
-    public void updateGroupName(FriendGroupDto.Request dto) {
+    public void update(FriendGroupDto.Request dto) {
         this.groupName = dto.getGroupName();
-    }
-    public void updateGroupGoal(FriendGroupDto.Request dto){
         this.groupGoal = dto.getGroupGoal();
     }
     

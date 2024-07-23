@@ -58,19 +58,11 @@ public class FriendGroupService {
     }
 
     @Transactional
-    public void updateGroupName(int app_user_id, int group_id, FriendGroupDto.Request dto) {
-        FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
-
-        findFriendGroup.updateGroupName(dto);
-    }
-
-    @Transactional
-    public void updateGroupGoal(int app_user_id, int group_id, FriendGroupDto.Request dto){
+    public void updateFriendGroup(int app_user_id, int group_id, FriendGroupDto.Request dto){
         FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id,group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
-        findFriendGroup.updateGroupGoal(dto);
+        findFriendGroup.update(dto);
         friendGroupRepository.save(findFriendGroup);
     }
 

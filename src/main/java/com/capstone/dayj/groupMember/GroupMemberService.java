@@ -37,7 +37,7 @@ public class GroupMemberService {
 
         groupMemberRepository.save(dto.toEntity());
     }
-    
+
     @Transactional
     public void deleteGroupMember(int app_user_id, int group_id){
         groupMemberRepository.deleteGroupMemberByAppUserIdAndFriendGroupId(app_user_id,group_id);
