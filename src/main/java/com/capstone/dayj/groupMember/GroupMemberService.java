@@ -37,19 +37,7 @@ public class GroupMemberService {
 
         groupMemberRepository.save(dto.toEntity());
     }
-
-//    @Transactional
-//    public List<AppUserDto.Response> readAllMemberInFriendGroup(int app_user_id, int group_id){
-//        List<AppUser> findAppUsers = appUserRepository.findByGroupMembers_FriendGroup_Id(group_id).stream()
-//                .filter(appUser -> appUser.getId() != app_user_id)
-//                .toList();
-//
-//        if (findAppUsers.isEmpty())
-//            throw new CustomException(ErrorCode.APP_USER_NOT_FOUND);
-//
-//        return findAppUsers.stream().map(AppUserDto.Response::new).collect(Collectors.toList());
-//    }
-
+    
     @Transactional
     public void deleteGroupMember(int app_user_id, int group_id){
         groupMemberRepository.deleteGroupMemberByAppUserIdAndFriendGroupId(app_user_id,group_id);
