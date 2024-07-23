@@ -30,10 +30,6 @@ public class FriendGroup extends BaseEntity {
     
     @Column(nullable = false)
     private String groupName;
-
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private boolean groupExit;
     
     public void updateGroupName(String groupName) {
         this.groupName = groupName;
@@ -44,11 +40,10 @@ public class FriendGroup extends BaseEntity {
     }
     
     @Builder
-    public FriendGroup(int id, List<GroupMember> groupMember, String groupGoal, String groupName, boolean groupExit) {
+    public FriendGroup(int id, List<GroupMember> groupMember, String groupGoal, String groupName) {
         this.id = id;
         this.groupGoal = groupGoal;
         this.groupName = groupName;
-        this.groupExit = groupExit;
         this.groupMember = groupMember;
     }
 }

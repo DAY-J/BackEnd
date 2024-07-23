@@ -24,12 +24,12 @@ public class FriendGroupService {
     public void createFriendGroup(int app_user_id, FriendGroupDto.Request dto) {
         FriendGroup friendGroup = dto.toEntity();
 
-        AppUser user = appUserRepository.findById(app_user_id)
+        AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
 
         new GroupMemberDto.Request();
         GroupMemberDto.Request request = GroupMemberDto.Request.builder()
-                .appUser(user)
+                .appUser(findAppUser)
                 .friendGroup(friendGroup)
                 .build();
 
@@ -40,38 +40,38 @@ public class FriendGroupService {
     @Transactional(readOnly = true)
     public List<FriendGroupDto.Response> readAllFriendGroup(int app_user_id) {
 
-        List<FriendGroup> friendGroups = friendGroupRepository.findByGroupMember_AppUser_Id(app_user_id);
+        List<FriendGroup> findFriendGroups = friendGroupRepository.findByGroupMember_AppUser_Id(app_user_id);
 
-        if (friendGroups.isEmpty())
+        if (findFriendGroups.isEmpty())
             throw new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND);
         
-        return friendGroups.stream().map(FriendGroupDto.Response::new).collect(Collectors.toList());
+        return findFriendGroups.stream().map(FriendGroupDto.Response::new).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public FriendGroupDto.Response readFriendGroupById(int app_user_id, int group_id) {
 
-        FriendGroup friendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
+        FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
-        return new FriendGroupDto.Response(friendGroup);
+        return new FriendGroupDto.Response(findFriendGroup);
     }
 
     @Transactional
     public void updateGroupName(int app_user_id, int group_id, FriendGroupDto.Request dto) {
-        FriendGroup existingFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
+        FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
-        existingFriendGroup.updateGroupName(dto.getGroupName());
+        findFriendGroup.updateGroupName(dto.getGroupName());
     }
 
     @Transactional
     public void updateGroupGoal(int app_user_id, int group_id, FriendGroupDto.Request dto){
-        FriendGroup friendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id,group_id)
+        FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id,group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
-        friendGroup.updateGroupGoal(dto.getGroupGoal());
-        friendGroupRepository.save(friendGroup);
+        findFriendGroup.updateGroupGoal(dto.getGroupGoal());
+        friendGroupRepository.save(findFriendGroup);
     }
 
     @Transactional

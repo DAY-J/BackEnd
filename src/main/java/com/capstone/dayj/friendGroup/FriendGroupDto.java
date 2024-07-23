@@ -17,7 +17,6 @@ public class FriendGroupDto {
         private int id;
         private String groupGoal;
         private String groupName;
-        private boolean groupExit;
         private List<GroupMember> groupMembers;
 
         public FriendGroup toEntity(){
@@ -25,7 +24,6 @@ public class FriendGroupDto {
                     .id(id)
                     .groupGoal(groupGoal)
                     .groupName(groupName)
-                    .groupExit(groupExit)
                     .groupMember(groupMembers)
                     .build();
         }
@@ -36,7 +34,6 @@ public class FriendGroupDto {
         private final int id;
         private final String groupGoal;
         private final String groupName;
-        private final boolean groupExit;
         private final LocalDateTime createdAt;
         @JsonIgnore
         private final List<GroupMember> groupMember;
@@ -45,7 +42,6 @@ public class FriendGroupDto {
             this.id = friendGroup.getId();
             this.groupGoal = friendGroup.getGroupGoal();
             this.groupName = friendGroup.getGroupName();
-            this.groupExit = friendGroup.isGroupExit();
             this.groupMember = friendGroup.getGroupMember();
             this.createdAt = friendGroup.getCreatedAt();
         }
