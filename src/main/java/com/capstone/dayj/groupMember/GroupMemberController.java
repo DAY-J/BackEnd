@@ -18,11 +18,6 @@ public class GroupMemberController {
         groupMemberService.addMemberToFriendGroup(group_id, email);
     }
 
-    @GetMapping("/{app_user_id}/group-member/{group_id}")
-    public List<AppUserDto.Response> readAllMemberInFriendGroup(@PathVariable int app_user_id, @PathVariable int group_id){
-        return groupMemberService.readAllMemberInFriendGroup(app_user_id, group_id);
-    }
-
     @DeleteMapping("/{app_user_id}/group-member/{group_id}")
     public void exitFriendGroup(@PathVariable int app_user_id , @PathVariable int group_id){
         groupMemberService.deleteGroupMember(app_user_id, group_id);

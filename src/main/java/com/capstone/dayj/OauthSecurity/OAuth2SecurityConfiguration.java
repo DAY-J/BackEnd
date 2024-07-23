@@ -24,9 +24,9 @@ public class OAuth2SecurityConfiguration {
                 .httpBasic().disable()
                 .csrf().disable()
                 .cors().and()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 .requestMatchers("/api/**").authenticated() //api로 시작하는 uri 로그인 필수
-                .requestMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") //admin은 관리자만 접근 가능
+                .requestMatchers("/admin/**").hasRole("ADMIN") //admin은 관리자만 접근 가능
                 .anyRequest().permitAll() //나머지 uri 모두 접근 허용
                 .and().oauth2Login()
                 .loginPage("/loginForm") //로그인 하지 않았다면 이동할 uri
