@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/${LOCAL_DATABASE_NAME}?serverTimezone=Asia/Seoul
+    username: ${LOCAL_DATABASE_USERNAME}
+    password: ${LOCAL_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: ${LOCAL_DDL_TYPE}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: ${LOCAL_RED_URI}
