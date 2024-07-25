@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @MappedSuperclass // 엔티티 클래스가 상속받을 경우 자식 클래스에게 매핑 정보를 전달
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public abstract class BaseEntity {
     
     @CreatedDate  // 데이터 생성 날짜를 자동으로 주입
     @Column(updatable = false)
@@ -21,5 +21,4 @@ public class BaseEntity {
     
     @LastModifiedDate  // 데이터 수정 날짜를 자동으로 주입
     private LocalDateTime updatedAt;
-    
 }

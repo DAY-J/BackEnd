@@ -2,8 +2,13 @@ package com.capstone.dayj.groupMember;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.friendGroup.FriendGroup;
+import com.capstone.dayj.plan.Plan;
+import com.capstone.dayj.plan.PlanDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GroupMemberDto {
     @Data
@@ -27,16 +32,14 @@ public class GroupMemberDto {
     @Getter
     public static class Response {
         private final int id;
-        @JsonIgnore
-        private final AppUser appUser;
-        @JsonIgnore
-        private final FriendGroup friendGroup;
+        private final String nickname;
+        private final List<PlanDto.Response> groupMemberPlan;
         
         public Response(GroupMember groupMember) {
             this.id = groupMember.getId();
-            this.appUser = groupMember.getAppUser();
-            this.friendGroup = groupMember.getFriendGroup();
+            this.nickname = groupMember.getAppUser().getNickname();
+            this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
+                    .filter(Plan::isPublic).map(PlanDto.Response::new).collect(Collectors.toList());
         }
-        
     }
 }

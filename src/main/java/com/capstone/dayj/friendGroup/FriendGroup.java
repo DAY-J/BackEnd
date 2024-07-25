@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true, exclude = {"groupMember"})
+@ToString(callSuper = true)
 public class FriendGroup extends BaseEntity {
     
     @Id
@@ -22,7 +22,6 @@ public class FriendGroup extends BaseEntity {
     
     @OneToMany(mappedBy = "friendGroup", cascade = CascadeType.REMOVE)
     @JsonManagedReference
-    @JsonIgnore
     private List<GroupMember> groupMember;
     
     @Column
@@ -30,25 +29,17 @@ public class FriendGroup extends BaseEntity {
     
     @Column(nullable = false)
     private String groupName;
-
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    private boolean groupExit;
     
-    public void updateGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public void updateGroupGoal(String groupGoal){
-        this.groupGoal = groupGoal;
+    public void update(FriendGroupDto.Request dto) {
+        this.groupName = dto.getGroupName();
+        this.groupGoal = dto.getGroupGoal();
     }
     
     @Builder
-    public FriendGroup(int id, List<GroupMember> groupMember, String groupGoal, String groupName, boolean groupExit) {
+    public FriendGroup(int id, List<GroupMember> groupMember, String groupGoal, String groupName) {
         this.id = id;
         this.groupGoal = groupGoal;
         this.groupName = groupName;
-        this.groupExit = groupExit;
         this.groupMember = groupMember;
     }
 }

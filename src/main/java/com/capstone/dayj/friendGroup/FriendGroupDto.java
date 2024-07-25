@@ -1,14 +1,14 @@
 package com.capstone.dayj.friendGroup;
 
 import com.capstone.dayj.groupMember.GroupMember;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.capstone.dayj.groupMember.GroupMemberDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FriendGroupDto {
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -17,7 +17,6 @@ public class FriendGroupDto {
         private int id;
         private String groupGoal;
         private String groupName;
-        private boolean groupExit;
         private List<GroupMember> groupMembers;
 
         public FriendGroup toEntity(){
@@ -25,7 +24,6 @@ public class FriendGroupDto {
                     .id(id)
                     .groupGoal(groupGoal)
                     .groupName(groupName)
-                    .groupExit(groupExit)
                     .groupMember(groupMembers)
                     .build();
         }
@@ -36,18 +34,16 @@ public class FriendGroupDto {
         private final int id;
         private final String groupGoal;
         private final String groupName;
-        private final boolean groupExit;
         private final LocalDateTime createdAt;
-        @JsonIgnore
-        private final List<GroupMember> groupMember;
+        private final List<GroupMemberDto.Response> groupMember;
         
         public Response(FriendGroup friendGroup){
             this.id = friendGroup.getId();
             this.groupGoal = friendGroup.getGroupGoal();
             this.groupName = friendGroup.getGroupName();
-            this.groupExit = friendGroup.isGroupExit();
-            this.groupMember = friendGroup.getGroupMember();
             this.createdAt = friendGroup.getCreatedAt();
+            this.groupMember = friendGroup.getGroupMember().stream().map(GroupMemberDto.Response::new).collect(Collectors.toList());
+
         }
 
     }

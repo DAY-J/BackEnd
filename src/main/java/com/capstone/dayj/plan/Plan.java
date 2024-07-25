@@ -3,6 +3,7 @@ package com.capstone.dayj.plan;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.planOption.PlanOption;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -39,14 +40,15 @@ public class Plan extends BaseEntity {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
+    @JsonIgnore
     private AppUser appUser;
     
-    public void update(String planTag, String goal, String planPhoto, boolean isPublic, boolean isComplete) {
-        this.planTag = planTag;
-        this.goal = goal;
-        this.planPhoto = planPhoto;
-        this.isPublic = isPublic;
-        this.isComplete = isComplete;
+    public void update(PlanDto.Request dto) {
+        this.planTag = dto.getPlanTag();
+        this.goal = dto.getGoal();
+        this.planPhoto = dto.getPlanPhoto();
+        this.isPublic = dto.isPublic();
+        this.isComplete = dto.isComplete();
     }
     
     @Builder

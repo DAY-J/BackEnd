@@ -23,7 +23,6 @@ public class SettingService {
     public void patchSetting(int app_user_id, SettingDto.Request dto) {
         Setting findSetting = settingRepository.findByAppUserId(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        
-        findSetting.update(dto.getProfilePhoto(), dto.isAlarm());
+        findSetting.update(dto);
     }
 }

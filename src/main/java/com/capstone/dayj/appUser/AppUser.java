@@ -8,6 +8,7 @@ import com.capstone.dayj.post.Post;
 import com.capstone.dayj.setting.Setting;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.util.List;
@@ -21,10 +22,13 @@ public class AppUser extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; //기본키
+    @Column(unique = true)
     private String name; //유저 이름 (provider + providerId)
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname; // 유저 닉네임, 중복 불가, 친구 그룹 추가에 사용
     private String password; //유저 비밀번호
+    @Column(unique = true)
+    @Email
     private String email; //유저 구글 이메일
     private String role; //유저 권한
     private String provider; //공급자
@@ -37,15 +41,19 @@ public class AppUser extends BaseEntity {
     private List<GroupMember> groupMembers;
     
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Plan> plans;
     
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Post> posts;
     
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Comment> comments;
     
     @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private Setting setting;
     
     public void update(String nickname) {

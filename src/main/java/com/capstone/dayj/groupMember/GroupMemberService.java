@@ -7,6 +7,7 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.friendGroup.FriendGroup;
 import com.capstone.dayj.friendGroup.FriendGroupRepository;
+import com.capstone.dayj.plan.PlanDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,31 +23,19 @@ public class GroupMemberService {
     private final FriendGroupRepository friendGroupRepository;
 
     public void addMemberToFriendGroup(int group_id, String email){
-        AppUser member = appUserRepository.findByEmail(email)
+        AppUser findAppUser = appUserRepository.findByEmail(email)
                 .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        FriendGroup friendGroup = friendGroupRepository.findById(group_id)
+        FriendGroup findFriendGroup = friendGroupRepository.findById(group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         // 이미 그룹 회원이라면?
         new GroupMemberDto.Request();
         GroupMemberDto.Request dto = GroupMemberDto.Request.builder()
-                .appUser(member)
-                .friendGroup(friendGroup)
+                .appUser(findAppUser)
+                .friendGroup(findFriendGroup)
                 .build();
 
         groupMemberRepository.save(dto.toEntity());
-    }
-
-    @Transactional
-    public List<AppUserDto.Response> readAllMemberInFriendGroup(int app_user_id, int group_id){
-        List<AppUser> appUsers = appUserRepository.findByGroupMembers_FriendGroup_Id(group_id).stream()
-                .filter(appUser -> appUser.getId() != app_user_id)
-                .toList();
-
-        if (appUsers.isEmpty())
-            throw new CustomException(ErrorCode.APP_USER_NOT_FOUND);
-
-        return appUsers.stream().map(AppUserDto.Response::new).collect(Collectors.toList());
     }
 
     @Transactional

@@ -1,7 +1,6 @@
 package com.capstone.dayj.planOption;
 
 import com.capstone.dayj.plan.Plan;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.DayOfWeek;
@@ -46,8 +45,6 @@ public class PlanOptionDto {
         private final LocalDateTime planRepeatStartDate;
         private final LocalDateTime planRepeatEndDate;
         private final List<DayOfWeek> planDaysOfWeek;
-        @JsonIgnore
-        private final Plan plan;
         
         /* Entity -> Dto */
         public Response(PlanOption planOption) {
@@ -58,7 +55,6 @@ public class PlanOptionDto {
             this.planRepeatStartDate = planOption.getPlanRepeatStartDate();
             this.planRepeatEndDate = planOption.getPlanRepeatEndDate();
             this.planDaysOfWeek = planOption.getPlanDaysOfWeek();
-            this.plan = planOption.getPlan();
         }
     }
 }

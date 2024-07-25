@@ -37,18 +37,14 @@ public class CommentDto {
         private final int parentId;
         private final String content;
         private final boolean commentIsAnonymous;
-        @JsonIgnore
-        private final AppUser appUser;
-        @JsonIgnore
-        private final Post post;
+        private final String author;
         
         public Response(Comment comment) {
             this.id = comment.getId();
             this.parentId = comment.getParentId();
             this.content = comment.getContent();
             this.commentIsAnonymous = comment.isCommentIsAnonymous();
-            this.appUser = comment.getAppUser();
-            this.post = comment.getPost();
+            this.author = comment.getAppUser().getNickname();
         }
     }
 }

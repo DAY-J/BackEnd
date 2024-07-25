@@ -79,7 +79,7 @@ public class CommentService {
         
         return new CommentDto.Response(findComment);
     }
-    
+
 //    @Transactional(readOnly = true)
 //    public List<CommentDto.Response> readAllReplyByCommentId(int post_id, int comment_id) {
 //        Post findPost = postRepository.findById(post_id)
@@ -105,8 +105,7 @@ public class CommentService {
     public void patchComment(int post_id, int comment_id, CommentDto.Request dto) {
         Comment comment = commentRepository.findByPostIdAndId(post_id, comment_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-        
-        comment.update(dto.getContent(), dto.isCommentIsAnonymous());
+        comment.update(dto);
     } // 작성자 본인만 수정 가능
     
     @Transactional
