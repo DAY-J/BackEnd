@@ -23,7 +23,7 @@ public class Setting extends BaseEntity {
     @ColumnDefault("0")
     private boolean alarm;
     
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     @JsonIgnore
     private AppUser appUser;
