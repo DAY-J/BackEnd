@@ -52,7 +52,7 @@ public class AppUser extends BaseEntity {
     @JsonIgnore
     private List<Comment> comments;
     
-    @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
     @JsonIgnore
     private Setting setting;
     
