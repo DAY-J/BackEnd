@@ -43,6 +43,7 @@ public class PostDto {
     @Getter
     public static class Response {
         private final int id;
+        private final int appUserId;
         private final int postView;
         private final int postLike;
         private final String postTitle;
@@ -58,6 +59,7 @@ public class PostDto {
         /* Entity -> Dto */
         public Response(Post post) {
             this.id = post.getId();
+            this.appUserId = post.getAppUser().getId();
             this.postView = post.getPostView();
             this.postLike = post.getPostLike();
             this.postTitle = post.getPostTitle();

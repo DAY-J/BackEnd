@@ -39,13 +39,17 @@ public class FriendGroupService {
 
     @Transactional(readOnly = true)
     public List<FriendGroupDto.Response> readAllFriendGroup(int app_user_id) {
+        AppUser findAppUser = appUserRepository.findById(app_user_id)
+                .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
 
         List<FriendGroup> findFriendGroups = friendGroupRepository.findByGroupMember_AppUser_Id(app_user_id);
 
         if (findFriendGroups.isEmpty())
             throw new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND);
-        
-        return findFriendGroups.stream().map(FriendGroupDto.Response::new).collect(Collectors.toList());
+
+        return findFriendGroups.stream()
+                .map(friendGroup -> new FriendGroupDto.Response(friendGroup, app_user_id))
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +58,7 @@ public class FriendGroupService {
         FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
                 .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
-        return new FriendGroupDto.Response(findFriendGroup);
+        return new FriendGroupDto.Response(findFriendGroup, app_user_id);
     }
 
     @Transactional

@@ -7,6 +7,9 @@ import com.capstone.dayj.plan.PlanDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,14 +35,32 @@ public class GroupMemberDto {
     @Getter
     public static class Response {
         private final int id;
+        private final int appUserId;
         private final String nickname;
-        private final List<PlanDto.Response> groupMemberPlan;
-        
+        private final List<PlanDto.groupResponse> groupMemberPlan;
+
         public Response(GroupMember groupMember) {
             this.id = groupMember.getId();
+            this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
             this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
-                    .filter(Plan::isPublic).map(PlanDto.Response::new).collect(Collectors.toList());
+                    .filter(plan -> plan.isPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
+                    .map(PlanDto.groupResponse::new).collect(Collectors.toList());
+        }
+    }
+
+    @Getter
+    public static class achievementRateResponse {
+        private final int id;
+        private final int appUserId;
+        private final String nickname;
+//        private final int achievementRate;
+
+        public achievementRateResponse(GroupMember groupMember) {
+            this.id = groupMember.getId();
+            this.appUserId = groupMember.getAppUser().getId();
+            this.nickname = groupMember.getAppUser().getNickname();
+//            this.achievementRate =
         }
     }
 }
