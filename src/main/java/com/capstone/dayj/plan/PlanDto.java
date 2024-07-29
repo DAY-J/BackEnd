@@ -6,6 +6,8 @@ import com.capstone.dayj.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 public class PlanDto {
     @Data
     @AllArgsConstructor
@@ -58,6 +60,18 @@ public class PlanDto {
             this.isPublic = plan.isPublic();
             this.planOption = plan.getPlanOption();
             this.appUser = plan.getAppUser();
+        }
+    }
+    @Getter
+    public static class groupResponse {
+        private final int id;
+        private final String goal;
+        private final boolean isComplete;
+
+        public groupResponse(Plan plan){
+            this.id = plan.getId();
+            this.goal = plan.getGoal();
+            this.isComplete = plan.isComplete();
         }
     }
 }
