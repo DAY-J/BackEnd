@@ -2,6 +2,7 @@ package com.capstone.dayj.plan;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.planOption.PlanOption;
+import com.capstone.dayj.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -13,7 +14,7 @@ public class PlanDto {
     public static class Request {
         private int id;
         private String planPhoto;
-        private String planTag;
+        private Tag planTag;
         private String goal;
         private boolean isComplete;
         private boolean isPublic;
@@ -38,8 +39,8 @@ public class PlanDto {
     @Getter
     public static class Response {
         private final int id;
+        private final Tag planTag;
         private final String planPhoto;
-        private final String planTag;
         private final String goal;
         private final boolean isComplete;
         private final boolean isPublic;

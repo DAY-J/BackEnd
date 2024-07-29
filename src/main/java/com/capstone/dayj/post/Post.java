@@ -3,13 +3,13 @@ package com.capstone.dayj.post;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.comment.Comment;
 import com.capstone.dayj.common.BaseEntity;
+import com.capstone.dayj.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     private String postTitle;
     @Column(nullable = false)
     private String postContent;
-    private String postTag;
+    private Tag postTag;
     
     @Column(nullable = false)
     @ColumnDefault("1")
@@ -59,7 +59,7 @@ public class Post extends BaseEntity {
     }
     
     @Builder
-    public Post(int id, int postView, int postLike, String postTitle, String postContent, String postTag, LocalDateTime postCreateDate, LocalDateTime postUpdateDate, boolean postIsAnonymous, String postPhoto, List<Comment> comment, AppUser appUser) {
+    public Post(int id, int postView, int postLike, String postTitle, String postContent, Tag postTag, boolean postIsAnonymous, String postPhoto, List<Comment> comment, AppUser appUser) {
         this.id = id;
         this.postView = postView;
         this.postLike = postLike;
