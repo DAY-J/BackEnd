@@ -37,30 +37,17 @@ public class GroupMemberDto {
         private final int id;
         private final int appUserId;
         private final String nickname;
+        private final int achievementRate;
         private final List<PlanDto.groupResponse> groupMemberPlan;
 
         public Response(GroupMember groupMember) {
             this.id = groupMember.getId();
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
+            this.achievementRate = 99; // 통계 구현되면 수정 필요
             this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
                     .filter(plan -> plan.isPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
                     .map(PlanDto.groupResponse::new).collect(Collectors.toList());
-        }
-    }
-
-    @Getter
-    public static class achievementRateResponse {
-        private final int id;
-        private final int appUserId;
-        private final String nickname;
-//        private final int achievementRate;
-
-        public achievementRateResponse(GroupMember groupMember) {
-            this.id = groupMember.getId();
-            this.appUserId = groupMember.getAppUser().getId();
-            this.nickname = groupMember.getAppUser().getNickname();
-//            this.achievementRate =
         }
     }
 }

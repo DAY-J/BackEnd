@@ -20,9 +20,9 @@ public class AppUserService {
     
     @Transactional
     public void createAppUser(AppUserDto.Request dto) {
-        AppUser appUser = appUserRepository.save(dto.toEntity());
+        AppUser savedAppUser = appUserRepository.save(dto.toEntity());
         SettingDto.Request newSetting = SettingDto.Request.builder()
-                .appUser(appUser)
+                .appUser(savedAppUser)
                 .build();
         settingRepository.save(newSetting.toEntity());
     }
