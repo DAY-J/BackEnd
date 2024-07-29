@@ -3,6 +3,7 @@ package com.capstone.dayj.plan;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.planOption.PlanOption;
+import com.capstone.dayj.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +21,7 @@ public class Plan extends BaseEntity {
     private int id;
     
     @Column(nullable = false)
-    private String planTag;
+    private Tag planTag;
     @Column(nullable = false)
     private String goal;
     
@@ -52,7 +53,7 @@ public class Plan extends BaseEntity {
     }
     
     @Builder
-    public Plan(int id, String planTag, String goal, String planPhoto, boolean isComplete, boolean isPublic, PlanOption planOption, AppUser appUser) {
+    public Plan(int id, Tag planTag, String goal, String planPhoto, boolean isComplete, boolean isPublic, PlanOption planOption, AppUser appUser) {
         this.id = id;
         this.planTag = planTag;
         this.goal = goal;

@@ -2,6 +2,7 @@ package com.capstone.dayj.post;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.comment.CommentDto;
+import com.capstone.dayj.tag.Tag;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class PostDto {
         private int postLike;
         private String postTitle;
         private String postContent;
-        private String postTag;
+        private Tag postTag;
         private boolean postIsAnonymous;
         private String postPhoto;
         private AppUser appUser;
@@ -46,7 +47,7 @@ public class PostDto {
         private final int postLike;
         private final String postTitle;
         private final String postContent;
-        private final String postTag;
+        private final Tag postTag;
         private final boolean postIsAnonymous;
         private final String postPhoto;
         private final LocalDateTime createdAt;

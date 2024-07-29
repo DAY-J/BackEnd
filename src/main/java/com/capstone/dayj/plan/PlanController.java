@@ -1,5 +1,6 @@
 package com.capstone.dayj.plan;
 
+import com.capstone.dayj.tag.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class PlanController {
     }
     
     @GetMapping("tag/{plan_tag}")
-    public List<PlanDto.Response> readByPlanTag(@PathVariable String plan_tag) {
+    public List<PlanDto.Response> readByPlanTag(@PathVariable Tag plan_tag) {
         return planService.readPlanByPlanTag(plan_tag);
     }
     

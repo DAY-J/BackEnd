@@ -6,9 +6,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${DDL_TYPE}
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            redirect-uri: ${RED_URI}
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            redirect-uri: ${RED_URI}

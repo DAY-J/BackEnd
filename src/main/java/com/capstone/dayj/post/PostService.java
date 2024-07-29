@@ -4,6 +4,7 @@ import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.appUser.AppUserRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.tag.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,7 @@ public class PostService {
     }
     
     @Transactional(readOnly = true)
-    public List<PostDto.Response> readPostByTag(String tag) {
+    public List<PostDto.Response> readPostByTag(Tag tag) {
         List<Post> posts = postRepository.findByPostTag(tag);
         
         if (posts.isEmpty())
@@ -66,6 +67,14 @@ public class PostService {
     }
     
     @Transactional
+    public void deletePostById(int postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        
+        postRepository.deleteById(post.getId());
+    }
+    
+    @Transactional
     public void likePost(int postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -78,13 +87,5 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         post.update(dto);
-    }
-    
-    @Transactional
-    public void deletePostById(int postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        
-        postRepository.deleteById(post.getId());
     }
 }
