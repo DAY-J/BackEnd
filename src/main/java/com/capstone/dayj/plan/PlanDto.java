@@ -66,18 +66,12 @@ public class PlanDto {
     public static class groupResponse {
         private final int id;
         private final String goal;
-        private final boolean isPublic;
         private final boolean isComplete;
-        private final LocalDateTime planStartTime;
-        private final LocalDateTime planEndTime;
 
         public groupResponse(Plan plan){
             this.id = plan.getId();
             this.goal = plan.getGoal();
-            this.isPublic = plan.isPublic();
             this.isComplete = plan.isComplete();
-            this.planStartTime = plan.getPlanOption().getPlanStartTime();
-            this.planEndTime = plan.getPlanOption().getPlanEndTime();
         }
     }
 }
