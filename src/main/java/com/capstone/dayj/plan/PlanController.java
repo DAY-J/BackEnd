@@ -18,7 +18,7 @@ public class PlanController {
     }
     
     @PostMapping
-    public PlanDto.Response createPlan(@PathVariable int app_user_id, @Valid @RequestBody PlanDto.Request dto) throws IOException {
+    public PlanDto.Response createPlan(@PathVariable int app_user_id, @Valid @RequestBody PlanDto.Request dto) {
         return planService.createPlan(app_user_id, dto);
     }
     

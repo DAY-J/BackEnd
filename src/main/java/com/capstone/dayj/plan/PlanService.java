@@ -28,7 +28,7 @@ public class PlanService {
     
     
     @Transactional
-    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request dto) throws IOException {
+    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request dto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         dto.setAppUser(findAppUser);
