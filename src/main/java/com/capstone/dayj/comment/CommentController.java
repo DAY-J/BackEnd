@@ -17,13 +17,13 @@ public class CommentController {
     }
     
     @PostMapping("/app-user/{app_user_id}/comment")
-    public void createComment(@PathVariable int post_id, @PathVariable int app_user_id, @Valid @RequestBody CommentDto.Request dto) {
-        commentService.createComment(post_id, app_user_id, dto);
+    public CommentDto.Response createComment(@PathVariable int post_id, @PathVariable int app_user_id, @Valid @RequestBody CommentDto.Request dto) {
+        return commentService.createComment(post_id, app_user_id, dto);
     }
     
     @PostMapping("/app-user/{app_user_id}/comment/{comment_id}")
-    public void createReply(@PathVariable int post_id, @PathVariable int app_user_id, @PathVariable int comment_id, @Valid @RequestBody CommentDto.Request dto) {
-        commentService.createReply(post_id, app_user_id, comment_id, dto);
+    public CommentDto.Response createReply(@PathVariable int post_id, @PathVariable int app_user_id, @PathVariable int comment_id, @Valid @RequestBody CommentDto.Request dto) {
+        return commentService.createReply(post_id, app_user_id, comment_id, dto);
     }
     
 //    @GetMapping("comment/{comment_id}/reply")
@@ -42,8 +42,8 @@ public class CommentController {
     }
     
     @PatchMapping("/comment/{comment_id}")
-    public void patchComment(@PathVariable int post_id, @PathVariable int comment_id, @Valid @RequestBody CommentDto.Request dto) {
-        commentService.patchComment(post_id, comment_id, dto);
+    public CommentDto.Response patchComment(@PathVariable int post_id, @PathVariable int comment_id, @Valid @RequestBody CommentDto.Request dto) {
+        return commentService.patchComment(post_id, comment_id, dto);
     }
     
     @DeleteMapping("/comment/{comment_id}")

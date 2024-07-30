@@ -3,7 +3,9 @@ package com.capstone.dayj.plan;
 import com.capstone.dayj.tag.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,8 +18,8 @@ public class PlanController {
     }
     
     @PostMapping
-    public void createPlan(@PathVariable int app_user_id, @Valid @RequestBody PlanDto.Request dto) {
-        planService.createPlan(app_user_id, dto);
+    public PlanDto.Response createPlan(@PathVariable int app_user_id, @Valid @RequestBody PlanDto.Request dto) throws IOException {
+        return planService.createPlan(app_user_id, dto);
     }
     
     @GetMapping
@@ -25,19 +27,24 @@ public class PlanController {
         return planService.readAllPlan(app_user_id);
     }
     
+    @GetMapping("tag/{plan_tag}")
+    public List<PlanDto.Response> readAllPlanByPlanTag(@PathVariable int app_user_id, @PathVariable Tag plan_tag) {
+        return planService.readAllPlanByPlanTag(app_user_id, plan_tag);
+    }
+    
     @GetMapping("/{plan_id}")
     public PlanDto.Response readPlanById(@PathVariable int plan_id) {
         return planService.readPlanById(plan_id);
     }
     
-    @GetMapping("tag/{plan_tag}")
-    public List<PlanDto.Response> readByPlanTag(@PathVariable Tag plan_tag) {
-        return planService.readPlanByPlanTag(plan_tag);
+    @PatchMapping("/{plan_id}")
+    public PlanDto.Response patchPlan(@PathVariable int app_user_id, @PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) throws IOException {
+        return planService.patchPlan(app_user_id, plan_id, dto);
     }
     
-    @PatchMapping("/{plan_id}")
-    public void patchPlan(@PathVariable int app_user_id, @PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) {
-        planService.updatePlan(app_user_id, plan_id, dto);
+    @PatchMapping("/{plan_id}/image")
+    public PlanDto.Response patchPlanImage(@PathVariable int plan_id, MultipartFile image) throws IOException {
+        return planService.patchPlanImage(plan_id, image);
     }
     
     @DeleteMapping("/{plan_id}")

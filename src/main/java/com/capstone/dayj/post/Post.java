@@ -38,8 +38,9 @@ public class Post extends BaseEntity {
     @ColumnDefault("1")
     private boolean postIsAnonymous;
     
-    @Column
-    private String postPhoto;
+    @ElementCollection
+    @CollectionTable(name = "post_photo", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
+    private List<String> postPhoto;
     
     @OneToMany(mappedBy = "post", cascade = {CascadeType.REMOVE})
     @JsonManagedReference
@@ -59,7 +60,7 @@ public class Post extends BaseEntity {
     }
     
     @Builder
-    public Post(int id, int postView, int postLike, String postTitle, String postContent, Tag postTag, boolean postIsAnonymous, String postPhoto, List<Comment> comment, AppUser appUser) {
+    public Post(int id, int postView, int postLike, String postTitle, String postContent, Tag postTag, boolean postIsAnonymous, List<String> postPhoto, List<Comment> comment, AppUser appUser) {
         this.id = id;
         this.postView = postView;
         this.postLike = postLike;

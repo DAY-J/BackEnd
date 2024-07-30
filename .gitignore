@@ -35,5 +35,8 @@ build/
 src/main/**/Oauthsecurity/
 src/main/**/security/
 
+### GCP ###
+src/main/**/resources/gcp
+
 ### VS Code ###
 .vscode/

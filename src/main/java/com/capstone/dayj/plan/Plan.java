@@ -45,11 +45,12 @@ public class Plan extends BaseEntity {
     private AppUser appUser;
     
     public void update(PlanDto.Request dto) {
-        this.planTag = dto.getPlanTag();
-        this.goal = dto.getGoal();
+        this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());
+        this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
         this.planPhoto = dto.getPlanPhoto();
         this.isPublic = dto.isPublic();
         this.isComplete = dto.isComplete();
+        this.planOption = (dto.getPlanOption() == null ? this.planOption : dto.getPlanOption());
     }
     
     @Builder

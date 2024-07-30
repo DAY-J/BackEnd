@@ -1,9 +1,10 @@
 package com.capstone.dayj.post;
 
 import com.capstone.dayj.tag.Tag;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,8 +17,11 @@ public class PostController {
     }
     
     @PostMapping("/app-user/{app_user_id}")
-    public void createPost(@PathVariable int app_user_id, @Valid @RequestBody PostDto.Request dto) {
-        postService.createPost(dto, app_user_id);
+    public PostDto.Response createPost(
+            @PathVariable int app_user_id,
+            @RequestPart(value = "dto") PostDto.Request dto,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        return postService.createPost(app_user_id, dto, images);
     }
     
     @GetMapping
@@ -41,8 +45,11 @@ public class PostController {
     }
     
     @PatchMapping("/{post_id}")
-    public void patchPost(@PathVariable int post_id, @Valid @RequestBody PostDto.Request post) {
-        postService.updatePost(post_id, post);
+    public PostDto.Response patchPost(
+            @PathVariable int post_id,
+            @RequestPart(value = "dto") PostDto.Request dto,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
+        return postService.updatePost(post_id, dto, images);
     }
     
     @PatchMapping("like/{post_id}")

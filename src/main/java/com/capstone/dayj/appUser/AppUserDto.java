@@ -5,7 +5,6 @@ import com.capstone.dayj.setting.SettingDto;
 import lombok.*;
 
 public class AppUserDto {
-    
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

@@ -15,8 +15,8 @@ public class AppUserController {
     }
     
     @PostMapping
-    public void createAppUser(@Valid @RequestBody AppUserDto.Request appUser) {
-        appUserService.createAppUser(appUser);
+    public AppUserDto.Response createAppUser(@Valid @RequestBody AppUserDto.Request appUser) {
+        return appUserService.createAppUser(appUser);
     }
     
     @GetMapping
@@ -35,8 +35,8 @@ public class AppUserController {
     }
     
     @PatchMapping("/{app_user_id}")
-    public void patchNickname(@PathVariable int app_user_id, @Valid @RequestBody AppUserDto.Request dto) {
-        appUserService.updateAppUser(app_user_id, dto);
+    public AppUserDto.Response patchAppUser(@PathVariable int app_user_id, @Valid @RequestBody AppUserDto.Request dto) {
+        return appUserService.patchAppUser(app_user_id, dto);
     }
     
     @DeleteMapping("/{app_user_id}")
