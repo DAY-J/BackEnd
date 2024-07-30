@@ -18,22 +18,13 @@ public class Statistics extends BaseEntity {
     private int id;
 
     @Column(nullable = false)
-    private LocalDate startDate;        // 통계 기간의 시작날짜
-
-    @Column(nullable = false)
-    private LocalDate endDate;          // 통계 기간의 종료날짜
+    private LocalDate date; // 일일 통계를 위한 날짜
 
     @Column(nullable = false)
     private String tag;
 
     @Column(nullable = false)
-    private int totalGoals;             // 총 목표수
-
-    @Column(nullable = false)
-    private int achievedGoals;          // 완료한 목표수
-
-    @Column(nullable = false)
-    private double achievementPercentage;   // 퍼센트로 환산
+    private double achievementPercentage;   // 달성 퍼센트
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
@@ -41,26 +32,12 @@ public class Statistics extends BaseEntity {
 
     public void updatePercentage(double achievementPercentage) { this.achievementPercentage = achievementPercentage; }
 
-    public Statistics calculateStatistics(int totalGoals, int achievedGoals) {
-        double achievementPercentage;
-
-        if (totalGoals == 0) {
-            achievementPercentage = 0;
-        }
-        else {
-            achievementPercentage = ((double) achievedGoals / totalGoals) * 100;
-        }
-        return new Statistics(id, startDate, endDate, tag, totalGoals, achievedGoals, achievementPercentage, appUser);
-    }
 
     @Builder
-    public Statistics(int id, LocalDate startDate, LocalDate endDate, String tag, int totalGoals, int achievedGoals, double achievementPercentage, AppUser appUser) {
+    public Statistics(int id, LocalDate date, String tag, double achievementPercentage, AppUser appUser) {
         this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.date = date;
         this.tag = tag;
-        this.totalGoals = totalGoals;
-        this.achievedGoals = achievedGoals;
         this.achievementPercentage = achievementPercentage;
         this.appUser = appUser;
     }

@@ -14,22 +14,16 @@ public class StatisticsDto {
     @Builder
     public static class Request {
         private int id;
+        private LocalDate date;
         private String tag;
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private int totalGoals;
-        private int achievedGoals;
         private double achievementPercentage;
         private AppUser appUser;
 
         public Statistics toEntity() {
             return Statistics.builder()
                     .id(id)
+                    .date(date)
                     .tag(tag)
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .totalGoals(totalGoals)
-                    .achievedGoals(achievedGoals)
                     .achievementPercentage(achievementPercentage)
                     .appUser(appUser)
                     .build();
@@ -40,11 +34,8 @@ public class StatisticsDto {
     @Getter
     public static class Response {
         private final int id;
+        private final LocalDate date;
         private final String tag;
-        private final LocalDate startDate;
-        private final LocalDate endDate;
-        private final int totalGoals;
-        private final int achievedGoals;
         private final double achievementPercentage;
         @JsonIgnore
         private final AppUser appUser;
@@ -53,11 +44,8 @@ public class StatisticsDto {
         /* Entity -> Dto */
         public Response(Statistics statistics) {
             this.id = statistics.getId();
+            this.date = statistics.getDate();
             this.tag = statistics.getTag();
-            this.startDate = statistics.getStartDate();
-            this.endDate = statistics.getEndDate();
-            this.totalGoals = statistics.getTotalGoals();
-            this.achievedGoals = statistics.getAchievedGoals();
             this.achievementPercentage = statistics.getAchievementPercentage();
             this.appUser = statistics.getAppUser();
         }

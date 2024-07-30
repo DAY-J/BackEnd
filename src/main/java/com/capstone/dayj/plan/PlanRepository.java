@@ -15,7 +15,7 @@ public interface PlanRepository extends JpaRepository<Plan, Integer> {
     
     List<Plan> findAllByAppUserId(Integer appUserId);
 
-    // 통계확인 하고자하는 시작날짜와 끝날짜 사이 -> 달력으로 하면 수정 필요
-    @Query("SELECT p FROM Plan p WHERE p.appUser.id = :userId AND p.planTag = :tag AND p.createdAt BETWEEN :startDate AND :endDate")
-    List<Plan> findAllByAppUserIdAndTagAndDateBetween(@Param("userId") int userId, @Param("tag") String tag, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    @Query("SELECT p FROM Plan p WHERE p.appUser.id = :userId AND p.planTag = :tag AND p.createdAt = :date")
+    List<Plan> findAllByAppUserIdAndTagAndDate(@Param("userId") int userId, @Param("tag") String tag,
+                                                      @Param("date") LocalDate date);
 }
