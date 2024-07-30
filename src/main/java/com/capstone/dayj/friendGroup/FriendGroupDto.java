@@ -35,17 +35,19 @@ public class FriendGroupDto {
         private final String groupGoal;
         private final String groupName;
         private final LocalDateTime createdAt;
+        private final List<GroupMemberDto.Response> achievementRates; // 달성률
         private final List<GroupMemberDto.Response> groupMember;
-        
-        public Response(FriendGroup friendGroup){
+        public Response(FriendGroup friendGroup, int app_user_id){
             this.id = friendGroup.getId();
             this.groupGoal = friendGroup.getGroupGoal();
             this.groupName = friendGroup.getGroupName();
             this.createdAt = friendGroup.getCreatedAt();
-            this.groupMember = friendGroup.getGroupMember().stream().map(GroupMemberDto.Response::new).collect(Collectors.toList());
-
+            this.achievementRates = friendGroup.getGroupMember().stream()
+                    .map(GroupMemberDto.Response::new).collect(Collectors.toList());
+            this.groupMember = friendGroup.getGroupMember().stream()
+                    .filter(groupMember -> groupMember.getAppUser().getId() != app_user_id)
+                    .map(GroupMemberDto.Response::new).collect(Collectors.toList());
         }
-
     }
 }
 

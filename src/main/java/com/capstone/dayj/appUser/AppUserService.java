@@ -29,40 +29,43 @@ public class AppUserService {
     
     @Transactional(readOnly = true)
     public List<AppUserDto.Response> readAllAppUser() {
-        List<AppUser> appUsers = appUserRepository.findAll();
+        List<AppUser> findAppUsers = appUserRepository.findAll();
         
-        return appUsers.stream().map(AppUserDto.Response::new).collect(Collectors.toList());
+        return findAppUsers.stream().map(AppUserDto.Response::new).collect(Collectors.toList());
     }
     
     @Transactional(readOnly = true)
     public AppUserDto.Response readAppUserById(int id) {
-        AppUser appUser = appUserRepository.findById(id)
+        AppUser findAppUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
-        return new AppUserDto.Response(appUser);
+        return new AppUserDto.Response(findAppUser);
     }
     
     @Transactional(readOnly = true)
     public AppUserDto.Response readAppUserByEmail(String email) {
-        AppUser appUser = appUserRepository.findByEmail(email)
+        AppUser findAppUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
-        return new AppUserDto.Response(appUser);
+        return new AppUserDto.Response(findAppUser);
     }
     
     @Transactional
     public void updateAppUser(int id, AppUserDto.Request dto) {
-        AppUser existingAppUser = appUserRepository.findById(id)
+        if(appUserRepository.existsByNickname(dto.getNickname())) {
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        AppUser findAppUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        
-        existingAppUser.update(dto.getNickname());
+
+        findAppUser.update(dto.getNickname());
     }
     
     @Transactional
     public void deleteAppUserById(int id) {
-        AppUser appUser = appUserRepository.findById(id)
+        AppUser findAppUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
-        appUserRepository.deleteById(appUser.getId());
+        appUserRepository.deleteById(findAppUser.getId());
     }
 }
