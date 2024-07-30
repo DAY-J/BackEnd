@@ -7,6 +7,7 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.friendGroup.FriendGroup;
 import com.capstone.dayj.friendGroup.FriendGroupRepository;
+import com.capstone.dayj.plan.PlanDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,18 +36,6 @@ public class GroupMemberService {
                 .build();
 
         groupMemberRepository.save(dto.toEntity());
-    }
-
-    @Transactional
-    public List<AppUserDto.Response> readAllMemberInFriendGroup(int app_user_id, int group_id){
-        List<AppUser> findAppUsers = appUserRepository.findByGroupMembers_FriendGroup_Id(group_id).stream()
-                .filter(appUser -> appUser.getId() != app_user_id)
-                .toList();
-
-        if (findAppUsers.isEmpty())
-            throw new CustomException(ErrorCode.APP_USER_NOT_FOUND);
-
-        return findAppUsers.stream().map(AppUserDto.Response::new).collect(Collectors.toList());
     }
 
     @Transactional

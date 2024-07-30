@@ -31,19 +31,19 @@ public class PlanOption extends BaseEntity {
     @Future
     private LocalDateTime planRepeatEndDate;
     private List<DayOfWeek> planDaysOfWeek;
-    
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id", referencedColumnName = "id")
     @JsonBackReference
     private Plan plan;
     
-    public void update(LocalDateTime planStartTime, LocalDateTime planEndTime, LocalDateTime planAlarmTime, LocalDateTime planRepeatStartDate, LocalDateTime planRepeatEndDate, List<DayOfWeek> planDaysOfWeek) {
-        this.planStartTime = planStartTime;
-        this.planEndTime = planEndTime;
-        this.planAlarmTime = planAlarmTime;
-        this.planRepeatStartDate = planRepeatStartDate;
-        this.planRepeatEndDate = planRepeatEndDate;
-        this.planDaysOfWeek = planDaysOfWeek;
+    public void update(PlanOptionDto.Request dto) {
+        this.planStartTime = dto.getPlanStartTime();
+        this.planEndTime = dto.getPlanEndTime();
+        this.planAlarmTime = dto.getPlanAlarmTime();
+        this.planRepeatStartDate = dto.getPlanRepeatStartDate();
+        this.planRepeatEndDate = dto.getPlanRepeatEndDate();
+        this.planDaysOfWeek = dto.getPlanDaysOfWeek();
     }
     
     @Builder

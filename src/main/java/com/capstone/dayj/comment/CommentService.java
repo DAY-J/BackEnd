@@ -21,7 +21,7 @@ public class CommentService {
     private final PostRepository postRepository;
     
     @Transactional
-    public void createComment(int post_id, int app_user_id, CommentDto.Request dto) {
+    public CommentDto.Response createComment(int post_id, int app_user_id, CommentDto.Request dto) {
         Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         AppUser findAppUser = appUserRepository.findById(app_user_id)
@@ -29,11 +29,12 @@ public class CommentService {
         
         dto.setPost(findPost); // 댓글 달 게시물
         dto.setAppUser(findAppUser); // 댓글 쓴 유저
-        commentRepository.save(dto.toEntity());
+        Comment savedComment = commentRepository.save(dto.toEntity());
+        return new CommentDto.Response(savedComment);
     }
     
     @Transactional
-    public void createReply(int post_id, int app_user_id, int comment_id, CommentDto.Request dto) {
+    public CommentDto.Response createReply(int post_id, int app_user_id, int comment_id, CommentDto.Request dto) {
         Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         AppUser findAppUser = appUserRepository.findById(app_user_id)
@@ -45,7 +46,8 @@ public class CommentService {
         dto.setPost(findComment.getPost()); // 대댓글을 작성한 게시물
         dto.setParentId(findComment.getId()); // 대댓글의 부모 댓글
         dto.setAppUser(findAppUser); // 대댓글 작성자
-        commentRepository.save(dto.toEntity());
+        Comment savedComment = commentRepository.save(dto.toEntity());
+        return new CommentDto.Response(savedComment);
     }
     
     
@@ -102,10 +104,11 @@ public class CommentService {
     
     
     @Transactional
-    public void patchComment(int post_id, int comment_id, CommentDto.Request dto) {
+    public CommentDto.Response patchComment(int post_id, int comment_id, CommentDto.Request dto) {
         Comment comment = commentRepository.findByPostIdAndId(post_id, comment_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         comment.update(dto);
+        return new CommentDto.Response(comment);
     } // 작성자 본인만 수정 가능
     
     @Transactional

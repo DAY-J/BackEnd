@@ -1,14 +1,14 @@
 package com.capstone.dayj.friendGroup;
 
 import com.capstone.dayj.groupMember.GroupMember;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.capstone.dayj.groupMember.GroupMemberDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FriendGroupDto {
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -35,17 +35,19 @@ public class FriendGroupDto {
         private final String groupGoal;
         private final String groupName;
         private final LocalDateTime createdAt;
-        @JsonIgnore
-        private final List<GroupMember> groupMember;
-        
-        public Response(FriendGroup friendGroup){
+        private final List<GroupMemberDto.Response> achievementRates; // 달성률
+        private final List<GroupMemberDto.Response> groupMember;
+        public Response(FriendGroup friendGroup, int app_user_id){
             this.id = friendGroup.getId();
             this.groupGoal = friendGroup.getGroupGoal();
             this.groupName = friendGroup.getGroupName();
-            this.groupMember = friendGroup.getGroupMember();
             this.createdAt = friendGroup.getCreatedAt();
+            this.achievementRates = friendGroup.getGroupMember().stream()
+                    .map(GroupMemberDto.Response::new).collect(Collectors.toList());
+            this.groupMember = friendGroup.getGroupMember().stream()
+                    .filter(groupMember -> groupMember.getAppUser().getId() != app_user_id)
+                    .map(GroupMemberDto.Response::new).collect(Collectors.toList());
         }
-
     }
 }
 

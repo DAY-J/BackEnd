@@ -41,3 +41,4 @@ public class Setting extends BaseEntity {
         this.appUser = appUser;
     }
 }
+

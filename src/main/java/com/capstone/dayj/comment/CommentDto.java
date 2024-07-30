@@ -38,8 +38,6 @@ public class CommentDto {
         private final String content;
         private final boolean commentIsAnonymous;
         private final String author;
-        @JsonIgnore
-        private final Post post;
         
         public Response(Comment comment) {
             this.id = comment.getId();
@@ -47,7 +45,6 @@ public class CommentDto {
             this.content = comment.getContent();
             this.commentIsAnonymous = comment.isCommentIsAnonymous();
             this.author = comment.getAppUser().getNickname();
-            this.post = comment.getPost();
         }
     }
 }

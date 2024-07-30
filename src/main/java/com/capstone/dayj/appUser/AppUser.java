@@ -52,12 +52,14 @@ public class AppUser extends BaseEntity {
     @JsonIgnore
     private List<Comment> comments;
     
-    @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Setting setting;
     
-    public void update(String nickname) {
-        this.nickname = nickname;
+    
+    public void update(AppUserDto.Request dto) {
+        this.setting = (dto.getSetting() == null ? this.setting : dto.getSetting());
+        this.nickname = dto.getNickname();
     }
     
     @Builder
