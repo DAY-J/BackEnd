@@ -6,8 +6,6 @@ import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.tag.Tag;
 import lombok.*;
 
-import java.io.IOException;
-
 public class PlanDto {
     @Data
     @AllArgsConstructor
@@ -23,7 +21,7 @@ public class PlanDto {
         private PlanOption planOption;
         private AppUser appUser;
         
-        public Plan toEntity() throws IOException {
+        public Plan toEntity() {
             return Plan.builder()
                     .id(id)
                     .planTag(planTag)
