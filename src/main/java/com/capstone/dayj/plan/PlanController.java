@@ -38,8 +38,8 @@ public class PlanController {
     }
     
     @PatchMapping("/{plan_id}")
-    public PlanDto.Response patchPlan(@PathVariable int app_user_id, @PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) throws IOException {
-        return planService.patchPlan(app_user_id, plan_id, dto);
+    public PlanDto.Response patchPlan(@PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) {
+        return planService.patchPlan(plan_id, dto);
     }
     
     @PatchMapping("/{plan_id}/image")
