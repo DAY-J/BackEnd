@@ -75,8 +75,8 @@ public class PlanService {
     }
     
     @Transactional
-    public PlanDto.Response patchPlan(int app_user_id, int plan_id, PlanDto.Request dto) throws IOException {
-        Plan findPlan = planRepository.findByAppUserIdAndId(app_user_id, plan_id)
+    public PlanDto.Response patchPlan(int plan_id, PlanDto.Request dto) {
+        Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         findPlan.update(dto);
         return new PlanDto.Response(findPlan);
