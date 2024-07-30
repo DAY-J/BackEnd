@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PlanRepository extends JpaRepository<Plan, Integer> {
     Optional<Plan> findByAppUserIdAndId(Integer appUserId, Integer planId);
-    List<Plan> findAllByPlanTag(Tag tag);
+    List<Plan> findAllByAppUserIdAndPlanTag(Integer appUserId, Tag tag);
     List<Plan> findAllByAppUserId(Integer appUserId);
 }

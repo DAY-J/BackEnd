@@ -2,11 +2,11 @@ package com.capstone.dayj.plan;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.planOption.PlanOption;
+import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.tag.Tag;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
 
 public class PlanDto {
     @Data
@@ -15,19 +15,19 @@ public class PlanDto {
     @Builder
     public static class Request {
         private int id;
-        private String planPhoto;
         private Tag planTag;
+        private String planPhoto;
         private String goal;
         private boolean isComplete;
         private boolean isPublic;
         private PlanOption planOption;
         private AppUser appUser;
         
-        public Plan toEntity() {
+        public Plan toEntity() throws IOException {
             return Plan.builder()
                     .id(id)
-                    .planPhoto(planPhoto)
                     .planTag(planTag)
+                    .planPhoto(planPhoto)
                     .goal(goal)
                     .isComplete(isComplete)
                     .isPublic(isPublic)
@@ -46,9 +46,7 @@ public class PlanDto {
         private final String goal;
         private final boolean isComplete;
         private final boolean isPublic;
-        private final PlanOption planOption;
-        @JsonIgnore
-        private final AppUser appUser;
+        private final PlanOptionDto.Response planOption;
         
         /* Entity -> Dto */
         public Response(Plan plan) {
@@ -58,17 +56,17 @@ public class PlanDto {
             this.goal = plan.getGoal();
             this.isComplete = plan.isComplete();
             this.isPublic = plan.isPublic();
-            this.planOption = plan.getPlanOption();
-            this.appUser = plan.getAppUser();
+            this.planOption = new PlanOptionDto.Response(plan.getPlanOption());
         }
     }
+    
     @Getter
     public static class groupResponse {
         private final int id;
         private final String goal;
         private final boolean isComplete;
-
-        public groupResponse(Plan plan){
+        
+        public groupResponse(Plan plan) {
             this.id = plan.getId();
             this.goal = plan.getGoal();
             this.isComplete = plan.isComplete();

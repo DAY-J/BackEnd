@@ -33,10 +33,16 @@ public enum ErrorCode {
     
     // 404 POST_NOT_FOUND : 게시물을 찾을 수 없음
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
-
+    
     // 409 DUPLICATE_NICKNAME : 중복된 닉네임
-    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다.");
-
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다."),
+    
+    // 402 IMAGE_NOT_FOUND: 어떤 이미지도 전송 받지 못함
+    IMAGE_UPLOAD_FAIL(HttpStatus.PAYMENT_REQUIRED, "어떤 이미지도 전송되지 않았습니다."),
+    
+    // 413 IMAGE_NOT_FOUND: 어떤 이미지도 전송 받지 못함
+    TOO_MANY_IMAGE(HttpStatus.PAYLOAD_TOO_LARGE, "이미지를 1개만 전송해주세요.");
+    
     private final HttpStatus status;
     private final String message;
 }

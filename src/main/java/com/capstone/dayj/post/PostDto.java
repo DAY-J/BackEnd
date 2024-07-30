@@ -22,9 +22,9 @@ public class PostDto {
         private String postContent;
         private Tag postTag;
         private boolean postIsAnonymous;
-        private String postPhoto;
+        private List<String> postPhoto;
         private AppUser appUser;
-
+        
         public Post toEntity() {
             return Post.builder()
                     .id(id)
@@ -50,7 +50,7 @@ public class PostDto {
         private final String postContent;
         private final Tag postTag;
         private final boolean postIsAnonymous;
-        private final String postPhoto;
+        private final List<String> postPhoto;
         private final LocalDateTime createdAt;
         private final LocalDateTime updatedAt;
         private final String author;
@@ -70,7 +70,9 @@ public class PostDto {
             this.createdAt = post.getCreatedAt();
             this.updatedAt = post.getUpdatedAt();
             this.author = post.getAppUser().getNickname();
-            this.comment = post.getComment().stream().map(CommentDto.Response::new).collect(Collectors.toList());
+            this.comment = (post.getComment() == null ?
+                    null : post.getComment().stream()
+                    .map(CommentDto.Response::new).collect(Collectors.toList()));
         }
     }
 }
