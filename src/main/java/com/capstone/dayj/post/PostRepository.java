@@ -1,5 +1,6 @@
 package com.capstone.dayj.post;
 
+import com.capstone.dayj.tag.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    List<Post> findByPostTag(String postTag);
+    List<Post> findByPostTag(Tag postTag);
     
     List<Post> findByPostTitleContainingOrPostContentContaining(String titleKeyword, String contentKeyword);
     

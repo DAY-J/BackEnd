@@ -2,6 +2,7 @@ package com.capstone.dayj.post;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.comment.CommentDto;
+import com.capstone.dayj.tag.Tag;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,11 +20,11 @@ public class PostDto {
         private int postLike;
         private String postTitle;
         private String postContent;
-        private String postTag;
+        private Tag postTag;
         private boolean postIsAnonymous;
-        private String postPhoto;
+        private List<String> postPhoto;
         private AppUser appUser;
-
+        
         public Post toEntity() {
             return Post.builder()
                     .id(id)
@@ -47,9 +48,9 @@ public class PostDto {
         private final int postLike;
         private final String postTitle;
         private final String postContent;
-        private final String postTag;
+        private final Tag postTag;
         private final boolean postIsAnonymous;
-        private final String postPhoto;
+        private final List<String> postPhoto;
         private final LocalDateTime createdAt;
         private final LocalDateTime updatedAt;
         private final String author;
@@ -69,7 +70,9 @@ public class PostDto {
             this.createdAt = post.getCreatedAt();
             this.updatedAt = post.getUpdatedAt();
             this.author = post.getAppUser().getNickname();
-            this.comment = post.getComment().stream().map(CommentDto.Response::new).collect(Collectors.toList());
+            this.comment = (post.getComment() == null ?
+                    null : post.getComment().stream()
+                    .map(CommentDto.Response::new).collect(Collectors.toList()));
         }
     }
 }

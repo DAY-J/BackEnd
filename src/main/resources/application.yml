@@ -12,6 +12,11 @@ spring:
     active: ${ACTIVE}
   main:
     allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
   thymeleaf:
     prefix: classpath:/templates/
   datasource:
@@ -35,3 +40,10 @@ spring:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
             scope: ${SCOPE}
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: ${KEY_LOCATION}
+        project-id: ${KEY_PROJECT_ID}
+        bucket: ${BUCKET}

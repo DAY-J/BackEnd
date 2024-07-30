@@ -4,12 +4,17 @@ import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.appUser.AppUserRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.planOption.PlanOption;
 import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.planOption.PlanOptionRepository;
-import org.springframework.transaction.annotation.Transactional;
+import com.capstone.dayj.tag.Tag;
+import com.capstone.dayj.util.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,24 +24,41 @@ public class PlanService {
     private final PlanRepository planRepository;
     private final PlanOptionRepository planOptionRepository;
     private final AppUserRepository appUserRepository;
+    private final ImageUploader imageUploader;
+    
     
     @Transactional
-    public void createPlan(int app_user_id, PlanDto.Request dto) {
+    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request dto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        
         dto.setAppUser(findAppUser);
-        Plan newPlan = planRepository.save(dto.toEntity());
         
+        Plan savedPlan = planRepository.save(dto.toEntity());
         PlanOptionDto.Request newPlanOption = PlanOptionDto.Request.builder()
-                .plan(newPlan)
+                .plan(savedPlan)
                 .build();
-        planOptionRepository.save(newPlanOption.toEntity());
+        
+        PlanOption savedPlanOption = planOptionRepository.save(newPlanOption.toEntity());
+        PlanDto.Request newDto = PlanDto.Request.builder()
+                .planOption(savedPlanOption)
+                .build();
+        savedPlan.update(newDto);
+        return new PlanDto.Response(savedPlan);
     }
     
     @Transactional(readOnly = true)
     public List<PlanDto.Response> readAllPlan(int app_user_id) {
         List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id);
+        
+        if (findPlans.isEmpty())
+            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+        
+        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag) {
+        List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag);
         
         if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
@@ -52,22 +74,23 @@ public class PlanService {
         return new PlanDto.Response(findPlan);
     }
     
-    @Transactional(readOnly = true)
-    public List<PlanDto.Response> readPlanByPlanTag(String planTag) {
-        List<Plan> findPlans = planRepository.findAll()
-                .stream().filter(plan -> plan.getPlanTag().equals(planTag)).toList();
-        
-        if (findPlans.isEmpty())
-            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
-        
-        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
+    @Transactional
+    public PlanDto.Response patchPlan(int plan_id, PlanDto.Request dto) {
+        Plan findPlan = planRepository.findById(plan_id)
+                .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+        findPlan.update(dto);
+        return new PlanDto.Response(findPlan);
     }
     
     @Transactional
-    public void updatePlan(int app_user_id, int plan_id, PlanDto.Request dto) {
-        Plan findPlan = planRepository.findByAppUserIdAndId(app_user_id, plan_id)
+    public PlanDto.Response patchPlanImage(int plan_id, MultipartFile image) throws IOException {
+        Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+        
+        PlanDto.Request dto = new PlanDto.Request();
+        dto.setPlanPhoto(imageUploader.upload(image));
         findPlan.update(dto);
+        return new PlanDto.Response(findPlan);
     }
     
     @Transactional

@@ -3,6 +3,7 @@ package com.capstone.dayj.appUser;
 
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.setting.Setting;
 import com.capstone.dayj.setting.SettingDto;
 import com.capstone.dayj.setting.SettingRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,19 @@ public class AppUserService {
     private final SettingRepository settingRepository;
     
     @Transactional
-    public void createAppUser(AppUserDto.Request dto) {
+    public AppUserDto.Response createAppUser(AppUserDto.Request dto) {
         AppUser savedAppUser = appUserRepository.save(dto.toEntity());
-        SettingDto.Request newSetting = SettingDto.Request.builder()
+        SettingDto.Request settingDto = SettingDto.Request.builder()
                 .appUser(savedAppUser)
                 .build();
-        settingRepository.save(newSetting.toEntity());
+        
+        Setting savedSetting = settingRepository.save(settingDto.toEntity());
+        AppUserDto.Request newDto = AppUserDto.Request.builder()
+                .nickname(savedAppUser.getNickname())
+                .setting(savedSetting)
+                .build();
+        savedAppUser.update(newDto);
+        return new AppUserDto.Response(savedAppUser);
     }
     
     @Transactional(readOnly = true)
@@ -51,14 +59,14 @@ public class AppUserService {
     }
     
     @Transactional
-    public void updateAppUser(int id, AppUserDto.Request dto) {
-        if(appUserRepository.existsByNickname(dto.getNickname())) {
+    public AppUserDto.Response patchAppUser(int id, AppUserDto.Request dto) {
+        if (appUserRepository.existsByNickname(dto.getNickname())) {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
         AppUser findAppUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-
-        findAppUser.update(dto.getNickname());
+        findAppUser.update(dto);
+        return new AppUserDto.Response(findAppUser);
     }
     
     @Transactional
