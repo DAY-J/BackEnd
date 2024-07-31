@@ -6,7 +6,6 @@ import com.capstone.dayj.planOption.PlanOption;
 import com.capstone.dayj.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -31,8 +30,7 @@ public class Plan extends BaseEntity {
     @ColumnDefault("false")
     private boolean isComplete;
     @Column(nullable = false)
-    @ColumnDefault("0")
-    @JsonProperty
+    @ColumnDefault("false")
     private boolean isPublic;
     
     @OneToOne(mappedBy = "plan", cascade = CascadeType.REMOVE)

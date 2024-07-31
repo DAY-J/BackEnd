@@ -40,6 +40,8 @@ public class PlanService {
         
         PlanOption savedPlanOption = planOptionRepository.save(newPlanOption.toEntity());
         PlanDto.Request newDto = PlanDto.Request.builder()
+                .isComplete(savedPlan.isComplete()) // 원래 null 값이면 null이 들어가야되는데 boolean은 null이 아니라 false로 들어가서 세팅해줘야 함
+                .isPublic(savedPlan.isPublic())
                 .planOption(savedPlanOption)
                 .build();
         savedPlan.update(newDto);
