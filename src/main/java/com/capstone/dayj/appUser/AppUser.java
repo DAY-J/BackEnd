@@ -6,6 +6,7 @@ import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.post.Post;
 import com.capstone.dayj.setting.Setting;
+import com.capstone.dayj.statistics.Statistics;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -16,7 +17,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true, exclude = {"groupMembers", "plans", "posts", "comments", "setting"})
+@ToString(callSuper = true, exclude = {"groupMembers", "plans", "posts", "comments", "setting", "statistics"})
 public class AppUser extends BaseEntity {
     
     @Id
@@ -55,6 +56,10 @@ public class AppUser extends BaseEntity {
     @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private Setting setting;
+
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
+    private List<Statistics> statistics;
     
     
     public void update(AppUserDto.Request dto) {
@@ -63,7 +68,7 @@ public class AppUser extends BaseEntity {
     }
     
     @Builder
-    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, Setting setting) {
+    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, Setting setting, List<Statistics> statistics) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
@@ -77,6 +82,7 @@ public class AppUser extends BaseEntity {
         this.posts = posts;
         this.comments = comments;
         this.setting = setting;
+        this.statistics = statistics;
     }
 }
 
