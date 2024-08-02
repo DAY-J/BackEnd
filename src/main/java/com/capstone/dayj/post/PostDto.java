@@ -21,7 +21,7 @@ public class PostDto {
         private String postTitle;
         private String postContent;
         private Tag postTag;
-        private boolean postIsAnonymous;
+        private Boolean isAnonymous;
         private List<String> postPhoto;
         private AppUser appUser;
         
@@ -33,7 +33,7 @@ public class PostDto {
                     .postTitle(postTitle)
                     .postContent(postContent)
                     .postTag(postTag)
-                    .postIsAnonymous(postIsAnonymous)
+                    .isAnonymous(isAnonymous)
                     .postPhoto(postPhoto)
                     .appUser(appUser)
                     .build();
@@ -49,7 +49,7 @@ public class PostDto {
         private final String postTitle;
         private final String postContent;
         private final Tag postTag;
-        private final boolean postIsAnonymous;
+        private final Boolean isAnonymous;
         private final List<String> postPhoto;
         private final LocalDateTime createdAt;
         private final LocalDateTime updatedAt;
@@ -65,7 +65,7 @@ public class PostDto {
             this.postTitle = post.getPostTitle();
             this.postContent = post.getPostContent();
             this.postTag = post.getPostTag();
-            this.postIsAnonymous = post.isPostIsAnonymous();
+            this.isAnonymous = post.getIsAnonymous();
             this.postPhoto = post.getPostPhoto();
             this.createdAt = post.getCreatedAt();
             this.updatedAt = post.getUpdatedAt();

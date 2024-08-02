@@ -36,7 +36,7 @@ public class Post extends BaseEntity {
     
     @Column(nullable = false)
     @ColumnDefault("1")
-    private boolean postIsAnonymous;
+    private Boolean isAnonymous;
     
     @ElementCollection
     @CollectionTable(name = "post_photo", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
@@ -52,22 +52,22 @@ public class Post extends BaseEntity {
     private AppUser appUser;
     
     public void update(PostDto.Request dto) {
-        this.postTitle = dto.getPostTitle();
-        this.postContent = dto.getPostContent();
-        this.postTag = dto.getPostTag();
-        this.postIsAnonymous = dto.isPostIsAnonymous();
+        this.postTitle = (dto.getPostTitle() == null ? this.postTitle : dto.getPostTitle());
+        this.postContent = (dto.getPostContent() == null ? this.postContent : dto.getPostContent());
+        this.postTag = (dto.getPostTag() == null ? this.postTag : dto.getPostTag());
+        this.isAnonymous = (dto.getIsAnonymous() == null ? this.isAnonymous : dto.getIsAnonymous());
         this.postPhoto = dto.getPostPhoto();
     }
     
     @Builder
-    public Post(int id, int postView, int postLike, String postTitle, String postContent, Tag postTag, boolean postIsAnonymous, List<String> postPhoto, List<Comment> comment, AppUser appUser) {
+    public Post(int id, int postView, int postLike, String postTitle, String postContent, Tag postTag, Boolean isAnonymous, List<String> postPhoto, List<Comment> comment, AppUser appUser) {
         this.id = id;
         this.postView = postView;
         this.postLike = postLike;
         this.postTitle = postTitle;
         this.postContent = postContent;
         this.postTag = postTag;
-        this.postIsAnonymous = postIsAnonymous;
+        this.isAnonymous = isAnonymous;
         this.postPhoto = postPhoto;
         this.comment = comment;
         this.appUser = appUser;

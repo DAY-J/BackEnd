@@ -5,12 +5,11 @@ import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.post.Post;
-import com.capstone.dayj.setting.Setting;
-import com.capstone.dayj.statistics.Statistics;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -34,8 +33,11 @@ public class AppUser extends BaseEntity {
     private String role; //유저 권한
     private String provider; //공급자
     private String providerId; //공급 아이디
+    private String profilePhoto;
     
-    //유저 닉네임 설정하는 기능 구현 필요
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private Boolean isAlarm;
     
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     @JsonIgnore
@@ -53,22 +55,14 @@ public class AppUser extends BaseEntity {
     @JsonIgnore
     private List<Comment> comments;
     
-    @OneToOne(mappedBy = "appUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnore
-    private Setting setting;
-
-    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnore
-    private List<Statistics> statistics;
-    
-    
     public void update(AppUserDto.Request dto) {
-        this.setting = (dto.getSetting() == null ? this.setting : dto.getSetting());
-        this.nickname = dto.getNickname();
+        this.nickname = (dto.getNickname() == null ? this.nickname : dto.getNickname());
+        this.isAlarm = (dto.getIsAlarm() == null ? this.isAlarm : dto.getIsAlarm());
+        this.profilePhoto = (dto.getProfilePhoto() == null ? this.profilePhoto : dto.getProfilePhoto());
     }
     
     @Builder
-    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, Setting setting, List<Statistics> statistics) {
+    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, String profilePhoto, Boolean isAlarm, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
@@ -77,12 +71,12 @@ public class AppUser extends BaseEntity {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
+        this.profilePhoto = profilePhoto;
+        this.isAlarm = isAlarm;
         this.groupMembers = groupMembers;
         this.plans = plans;
         this.posts = posts;
         this.comments = comments;
-        this.setting = setting;
-        this.statistics = statistics;
     }
 }
 

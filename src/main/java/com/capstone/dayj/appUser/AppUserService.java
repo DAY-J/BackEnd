@@ -3,13 +3,13 @@ package com.capstone.dayj.appUser;
 
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
-import com.capstone.dayj.setting.Setting;
-import com.capstone.dayj.setting.SettingDto;
-import com.capstone.dayj.setting.SettingRepository;
+import com.capstone.dayj.util.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,21 +17,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AppUserService {
     private final AppUserRepository appUserRepository;
-    private final SettingRepository settingRepository;
+    private final ImageUploader imageUploader;
     
     @Transactional
     public AppUserDto.Response createAppUser(AppUserDto.Request dto) {
         AppUser savedAppUser = appUserRepository.save(dto.toEntity());
-        SettingDto.Request settingDto = SettingDto.Request.builder()
-                .appUser(savedAppUser)
-                .build();
-        
-        Setting savedSetting = settingRepository.save(settingDto.toEntity());
-        AppUserDto.Request newDto = AppUserDto.Request.builder()
-                .nickname(savedAppUser.getNickname())
-                .setting(savedSetting)
-                .build();
-        savedAppUser.update(newDto);
         return new AppUserDto.Response(savedAppUser);
     }
     
@@ -63,6 +53,7 @@ public class AppUserService {
         if (appUserRepository.existsByNickname(dto.getNickname())) {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
+        
         AppUser findAppUser = appUserRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         findAppUser.update(dto);
@@ -70,10 +61,25 @@ public class AppUserService {
     }
     
     @Transactional
-    public void deleteAppUserById(int id) {
-        AppUser findAppUser = appUserRepository.findById(id)
+    public AppUserDto.Response patchProfileImage(int app_user_id, MultipartFile image) throws IOException {
+        AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
+        AppUserDto.Request dto = AppUserDto.Request.builder()
+                .profilePhoto(imageUploader.upload(image))
+                .build();
+        findAppUser.update(dto);
+        return new AppUserDto.Response(findAppUser);
+    }
+    
+    
+    @Transactional
+    public AppUserDto.Response deleteAppUserById(int id) {
+        AppUser findAppUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+        AppUserDto.Response dto = new AppUserDto.Response(findAppUser);
+        
         appUserRepository.deleteById(findAppUser.getId());
+        return dto;
     }
 }

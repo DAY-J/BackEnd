@@ -49,32 +49,20 @@ public class StatisticsService {
     }
 
     @Transactional
-    public List<Map<LocalDate, Integer>> calculateTag(int app_user_id, LocalDate startDate, LocalDate endDate, Tag tag) {
-        AppUser findAppUser = appUserRepository.findById(app_user_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+    public StatisticsDto.Response calculateStatistics(StatisticsDto.Request request) {
+        int userId = request.getAppUser().getId();
+        String tag = request.getTag();
+        LocalDate date = request.getDate();
 
-        return getDatesInRange(startDate, endDate).stream()
-                .map(date -> {
-                    List<PlanDto.Response> plansForDate = findAppUser.getPlans().stream()
-                            .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(date) && plan.getPlanTag().equals(tag))
-                            .map(PlanDto.Response::new)
-                            .collect(Collectors.toList());
+        List<Plan> plans = planRepository.findAllByAppUserIdAndTagAndDate(userId, tag, date);
 
-                    int achievementRate = calculateAchievementRate(plansForDate);
+        int totalGoals = plans.size();
+        int achievedGoals = (int) plans.stream().filter(Plan::getIsComplete).count();
 
-                    // Statistics 엔티티 업데이트 또는 생성
-                    updateOrCreateStatistics(findAppUser, date, achievementRate);
+        double achievementPercentage;
 
-                    return Map.of(date, achievementRate);
-                })
-                .collect(Collectors.toList());
-    }
-
-
-    private List<LocalDate> getDatesInRange(LocalDate startDate, LocalDate endDate) {
-        List<LocalDate> dates = new ArrayList<>();
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            dates.add(date);
+        if (totalGoals == 0) {
+            achievementPercentage = 0;
         }
         return dates;
     }

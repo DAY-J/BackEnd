@@ -2,8 +2,9 @@ package com.capstone.dayj.comment;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.post.Post;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 public class CommentDto {
     
@@ -15,7 +16,7 @@ public class CommentDto {
         private int id;
         private int parentId;
         private String content;
-        private boolean commentIsAnonymous;
+        private Boolean isAnonymous;
         private AppUser appUser;
         private Post post;
         
@@ -24,7 +25,7 @@ public class CommentDto {
                     .id(id)
                     .parentId(parentId)
                     .content(content)
-                    .commentIsAnonymous(commentIsAnonymous)
+                    .isAnonymous(isAnonymous)
                     .appUser(appUser)
                     .post(post)
                     .build();
@@ -36,15 +37,19 @@ public class CommentDto {
         private final int id;
         private final int parentId;
         private final String content;
-        private final boolean commentIsAnonymous;
+        private final Boolean isAnonymous;
         private final String author;
+        private final LocalDateTime createdAt;
+        private final LocalDateTime updatedAt;
         
         public Response(Comment comment) {
             this.id = comment.getId();
             this.parentId = comment.getParentId();
             this.content = comment.getContent();
-            this.commentIsAnonymous = comment.isCommentIsAnonymous();
+            this.isAnonymous = comment.getIsAnonymous();
             this.author = comment.getAppUser().getNickname();
+            this.createdAt = comment.getCreatedAt();
+            this.updatedAt = comment.getUpdatedAt();
         }
     }
 }
