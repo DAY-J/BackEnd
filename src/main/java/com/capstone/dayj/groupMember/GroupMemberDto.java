@@ -2,14 +2,10 @@ package com.capstone.dayj.groupMember;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.friendGroup.FriendGroup;
-import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.plan.PlanDto;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +40,11 @@ public class GroupMemberDto {
             this.id = groupMember.getId();
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
-            this.achievementRate = 99; // 통계 구현되면 수정 필요
+            this.achievementRate = groupMember.getAppUser().getStatistics().stream()
+                    .filter(statistics -> statistics.getAchievementRate().containsKey(LocalDate.now()))
+                    .findFirst()
+                    .map(statistics -> statistics.getAchievementRate().get(LocalDate.now()))
+                    .orElse(0);
             this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
                     .filter(plan -> plan.isPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
                     .map(PlanDto.groupResponse::new).collect(Collectors.toList());
