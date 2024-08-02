@@ -53,12 +53,10 @@ public class PostService {
     
     @Transactional
     public PostDto.Response readPostById(int id) {
-        Post post = postRepository.findById(id)
+        Post findPost = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        
         postRepository.incrementPostView(id);
-        
-        return new PostDto.Response(post);
+        return new PostDto.Response(findPost);
     }
     
     @Transactional(readOnly = true)

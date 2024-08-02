@@ -1,7 +1,5 @@
 package com.capstone.dayj.appUser;
 
-import com.capstone.dayj.setting.Setting;
-import com.capstone.dayj.setting.SettingDto;
 import lombok.*;
 
 public class AppUserDto {
@@ -18,7 +16,8 @@ public class AppUserDto {
         private String role; //유저 권한
         private String provider; //공급자
         private String providerId; //공급 아이디
-        private Setting setting;
+        private String profilePhoto;
+        private Boolean isAlarm;
         
         public AppUser toEntity() {
             return AppUser.builder()
@@ -30,7 +29,8 @@ public class AppUserDto {
                     .role(role)
                     .provider(provider)
                     .providerId(providerId)
-                    .setting(setting)
+                    .profilePhoto(profilePhoto)
+                    .isAlarm(isAlarm)
                     .build();
         }
     }
@@ -45,7 +45,8 @@ public class AppUserDto {
         private final String role; //유저 권한
         private final String provider; //공급자
         private final String providerId; //공급 아이디
-        private final SettingDto.Response setting;
+        private final String profilePhoto;
+        private final Boolean isAlarm;
         
         public Response(AppUser appUser) {
             this.id = appUser.getId();
@@ -56,7 +57,8 @@ public class AppUserDto {
             this.role = appUser.getRole();
             this.provider = appUser.getProvider();
             this.providerId = appUser.getProviderId();
-            this.setting = new SettingDto.Response(appUser.getSetting());
+            this.profilePhoto = appUser.getProfilePhoto();
+            this.isAlarm = appUser.getIsAlarm();
         }
         
     }

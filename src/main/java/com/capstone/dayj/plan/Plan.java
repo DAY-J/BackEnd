@@ -28,10 +28,10 @@ public class Plan extends BaseEntity {
     
     @Column(nullable = false)
     @ColumnDefault("false")
-    private boolean isComplete;
+    private Boolean isComplete;
     @Column(nullable = false)
     @ColumnDefault("false")
-    private boolean isPublic;
+    private Boolean isPublic;
     
     @OneToOne(mappedBy = "plan", cascade = CascadeType.REMOVE)
     @JsonManagedReference
@@ -46,13 +46,13 @@ public class Plan extends BaseEntity {
         this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());
         this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
         this.planPhoto = dto.getPlanPhoto();
-        this.isPublic = dto.isPublic();
-        this.isComplete = dto.isComplete();
+        this.isPublic = (dto.getGoal() == null ? this.isPublic : dto.getIsPublic());
+        this.isComplete = (dto.getGoal() == null ? this.isComplete : dto.getIsComplete());
         this.planOption = (dto.getPlanOption() == null ? this.planOption : dto.getPlanOption());
     }
     
     @Builder
-    public Plan(int id, Tag planTag, String goal, String planPhoto, boolean isComplete, boolean isPublic, PlanOption planOption, AppUser appUser) {
+    public Plan(int id, Tag planTag, String goal, String planPhoto, Boolean isComplete, Boolean isPublic, PlanOption planOption, AppUser appUser) {
         this.id = id;
         this.planTag = planTag;
         this.goal = goal;

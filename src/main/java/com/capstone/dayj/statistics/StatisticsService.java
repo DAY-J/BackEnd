@@ -26,7 +26,7 @@ public class StatisticsService {
         List<Plan> plans = planRepository.findAllByAppUserIdAndTagAndDate(userId, tag, date);
 
         int totalGoals = plans.size();
-        int achievedGoals = (int) plans.stream().filter(Plan::isComplete).count();
+        int achievedGoals = (int) plans.stream().filter(Plan::getIsComplete).count();
 
         double achievementPercentage;
 
