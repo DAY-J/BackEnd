@@ -9,8 +9,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,7 +25,7 @@ public class Comment extends BaseEntity {
     
     @Column(nullable = false)
     @ColumnDefault("1")
-    private boolean commentIsAnonymous;
+    private Boolean isAnonymous;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", referencedColumnName = "id")
@@ -39,16 +37,16 @@ public class Comment extends BaseEntity {
     private AppUser appUser;
     
     public void update(CommentDto.Request dto) {
-        this.content = dto.getContent();
-        this.commentIsAnonymous = dto.isCommentIsAnonymous();
+        this.content = (dto.getContent() == null ? this.content : dto.getContent());
+        this.isAnonymous = (dto.getIsAnonymous() == null ? this.isAnonymous : dto.getIsAnonymous());
     }
     
     @Builder
-    public Comment(int id, int parentId, String content, LocalDateTime commentCreateDate, LocalDateTime commentUpdateDate, boolean commentIsAnonymous, AppUser appUser, Post post) {
+    public Comment(int id, int parentId, String content, Boolean isAnonymous, AppUser appUser, Post post) {
         this.id = id;
         this.parentId = parentId;
         this.content = content;
-        this.commentIsAnonymous = commentIsAnonymous;
+        this.isAnonymous = isAnonymous;
         this.appUser = appUser;
         this.post = post;
     }
