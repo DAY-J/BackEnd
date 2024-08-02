@@ -28,8 +28,8 @@ public class Statistics extends BaseEntity {
     private AppUser appUser;
 
     public void update(StatisticsDto.Request dto) {
-        this.appUser = dto.getAppUser() == null ? this.appUser : dto.getAppUser();
-        this.achievementRate = dto.getAchievementRate() == null ? this.achievementRate : dto.getAchievementRate();
+        this.appUser = (dto.getAppUser() == null ? this.appUser : dto.getAppUser());
+        this.achievementRate = (dto.getAchievementRate() == null ? this.achievementRate : dto.getAchievementRate());
     }
 
     @Builder

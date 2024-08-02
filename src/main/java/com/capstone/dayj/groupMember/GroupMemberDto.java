@@ -46,7 +46,7 @@ public class GroupMemberDto {
                     .map(statistics -> statistics.getAchievementRate().get(LocalDate.now()))
                     .orElse(0);
             this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
-                    .filter(plan -> plan.isPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
+                    .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
                     .map(PlanDto.groupResponse::new).collect(Collectors.toList());
         }
     }

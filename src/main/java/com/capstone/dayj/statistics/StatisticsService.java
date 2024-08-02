@@ -39,7 +39,6 @@ public class StatisticsService {
                             .collect(Collectors.toList());
 
                     int achievementRate = calculateAchievementRate(plansForDate);
-
                     //이게 문제
                     updateOrCreateStatistics(findAppUser, date, achievementRate);
 
@@ -81,7 +80,7 @@ public class StatisticsService {
 
     private int calculateAchievementRate(List<PlanDto.Response> plans) {
         int numOfGoal = plans.size();
-        long numOfAchievedGoal = plans.stream().filter(PlanDto.Response::isComplete).count();
+        long numOfAchievedGoal = plans.stream().filter(PlanDto.Response::getIsComplete).count();
         return numOfGoal > 0 ? (int) ((numOfAchievedGoal / (double) numOfGoal) * 100) : 0;
     }
 
