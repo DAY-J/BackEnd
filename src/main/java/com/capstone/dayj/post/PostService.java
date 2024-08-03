@@ -82,11 +82,11 @@ public class PostService {
     }
     
     @Transactional
-    public void deletePostById(int postId) {
-        Post post = postRepository.findById(postId)
+    public String deletePostById(int post_id) {
+        Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        
-        postRepository.deleteById(post.getId());
+        postRepository.delete(findPost);
+        return String.format("Post(id: %d) was Deleted", post_id);
     }
     
     @Transactional
