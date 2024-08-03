@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,13 +24,14 @@ public class PlanController {
     }
     
     @GetMapping
-    public List<PlanDto.Response> readAllPlan(@PathVariable int app_user_id) {
-        return planService.readAllPlan(app_user_id);
+    public List<PlanDto.Response> readAllPlan(@PathVariable int app_user_id, @RequestParam(name = "date") LocalDate date) {
+        return planService.readAllPlan(app_user_id, date);
     }
     
     @GetMapping("tag/{plan_tag}")
-    public List<PlanDto.Response> readAllPlanByPlanTag(@PathVariable int app_user_id, @PathVariable Tag plan_tag) {
-        return planService.readAllPlanByPlanTag(app_user_id, plan_tag);
+    public List<PlanDto.Response> readAllPlanByPlanTag(@PathVariable int app_user_id, @PathVariable Tag plan_tag
+            , @RequestParam(name = "date") LocalDate date) {
+        return planService.readAllPlanByPlanTag(app_user_id, plan_tag, date);
     }
     
     @GetMapping("/{plan_id}")
