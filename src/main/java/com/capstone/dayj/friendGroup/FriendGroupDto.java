@@ -19,7 +19,7 @@ public class FriendGroupDto {
         private String groupName;
         private List<GroupMember> groupMembers;
 
-        public FriendGroup toEntity(){
+        public FriendGroup toEntity() {
             return FriendGroup.builder()
                     .id(id)
                     .groupGoal(groupGoal)
@@ -37,16 +37,19 @@ public class FriendGroupDto {
         private final LocalDateTime createdAt;
         private final List<GroupMemberDto.Response> achievementRates; // 달성률
         private final List<GroupMemberDto.Response> groupMember;
-        public Response(FriendGroup friendGroup, int app_user_id){
+
+        public Response(FriendGroup friendGroup, int app_user_id) {
             this.id = friendGroup.getId();
             this.groupGoal = friendGroup.getGroupGoal();
             this.groupName = friendGroup.getGroupName();
             this.createdAt = friendGroup.getCreatedAt();
             this.achievementRates = friendGroup.getGroupMember().stream()
-                    .map(GroupMemberDto.Response::new).collect(Collectors.toList());
+                    .map(groupMember -> new GroupMemberDto.Response(groupMember, 1))
+                    .collect(Collectors.toList());
             this.groupMember = friendGroup.getGroupMember().stream()
                     .filter(groupMember -> groupMember.getAppUser().getId() != app_user_id)
-                    .map(GroupMemberDto.Response::new).collect(Collectors.toList());
+                    .map(groupMember -> new GroupMemberDto.Response(groupMember, 2))
+                    .collect(Collectors.toList());
         }
     }
 }

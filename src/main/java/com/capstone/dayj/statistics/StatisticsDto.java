@@ -1,12 +1,9 @@
 package com.capstone.dayj.statistics;
 
 import com.capstone.dayj.appUser.AppUser;
-import jakarta.persistence.Column;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 public class StatisticsDto {
 
@@ -15,11 +12,13 @@ public class StatisticsDto {
     @AllArgsConstructor
     @Builder
     public static class Request {
-        private Map<LocalDate, Integer> achievementRate;
+        private LocalDate date;
+        private Long achievementRate;
         private AppUser appUser;
 
         public Statistics toEntity() {
             return Statistics.builder()
+                    .date(date)
                     .achievementRate(achievementRate)
                     .appUser(appUser)
                     .build();
@@ -30,11 +29,13 @@ public class StatisticsDto {
     @Getter
     public static class Response {
         private final int id;
-        private final Map<LocalDate, Integer> achievementRate;
+        private final LocalDate date;
+        private final Long achievementRate;
 
         /* Entity -> Dto */
         public Response(Statistics statistics) {
             this.id = statistics.getId();
+            this.date = statistics.getDate();
             this.achievementRate = statistics.getAchievementRate();
         }
     }

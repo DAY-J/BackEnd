@@ -3,6 +3,7 @@ package com.capstone.dayj.groupMember;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.friendGroup.FriendGroup;
 import com.capstone.dayj.plan.PlanDto;
+import com.capstone.dayj.statistics.StatisticsDto;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -33,21 +34,24 @@ public class GroupMemberDto {
         private final int id;
         private final int appUserId;
         private final String nickname;
-        private final int achievementRate;
-        private final List<PlanDto.groupResponse> groupMemberPlan;
+        private StatisticsDto.Response achievementRate;
+        private List<PlanDto.groupResponse> groupMemberPlan;
 
-        public Response(GroupMember groupMember) {
+        public Response(GroupMember groupMember, int mode) {
             this.id = groupMember.getId();
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
-            this.achievementRate = groupMember.getAppUser().getStatistics().stream()
-                    .filter(statistics -> statistics.getAchievementRate().containsKey(LocalDate.now()))
-                    .findFirst()
-                    .map(statistics -> statistics.getAchievementRate().get(LocalDate.now()))
-                    .orElse(0);
-            this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
-                    .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
-                    .map(PlanDto.groupResponse::new).collect(Collectors.toList());
+            if(mode == 1){ // 1번이 달성률
+              this.achievementRate = groupMember.getAppUser().getStatistics().stream()
+                       .filter(statistics -> statistics.getDate().isEqual(LocalDate.now()))
+                       .map(StatisticsDto.Response::new)
+                        .findFirst().orElse(null);
+            }
+            else if(mode == 2) {
+              this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
+                       .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
+                       .map(PlanDto.groupResponse::new).collect(Collectors.toList());
+            }
         }
     }
 }
