@@ -58,8 +58,8 @@ public class PostController {
     }
     
     @DeleteMapping("/{post_id}")
-    public void deletePostById(@PathVariable int post_id) {
-        postService.deletePostById(post_id);
+    public String deletePostById(@PathVariable int post_id) {
+        return postService.deletePostById(post_id);
     }
     
 }
