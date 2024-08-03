@@ -52,9 +52,9 @@ public class PostController {
         return postService.updatePost(post_id, dto, images);
     }
     
-    @PatchMapping("like/{post_id}")
-    public void likePost(@PathVariable int post_id) {
-        postService.likePost(post_id);
+    @PatchMapping("{post_id}/like")
+    public PostDto.Response likePost(@PathVariable int post_id) {
+        return postService.likePost(post_id);
     }
     
     @DeleteMapping("/{post_id}")
