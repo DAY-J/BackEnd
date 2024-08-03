@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true, exclude = {"groupMembers", "plans", "posts", "comments", "setting", "statistics"})
+@ToString(callSuper = true, exclude = {"groupMembers", "plans", "posts", "comments", "statistics"})
 public class AppUser extends BaseEntity {
     
     @Id
@@ -31,8 +31,6 @@ public class AppUser extends BaseEntity {
     @Email
     private String email; //유저 구글 이메일
     private String role; //유저 권한
-    private String provider; //공급자
-    private String providerId; //공급 아이디
     private String profilePhoto;
     
     @Column(nullable = false)
@@ -62,15 +60,13 @@ public class AppUser extends BaseEntity {
     }
     
     @Builder
-    public AppUser(int id, String name, String nickname, String password, String email, String role, String provider, String providerId, String profilePhoto, Boolean isAlarm, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments) {
+    public AppUser(int id, String name, String nickname, String password, String email, String role, String profilePhoto, Boolean isAlarm, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, List<Statistics> statistics) {
         this.id = id;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.provider = provider;
-        this.providerId = providerId;
         this.profilePhoto = profilePhoto;
         this.isAlarm = isAlarm;
         this.groupMembers = groupMembers;

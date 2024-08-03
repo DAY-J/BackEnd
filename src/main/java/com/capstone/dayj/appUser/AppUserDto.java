@@ -14,8 +14,6 @@ public class AppUserDto {
         private String password; //유저 비밀번호
         private String email; //유저 구글 이메일
         private String role; //유저 권한
-        private String provider; //공급자
-        private String providerId; //공급 아이디
         private String profilePhoto;
         private Boolean isAlarm;
         
@@ -27,8 +25,6 @@ public class AppUserDto {
                     .password(password)
                     .email(email)
                     .role(role)
-                    .provider(provider)
-                    .providerId(providerId)
                     .profilePhoto(profilePhoto)
                     .isAlarm(isAlarm)
                     .build();
@@ -43,8 +39,6 @@ public class AppUserDto {
         private final String password; //유저 비밀번호
         private final String email; //유저 구글 이메일
         private final String role; //유저 권한
-        private final String provider; //공급자
-        private final String providerId; //공급 아이디
         private final String profilePhoto;
         private final Boolean isAlarm;
         
@@ -55,8 +49,6 @@ public class AppUserDto {
             this.password = appUser.getPassword();
             this.email = appUser.getEmail();
             this.role = appUser.getRole();
-            this.provider = appUser.getProvider();
-            this.providerId = appUser.getProviderId();
             this.profilePhoto = appUser.getProfilePhoto();
             this.isAlarm = appUser.getIsAlarm();
         }

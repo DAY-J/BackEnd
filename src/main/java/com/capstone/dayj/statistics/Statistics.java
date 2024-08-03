@@ -5,9 +5,10 @@ import com.capstone.dayj.common.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @Getter
 @Entity
@@ -19,22 +20,27 @@ public class Statistics extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Convert(converter = MapToJsonConverter.class)
-    private Map<LocalDate, Integer> achievementRate;
+    private LocalDate date;
+
+    @ColumnDefault("0")
+    private Long achievementRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     @JsonIgnore
     private AppUser appUser;
 
+    @Transactional
     public void update(StatisticsDto.Request dto) {
-        this.appUser = dto.getAppUser() == null ? this.appUser : dto.getAppUser();
-        this.achievementRate = dto.getAchievementRate() == null ? this.achievementRate : dto.getAchievementRate();
+        this.appUser = (dto.getAppUser() == null ? this.appUser : dto.getAppUser());
+        this.date = (dto.getDate() == null ? this.date : dto.getDate());
+        this.achievementRate = (dto.getAchievementRate() == null ? this.achievementRate : dto.getAchievementRate());
     }
 
     @Builder
-    public Statistics(int id, Map<LocalDate, Integer> achievementRate, AppUser appUser) {
+    public Statistics(int id, LocalDate date, Long achievementRate, AppUser appUser) {
         this.id = id;
+        this.date = date;
         this.achievementRate = achievementRate;
         this.appUser = appUser;
     }

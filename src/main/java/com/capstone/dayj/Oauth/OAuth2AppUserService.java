@@ -30,6 +30,7 @@ public class OAuth2AppUserService extends DefaultOAuth2UserService {
         String email = oAuth2User.getAttribute("email");
         String role = "ROLE_USER"; //일반 유저
         String nickname = randomMix(20); // nickname 설정
+        Boolean isAlarm = false;
         Optional<AppUser> findAppUser = appUserRepository.findByName(username);
         
         if (findAppUser.isEmpty()) { //찾지 못했다면
@@ -39,8 +40,7 @@ public class OAuth2AppUserService extends DefaultOAuth2UserService {
                     .password(encoder.encode("password"))
                     .role(role)
                     .nickname(nickname)
-                    .provider(provider)
-                    .providerId(providerId)
+                    .isAlarm(isAlarm)
                     .build();
             appUserService.createAppUser(newAppUser);
         }

@@ -6,6 +6,8 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.tag.Tag;
 import com.capstone.dayj.util.ImageUploader;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final AppUserRepository appUserRepository;
     private final ImageUploader imageUploader;
-    
+
     @Transactional
     public PostDto.Response createPost(int app_user_id, PostDto.Request dto, List<MultipartFile> images) throws CustomException, IOException {
         if (images != null && !images.isEmpty()) {
@@ -55,7 +57,8 @@ public class PostService {
     public PostDto.Response readPostById(int id) {
         Post findPost = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        postRepository.incrementPostView(id);
+        postRepository.incrementPostView(findPost.getId());
+
         return new PostDto.Response(findPost);
     }
     
@@ -88,11 +91,12 @@ public class PostService {
     }
     
     @Transactional
-    public void likePost(int postId) {
+    public PostDto.Response likePost(int postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         
-        postRepository.incrementPostLike(postId);
+        postRepository.incrementPostLike(post.getId());
+        return new PostDto.Response(post);
     }
     
     @Transactional
