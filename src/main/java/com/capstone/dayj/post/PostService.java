@@ -6,8 +6,6 @@ import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.tag.Tag;
 import com.capstone.dayj.util.ImageUploader;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,70 +33,71 @@ public class PostService {
             }
             dto.setPostPhoto(postPhotos);
         }
-        
+
         AppUser appUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         dto.setAppUser(appUser);
         Post savedPost = postRepository.save(dto.toEntity());
         return new PostDto.Response(savedPost);
     }
-    
+
     @Transactional(readOnly = true)
     public List<PostDto.Response> readAllPost() {
         List<Post> posts = postRepository.findAll();
-        
+
         if (posts.isEmpty())
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
-        
+
         return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
     }
-    
+
     @Transactional
-    public PostDto.Response readPostById(int id) {
-        Post findPost = postRepository.findById(id)
+    public PostDto.Response readPostById(int post_id) {
+        postRepository.incrementPostView(post_id);
+        Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         postRepository.incrementPostView(findPost.getId());
 
         return new PostDto.Response(findPost);
     }
-    
+
     @Transactional(readOnly = true)
     public List<PostDto.Response> readPostByTag(Tag tag) {
         List<Post> posts = postRepository.findByPostTag(tag);
-        
+
         if (posts.isEmpty())
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
-        
+
         return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<PostDto.Response> searchPostsByKeyword(String keyword) {
         List<Post> posts = postRepository.findByPostTitleContainingOrPostContentContaining(keyword, keyword);
-        
+
         if (posts.isEmpty())
             throw new CustomException(ErrorCode.POST_NOT_FOUND);
-        
+
         return posts.stream().map(PostDto.Response::new).collect(Collectors.toList());
     }
-    
+
     @Transactional
-    public void deletePostById(int postId) {
-        Post post = postRepository.findById(postId)
+    public String deletePostById(int post_id) {
+        Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        
-        postRepository.deleteById(post.getId());
+        postRepository.delete(findPost);
+        return String.format("Post(id: %d) was Deleted", post_id);
     }
-    
+
     @Transactional
     public PostDto.Response likePost(int postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        
+
         postRepository.incrementPostLike(post.getId());
         return new PostDto.Response(post);
     }
-    
+
     @Transactional
     public PostDto.Response updatePost(int postId, PostDto.Request dto, List<MultipartFile> images) throws IOException {
         // 이미지 지우고 싶을 때는 images 자체를 보내지 않으면 됨.
@@ -110,7 +109,7 @@ public class PostService {
             }
             dto.setPostPhoto(postPhotos);
         }
-        
+
         Post findPost = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         findPost.update(dto);
