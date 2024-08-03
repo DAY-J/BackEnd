@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,10 @@ public class PlanService {
     }
     
     @Transactional(readOnly = true)
-    public List<PlanDto.Response> readAllPlan(int app_user_id) {
-        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id);
+    public List<PlanDto.Response> readAllPlan(int app_user_id, LocalDate date) {
+        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
+                .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
+                .toList();
         
         if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
@@ -57,8 +60,10 @@ public class PlanService {
     }
     
     @Transactional(readOnly = true)
-    public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag) {
-        List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag);
+    public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag, LocalDate date) {
+        List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag).stream()
+                .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
+                .toList();
         
         if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
@@ -70,7 +75,6 @@ public class PlanService {
     public PlanDto.Response readPlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-        
         return new PlanDto.Response(findPlan);
     }
     
