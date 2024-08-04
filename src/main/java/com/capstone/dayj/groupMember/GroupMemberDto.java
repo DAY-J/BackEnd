@@ -19,16 +19,12 @@ public class GroupMemberDto {
         private int id;
         private AppUser appUser;
         private FriendGroup friendGroup;
-        
+
         public GroupMember toEntity() {
-            return GroupMember.builder()
-                    .id(id)
-                    .appUser(appUser)
-                    .friendGroup(friendGroup)
-                    .build();
+            return GroupMember.builder().id(id).appUser(appUser).friendGroup(friendGroup).build();
         }
     }
-    
+
     @Getter
     public static class Response {
         private final int id;
@@ -41,16 +37,10 @@ public class GroupMemberDto {
             this.id = groupMember.getId();
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
-            if(mode == 1){ // 1번이 달성률
-              this.achievementRate = groupMember.getAppUser().getStatistics().stream()
-                       .filter(statistics -> statistics.getDate().isEqual(LocalDate.now()))
-                       .map(StatisticsDto.Response::new)
-                        .findFirst().orElse(null);
-            }
-            else if(mode == 2) {
-              this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
-                       .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
-                       .map(PlanDto.groupResponse::new).collect(Collectors.toList());
+            if (mode == 1) {
+                this.achievementRate = groupMember.getAppUser().getStatistics().stream().filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new).findFirst().orElse(null);
+            } else if (mode == 2) {
+                this.groupMemberPlan = groupMember.getAppUser().getPlans().stream().filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now())).map(PlanDto.groupResponse::new).collect(Collectors.toList());
             }
         }
     }
