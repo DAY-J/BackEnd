@@ -1,0 +1,3 @@
+[submodule "src/main/resources/gcp"]
+	path = src/main/resources/gcp
+	url = https://github.com/DAY-J/gcp.git
