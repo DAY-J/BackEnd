@@ -16,10 +16,10 @@ public class StatisticsController {
         this.statisticsService = statisticsService;
     }
 
-    @GetMapping("statistics-all/{startDate}/{endDate}")
+    @GetMapping("statistics/{start_date}/{end_date}")
     public List<Map<LocalDate, Long>> getOverallStatistics(@PathVariable int app_user_id,
-                                                           @PathVariable LocalDate startDate, @PathVariable LocalDate endDate,
+                                                           @PathVariable LocalDate start_date, @PathVariable LocalDate end_date,
                                                            @RequestParam(name = "tag", required = false) Tag tag) {
-        return statisticsService.calculateOverall(app_user_id, startDate, endDate, tag);
+        return statisticsService.calculateOverall(app_user_id, start_date, end_date, tag);
     }
 }
