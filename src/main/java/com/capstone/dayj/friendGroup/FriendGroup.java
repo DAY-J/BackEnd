@@ -31,8 +31,8 @@ public class FriendGroup extends BaseEntity {
     private String groupName;
     
     public void update(FriendGroupDto.Request dto) {
-        this.groupName = dto.getGroupName();
-        this.groupGoal = dto.getGroupGoal();
+        this.groupName = (dto.getGroupName() == null ? this.getGroupName() : dto.getGroupName());
+        this.groupGoal = (dto.getGroupGoal() == null ? this.getGroupGoal() : dto.getGroupGoal());
     }
     
     @Builder

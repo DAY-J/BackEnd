@@ -1,13 +1,14 @@
 package com.capstone.dayj.statistics;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.capstone.dayj.tag.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("api/app-user/{app_user_id}/statistics")
+@RequestMapping("api/app-user/{app_user_id}")
 public class StatisticsController {
     private final StatisticsService statisticsService;
 
@@ -15,23 +16,10 @@ public class StatisticsController {
         this.statisticsService = statisticsService;
     }
 
-    @GetMapping("/{id}")
-    public StatisticsDto.Response getStatistics(@PathVariable int id) {
-        return statisticsService.getStatistics(id);
+    @GetMapping("statistics-all/{startDate}/{endDate}")
+    public List<Map<LocalDate, Long>> getOverallStatistics(@PathVariable int app_user_id,
+                                                           @PathVariable LocalDate startDate, @PathVariable LocalDate endDate,
+                                                           @RequestParam(name = "tag", required = false) Tag tag) {
+        return statisticsService.calculateOverall(app_user_id, startDate, endDate, tag);
     }
-
-
-    @PostMapping
-    public StatisticsDto.Response calculateStatistics(@RequestBody StatisticsDto.Request request) {
-        return statisticsService.calculateStatistics(request);
-    }
-
-    @GetMapping("/{range}")
-    // 문자열 날짜 형식 -> LocalDate 타입으로 변환. ISO 8601 형식(YYYY-MM-DD) 사용
-    public List<StatisticsDto.Response> getStatisticsByDateRange(@PathVariable("app_user_id") int userId,
-                                                                 @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                                 @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return statisticsService.getStatisticsByDateRange(userId, startDate, endDate);
-    }
-
 }

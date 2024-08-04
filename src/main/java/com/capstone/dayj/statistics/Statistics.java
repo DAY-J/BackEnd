@@ -2,8 +2,11 @@ package com.capstone.dayj.statistics;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.common.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -17,29 +20,30 @@ public class Statistics extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    private LocalDate date; // 일일 통계를 위한 날짜
+    private LocalDate date;
 
-    @Column(nullable = false)
-    private String tag;
-
-    @Column(nullable = false)
-    private double achievementPercentage;   // 달성 퍼센트
+    @ColumnDefault("0")
+    private Long achievementRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
+    @JsonIgnore
     private AppUser appUser;
 
-    public void updatePercentage(double achievementPercentage) { this.achievementPercentage = achievementPercentage; }
-
+    @Transactional
+    public void update(StatisticsDto.Request dto) {
+        this.appUser = (dto.getAppUser() == null ? this.appUser : dto.getAppUser());
+        this.date = (dto.getDate() == null ? this.date : dto.getDate());
+        this.achievementRate = (dto.getAchievementRate() == null ? this.achievementRate : dto.getAchievementRate());
+    }
 
     @Builder
-    public Statistics(int id, LocalDate date, String tag, double achievementPercentage, AppUser appUser) {
+    public Statistics(int id, LocalDate date, Long achievementRate, AppUser appUser) {
         this.id = id;
         this.date = date;
-        this.tag = tag;
-        this.achievementPercentage = achievementPercentage;
+        this.achievementRate = achievementRate;
         this.appUser = appUser;
     }
 
 }
+

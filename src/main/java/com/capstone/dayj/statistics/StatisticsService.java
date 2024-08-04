@@ -1,58 +1,85 @@
 package com.capstone.dayj.statistics;
 
-import com.capstone.dayj.plan.Plan;
-import com.capstone.dayj.plan.PlanRepository;
+import com.capstone.dayj.appUser.AppUser;
+import com.capstone.dayj.appUser.AppUserRepository;
+import com.capstone.dayj.exception.CustomException;
+import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.plan.PlanDto;
+import com.capstone.dayj.tag.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StatisticsService {
 
-    private final PlanRepository planRepository;
+    private final AppUserRepository appUserRepository;
     private final StatisticsRepository statisticsRepository;
 
     @Transactional
-    public StatisticsDto.Response calculateStatistics(StatisticsDto.Request request) {
-        int userId = request.getAppUser().getId();
-        String tag = request.getTag();
-        LocalDate date = request.getDate();
+    public List<Map<LocalDate, Long>> calculateOverall(int app_user_id, LocalDate startDate, LocalDate endDate, Tag tag) {
+        AppUser findAppUser = appUserRepository.findById(app_user_id)
+                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
 
-        List<Plan> plans = planRepository.findAllByAppUserIdAndTagAndDate(userId, tag, date);
+        return getDatesInRange(startDate, endDate).stream()
+                .map(date -> {
+                    List<PlanDto.Response> plansForDate = findAppUser.getPlans().stream()
+                            .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(date))
+                            .map(PlanDto.Response::new)
+                            .collect(Collectors.toList());
 
-        int totalGoals = plans.size();
-        int achievedGoals = (int) plans.stream().filter(Plan::getIsComplete).count();
+                    if (tag != null) { // tag가 있으면
+                        plansForDate = plansForDate.stream()
+                                .filter(plan -> plan.getPlanTag().equals(tag))
+                                .collect(Collectors.toList());
+                    }
 
-        double achievementPercentage;
+                    long achievementRate = calculateAchievementRate(plansForDate);
 
-        if (totalGoals == 0) {
-            achievementPercentage = 0;
-        }
-        else {
-            achievementPercentage = ((double) achievedGoals / totalGoals) * 100;
-        }
-
-        Statistics statistics = request.toEntity();
-        statistics.updatePercentage(achievementPercentage);
-        statistics = statisticsRepository.save(statistics);
-
-        return new StatisticsDto.Response(statistics);
+                    if (tag == null) { // tag가 없으면 
+                        updateOrCreateStatistics(findAppUser, date, achievementRate);
+                    }
+                    return Map.of(date, achievementRate);
+                })
+                .collect(Collectors.toList());
     }
 
-    public StatisticsDto.Response getStatistics(int id) {
-        Statistics statistics = statisticsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Statistics not found with id " + id));
-        return new StatisticsDto.Response(statistics);
+    private List<LocalDate> getDatesInRange(LocalDate startDate, LocalDate endDate) {
+        List<LocalDate> dates = new ArrayList<>();
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            dates.add(date);
+        }
+        return dates;
     }
 
-    // 특정 사용자(userId)의 통계 데이터를 지정된 날짜 범위(startDate ~ endDate)로 조회하여 반환
-    public List<StatisticsDto.Response> getStatisticsByDateRange(int userId, LocalDate startDate, LocalDate endDate) {
-        List<Statistics> statisticsList = statisticsRepository.findAllByAppUserIdAndDateBetween(userId, startDate, endDate);
-        return statisticsList.stream().map(StatisticsDto.Response::new).collect(Collectors.toList());
+    private long calculateAchievementRate(List<PlanDto.Response> plans) {
+        int numOfGoal = plans.size();
+        long numOfAchievedGoal = plans.stream().filter(PlanDto.Response::getIsComplete).count();
+        return numOfGoal > 0 ? (long) ((numOfAchievedGoal / (double) numOfGoal) * 100) : 0;
+    }
+
+    private void updateOrCreateStatistics(AppUser appUser, LocalDate date, long achievementRate) {
+        Statistics findStatistics = statisticsRepository.findByAppUserIdAndDate(appUser.getId(), date);
+
+        if (findStatistics != null) {
+            findStatistics.update(StatisticsDto.Request.builder()
+                    .achievementRate(achievementRate)
+                    .build());
+        } else {
+            StatisticsDto.Request request = StatisticsDto.Request.builder()
+                    .appUser(appUser)
+                    .date(date)
+                    .achievementRate(achievementRate)
+                    .build();
+            statisticsRepository.save(request.toEntity());
+        }
     }
 }
+
