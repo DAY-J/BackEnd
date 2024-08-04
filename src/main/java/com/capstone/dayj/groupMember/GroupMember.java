@@ -15,11 +15,11 @@ public class GroupMember extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     private AppUser appUser;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_group_id", referencedColumnName = "id")
     @JsonBackReference

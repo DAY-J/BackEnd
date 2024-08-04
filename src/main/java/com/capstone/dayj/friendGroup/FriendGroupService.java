@@ -2,10 +2,10 @@ package com.capstone.dayj.friendGroup;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.appUser.AppUserRepository;
-import com.capstone.dayj.groupMember.GroupMemberDto;
-import com.capstone.dayj.groupMember.GroupMemberRepository;
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.groupMember.GroupMemberDto;
+import com.capstone.dayj.groupMember.GroupMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +22,11 @@ public class FriendGroupService {
 
     @Transactional
     public void createFriendGroup(int app_user_id, FriendGroupDto.Request dto) {
+        AppUser findAppUser = appUserRepository.findById(app_user_id)
+                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+
         FriendGroup friendGroup = dto.toEntity();
 
-        AppUser findAppUser = appUserRepository.findById(app_user_id)
-                .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-
-        new GroupMemberDto.Request();
         GroupMemberDto.Request request = GroupMemberDto.Request.builder()
                 .appUser(findAppUser)
                 .friendGroup(friendGroup)
@@ -40,7 +39,7 @@ public class FriendGroupService {
     @Transactional(readOnly = true)
     public List<FriendGroupDto.Response> readAllFriendGroup(int app_user_id) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
-                .orElseThrow(()-> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
 
         List<FriendGroup> findFriendGroups = friendGroupRepository.findByGroupMember_AppUser_Id(app_user_id);
 
@@ -56,25 +55,26 @@ public class FriendGroupService {
     public FriendGroupDto.Response readFriendGroupById(int app_user_id, int group_id) {
 
         FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
-                .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         return new FriendGroupDto.Response(findFriendGroup, app_user_id);
     }
 
     @Transactional
-    public void updateFriendGroup(int app_user_id, int group_id, FriendGroupDto.Request dto){
-        FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id,group_id)
-                .orElseThrow(()-> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
+    public FriendGroupDto.Response updateFriendGroup(int app_user_id, int group_id, FriendGroupDto.Request dto) {
+        FriendGroup findFriendGroup = friendGroupRepository.findByGroupMember_AppUser_IdAndId(app_user_id, group_id)
+                .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         findFriendGroup.update(dto);
-        friendGroupRepository.save(findFriendGroup);
+
+        return new FriendGroupDto.Response(findFriendGroup, app_user_id);
     }
 
     @Transactional
     public void deleteFriendGroupById(int group_id) {
         friendGroupRepository.findById(group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
-        
+
         friendGroupRepository.deleteById(group_id);
     }
 }
