@@ -21,7 +21,11 @@ public class GroupMemberDto {
         private FriendGroup friendGroup;
 
         public GroupMember toEntity() {
-            return GroupMember.builder().id(id).appUser(appUser).friendGroup(friendGroup).build();
+            return GroupMember.builder()
+                    .id(id)
+                    .appUser(appUser)
+                    .friendGroup(friendGroup)
+                    .build();
         }
     }
 
@@ -38,9 +42,13 @@ public class GroupMemberDto {
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
             if (mode == 1) {
-                this.achievementRate = groupMember.getAppUser().getStatistics().stream().filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new).findFirst().orElse(null);
+                this.achievementRate = groupMember.getAppUser().getStatistics().stream()
+                        .filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new)
+                        .findFirst().orElse(null);
             } else if (mode == 2) {
-                this.groupMemberPlan = groupMember.getAppUser().getPlans().stream().filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now())).map(PlanDto.groupResponse::new).collect(Collectors.toList());
+                this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
+                        .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
+                        .map(PlanDto.groupResponse::new).collect(Collectors.toList());
             }
         }
     }
