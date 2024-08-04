@@ -35,7 +35,7 @@ public class GroupMemberDto {
         private final int appUserId;
         private final String nickname;
         private StatisticsDto.Response achievementRate;
-        private List<PlanDto.groupResponse> groupMemberPlan;
+        private List<PlanDto.groupResponse> groupMemberPlans;
 
         public Response(GroupMember groupMember, int mode) {
             this.id = groupMember.getId();
@@ -46,7 +46,7 @@ public class GroupMemberDto {
                         .filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new)
                         .findFirst().orElse(null);
             } else if (mode == 2) { // 친구 plan 보여줄 때
-                this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
+                this.groupMemberPlans = groupMember.getAppUser().getPlans().stream()
                         .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
                         .map(PlanDto.groupResponse::new).collect(Collectors.toList());
             }
