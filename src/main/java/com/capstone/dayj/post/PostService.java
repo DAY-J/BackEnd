@@ -56,7 +56,6 @@ public class PostService {
         postRepository.incrementPostView(post_id);
         Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        postRepository.incrementPostView(findPost.getId());
 
         return new PostDto.Response(findPost);
     }
@@ -90,12 +89,11 @@ public class PostService {
     }
 
     @Transactional
-    public PostDto.Response likePost(int postId) {
-        Post post = postRepository.findById(postId)
+    public PostDto.Response likePost(int post_id) {
+        postRepository.incrementPostLike(post_id);
+        Post findPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-
-        postRepository.incrementPostLike(post.getId());
-        return new PostDto.Response(post);
+        return new PostDto.Response(findPost);
     }
 
     @Transactional

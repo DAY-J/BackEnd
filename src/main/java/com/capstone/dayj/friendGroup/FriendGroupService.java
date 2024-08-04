@@ -71,10 +71,11 @@ public class FriendGroupService {
     }
 
     @Transactional
-    public void deleteFriendGroupById(int group_id) {
+    public String deleteFriendGroupById(int group_id) {
         friendGroupRepository.findById(group_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.FRIEND_GROUP_NOT_FOUND));
 
         friendGroupRepository.deleteById(group_id);
+        return String.format("FriendGroup(id: %d) was Deleted", group_id);
     }
 }

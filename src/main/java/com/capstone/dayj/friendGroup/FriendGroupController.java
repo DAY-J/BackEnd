@@ -35,7 +35,7 @@ public class FriendGroupController {
     }
 
     @DeleteMapping("/{group_id}") // 그룹 자체 삭제
-    public void deleteFriendGroupById(@PathVariable int group_id) {
-        friendGroupService.deleteFriendGroupById(group_id);
+    public String deleteFriendGroupById(@PathVariable int group_id) {
+        return friendGroupService.deleteFriendGroupById(group_id);
     }
 }
