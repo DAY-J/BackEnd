@@ -41,11 +41,11 @@ public class GroupMemberDto {
             this.id = groupMember.getId();
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
-            if (mode == 1) {
+            if (mode == 1) { // 달성률 목록 보여줄 때
                 this.achievementRate = groupMember.getAppUser().getStatistics().stream()
                         .filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new)
                         .findFirst().orElse(null);
-            } else if (mode == 2) {
+            } else if (mode == 2) { // 친구 plan 보여줄 때
                 this.groupMemberPlan = groupMember.getAppUser().getPlans().stream()
                         .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
                         .map(PlanDto.groupResponse::new).collect(Collectors.toList());
