@@ -1,5 +1,6 @@
 package com.capstone.dayj.plan;
 
+import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.tag.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,10 @@ public class PlanController {
     }
     
     @PostMapping
-    public PlanDto.Response createPlan(@PathVariable int app_user_id, @Valid @RequestBody PlanDto.Request dto) {
-        return planService.createPlan(app_user_id, dto);
+    public PlanDto.Response createPlan(@PathVariable int app_user_id,
+                                       @Valid @RequestPart(value = "plan") PlanDto.Request planDto,
+                                       @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
+        return planService.createPlan(app_user_id, planDto, planOptionDto);
     }
     
     @GetMapping
@@ -40,8 +43,10 @@ public class PlanController {
     }
     
     @PatchMapping("/{plan_id}")
-    public PlanDto.Response patchPlan(@PathVariable int plan_id, @Valid @RequestBody PlanDto.Request dto) {
-        return planService.patchPlan(plan_id, dto);
+    public PlanDto.Response patchPlan(@PathVariable int plan_id,
+                                      @Valid @RequestPart(value = "plan") PlanDto.Request planDto,
+                                      @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
+        return planService.patchPlan(plan_id, planDto, planOptionDto);
     }
     
     @PatchMapping("/{plan_id}/image")
