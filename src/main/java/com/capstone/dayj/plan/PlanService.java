@@ -29,21 +29,18 @@ public class PlanService {
     
     
     @Transactional
-    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request dto) {
+    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        dto.setAppUser(findAppUser);
         
-        Plan savedPlan = planRepository.save(dto.toEntity());
-        PlanOptionDto.Request newPlanOption = PlanOptionDto.Request.builder()
-                .plan(savedPlan)
-                .build();
+        planDto.setAppUser(findAppUser);
+        Plan savedPlan = planRepository.save(planDto.toEntity());
         
-        PlanOption savedPlanOption = planOptionRepository.save(newPlanOption.toEntity());
-        PlanDto.Request newDto = PlanDto.Request.builder()
+        planOptionDto.setPlan(savedPlan);
+        PlanOption savedPlanOption = planOptionRepository.save(planOptionDto.toEntity());
+        savedPlan.update(PlanDto.Request.builder()
                 .planOption(savedPlanOption)
-                .build();
-        savedPlan.update(newDto);
+                .build());
         return new PlanDto.Response(savedPlan);
     }
     
@@ -79,10 +76,11 @@ public class PlanService {
     }
     
     @Transactional
-    public PlanDto.Response patchPlan(int plan_id, PlanDto.Request dto) {
+    public PlanDto.Response patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-        findPlan.update(dto);
+        findPlan.getPlanOption().update(planOptionDto);
+        findPlan.update(planDto);
         return new PlanDto.Response(findPlan);
     }
     
