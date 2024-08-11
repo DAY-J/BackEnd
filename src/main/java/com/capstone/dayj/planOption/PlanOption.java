@@ -44,7 +44,7 @@ public class PlanOption extends BaseEntity {
         if (planStartTime == null)
             this.planStartTime = LocalDateTime.now();
         if (planEndTime == null) {
-            this.planEndTime = LocalDateTime.now().plusHours(2);
+            this.planEndTime = LocalDateTime.now().plusHours(1);
         }
     }
     

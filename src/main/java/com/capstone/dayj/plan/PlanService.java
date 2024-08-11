@@ -45,10 +45,17 @@ public class PlanService {
     }
     
     @Transactional(readOnly = true)
-    public List<PlanDto.Response> readAllPlan(int app_user_id, LocalDate date) {
-        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
-                .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
-                .toList();
+    public List<PlanDto.Response> readAllPlanByDate(int app_user_id, LocalDate date) {
+        List<Plan> findPlans;
+        
+        if (date == null) {
+            findPlans = planRepository.findAll();
+        }
+        else {
+            findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
+                    .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
+                    .toList();
+        }
         
         if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
