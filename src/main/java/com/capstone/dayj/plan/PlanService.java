@@ -9,14 +9,20 @@ import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.planOption.PlanOptionRepository;
 import com.capstone.dayj.tag.Tag;
 import com.capstone.dayj.util.ImageUploader;
+import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
+import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.RequiredArgsConstructor;
+import org.snu.ids.kkma.index.KeywordExtractor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,6 +86,54 @@ public class PlanService {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         return new PlanDto.Response(findPlan);
+    }
+    
+    @Transactional()
+    public List<String> recommendPlan(int app_user_id, Tag tag) {
+        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
+                .filter(plan -> plan.getPlanTag().equals(tag)).toList();
+        
+        // 만약 계획이 하나도 없는 경우 추천 못하게 안내 띄워주기 -> 프론트
+        if (findPlans.isEmpty()) {
+            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+        }
+
+        /*
+                    String word = keywordExtractor.extractKeyword(plan.getGoal(), true)
+                    .stream()
+                    .map(Token::getString)
+                    .max((s1, s2) -> Integer.compare(s1.length(), s2.length()))
+                    .orElse(null);
+            
+            if (cnt.containsKey(word)) {
+                cnt.replace(word, cnt.get(word) + 1);
+            }
+            else {
+                cnt.put(word, 1);
+            }
+         */
+
+//        String match = "[^가-힣a-zA-Z ]"; // 한글, 영어 빼고 전부 제거하는 정규식
+        Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
+        KeywordExtractor keywordExtractor = new KeywordExtractor();
+        Map<String, Integer> cnt = new HashMap<String, Integer>(Map.of()); // {단어, 개수}
+        findPlans.forEach(plan -> {
+            komoran.analyze(plan.getGoal()).getNouns()
+                    .forEach(keyword -> {
+                        if (cnt.containsKey(keyword)) {
+                            cnt.replace(keyword, cnt.get(keyword) + 1);
+                        }
+                        else {
+                            cnt.put(keyword, 1);
+                        }
+                    });
+        });
+        
+        return cnt.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .map(Map.Entry::getKey)
+                .limit(3)
+                .toList();
     }
     
     @Transactional

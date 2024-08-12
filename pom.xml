@@ -8,6 +8,12 @@
         <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <groupId>com.capstone</groupId>
     <artifactId>DayJ</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -97,7 +103,17 @@
             <artifactId>spring-cloud-gcp-starter-storage</artifactId>
             <version>1.2.8.RELEASE</version>
         </dependency>
-
+        <dependency>
+            <groupId>kr.bydelta</groupId>
+            <artifactId>koalanlp-kkma</artifactId>
+            <classifier>assembly</classifier>
+            <version>2.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.shin285</groupId>
+            <artifactId>KOMORAN</artifactId>
+            <version>3.3.9</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -42,6 +42,11 @@ public class PlanController {
         return planService.readPlanById(plan_id);
     }
     
+    @GetMapping("/recommend/{tag}")
+    public List<String> recommendPlan(@PathVariable int app_user_id, @PathVariable Tag tag) {
+        return planService.recommendPlan(app_user_id, tag);
+    }
+    
     @PatchMapping("/{plan_id}")
     public PlanDto.Response patchPlan(@PathVariable int plan_id,
                                       @Valid @RequestPart(value = "plan") PlanDto.Request planDto,
