@@ -104,12 +104,6 @@
             <version>1.2.8.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>kr.bydelta</groupId>
-            <artifactId>koalanlp-kkma</artifactId>
-            <classifier>assembly</classifier>
-            <version>2.1.4</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.shin285</groupId>
             <artifactId>KOMORAN</artifactId>
             <version>3.3.9</version>

@@ -27,7 +27,7 @@ public class PlanController {
     }
     
     @GetMapping
-    public List<PlanDto.Response> readAllPlanByDate(@PathVariable int app_user_id, @RequestParam(name = "date") LocalDate date) {
+    public List<PlanDto.Response> readAllPlanByDate(@PathVariable int app_user_id, @RequestParam(name = "date", required = false) LocalDate date) {
         return planService.readAllPlanByDate(app_user_id, date);
     }
     
