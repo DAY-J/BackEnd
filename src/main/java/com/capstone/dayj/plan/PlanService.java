@@ -9,8 +9,7 @@ import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.planOption.PlanOptionRepository;
 import com.capstone.dayj.tag.Tag;
 import com.capstone.dayj.util.ImageUploader;
-import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
-import kr.co.shineware.nlp.komoran.core.Komoran;
+import com.capstone.dayj.util.KeywordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +28,7 @@ public class PlanService {
     private final PlanRepository planRepository;
     private final PlanOptionRepository planOptionRepository;
     private final AppUserRepository appUserRepository;
+    private final KeywordGenerator keywordGenerator;
     private final ImageUploader imageUploader;
     
     
@@ -88,34 +87,31 @@ public class PlanService {
     }
     
     @Transactional()
-    public List<String> recommendPlan(int app_user_id, Tag tag) {
+    public Set<String> recommendPlan(int app_user_id, Tag tag) {
         List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
                 .filter(plan -> plan.getPlanTag().equals(tag)).toList();
+        Set<String> recommendGoal = new HashSet<>(Set.of());
         
-        // 만약 계획이 하나도 없는 경우 추천 못하게 안내 띄워주기 -> 프론트
         if (findPlans.isEmpty()) {
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
         }
-
-        Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
-        Map<String, Integer> cnt = new HashMap<String, Integer>(Map.of()); // {단어, 개수}
-        findPlans.forEach(plan -> {
-            komoran.analyze(plan.getGoal()).getNouns()
-                    .forEach(keyword -> {
-                        if (cnt.containsKey(keyword)) {
-                            cnt.replace(keyword, cnt.get(keyword) + 1);
-                        }
-                        else {
-                            cnt.put(keyword, 1);
-                        }
-                    });
-        });
         
-        return cnt.entrySet().stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .map(Map.Entry::getKey)
+        keywordGenerator.getKeywords().get(tag)
+                .forEach(keyword -> {
+                    findPlans.forEach(plan -> {
+                        if (plan.getGoal().contains(keyword))
+                            recommendGoal.add(plan.getGoal());
+                    });
+                });
+        
+        if (recommendGoal.isEmpty()) {
+            recommendGoal.addAll(keywordGenerator.getKeywords().get(tag));
+        }
+        
+        return recommendGoal
+                .stream()
                 .limit(3)
-                .toList();
+                .collect(Collectors.toSet());
     }
     
     @Transactional
@@ -139,9 +135,10 @@ public class PlanService {
     }
     
     @Transactional
-    public void deletePlanById(int plan_id) {
+    public String deletePlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         planRepository.delete(findPlan);
+        return String.format("Plan(id: %d) was Deleted", findPlan.getId());
     }
 }

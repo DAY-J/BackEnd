@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/app-user/{app_user_id}/plan")
@@ -42,8 +43,8 @@ public class PlanController {
         return planService.readPlanById(plan_id);
     }
     
-    @GetMapping("/recommend/{tag}")
-    public List<String> recommendPlan(@PathVariable int app_user_id, @PathVariable Tag tag) {
+    @GetMapping("/recommend/{tag}/2")
+    public Set<String> recommendPlan_test(@PathVariable int app_user_id, @PathVariable Tag tag) {
         return planService.recommendPlan(app_user_id, tag);
     }
     
@@ -60,7 +61,7 @@ public class PlanController {
     }
     
     @DeleteMapping("/{plan_id}")
-    public void deletePlanById(@PathVariable int plan_id) {
-        planService.deletePlanById(plan_id);
+    public String deletePlanById(@PathVariable int plan_id) {
+        return planService.deletePlanById(plan_id);
     }
 }
