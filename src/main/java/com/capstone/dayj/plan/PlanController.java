@@ -43,8 +43,8 @@ public class PlanController {
         return planService.readPlanById(plan_id);
     }
     
-    @GetMapping("/recommend/{tag}/2")
-    public Set<String> recommendPlan_test(@PathVariable int app_user_id, @PathVariable Tag tag) {
+    @GetMapping("/recommend/{tag}")
+    public Set<String> recommendPlan(@PathVariable int app_user_id, @PathVariable Tag tag) {
         return planService.recommendPlan(app_user_id, tag);
     }
     
