@@ -17,32 +17,32 @@ public class Plan extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     @Column(nullable = false)
     private Tag planTag;
     @Column(nullable = false)
     private String goal;
-    
+
     private String planPhoto;
-    
+
     private Boolean isComplete;
     @Column(nullable = false)
     private Boolean isPublic;
-    
+
     @OneToOne(mappedBy = "plan", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private PlanOption planOption;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     @JsonIgnore
     private AppUser appUser;
-    
+
     @PrePersist
     protected void onCreate() {
         this.isComplete = false;
     }
-    
+
     public void update(PlanDto.Request dto) {
         this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());
         this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
@@ -51,7 +51,7 @@ public class Plan extends BaseEntity {
         this.isComplete = (dto.getGoal() == null ? this.isComplete : dto.getIsComplete());
         this.planOption = (dto.getPlanOption() == null ? this.planOption : dto.getPlanOption());
     }
-    
+
     @Builder
     public Plan(int id, Tag planTag, String goal, String planPhoto, Boolean isComplete, Boolean isPublic, PlanOption planOption, AppUser appUser) {
         this.id = id;
@@ -62,7 +62,7 @@ public class Plan extends BaseEntity {
         this.isPublic = isPublic;
         this.planOption = planOption;
         this.appUser = appUser;
-        
+
     }
 }
 

@@ -22,7 +22,7 @@ public class PlanDto {
         private Boolean isPublic;
         private PlanOption planOption;
         private AppUser appUser;
-        
+
         public Plan toEntity() {
             return Plan.builder()
                     .id(id)
@@ -36,7 +36,7 @@ public class PlanDto {
                     .build();
         }
     }
-    
+
     @ToString
     @Getter
     public static class Response {
@@ -47,7 +47,7 @@ public class PlanDto {
         private final Boolean isComplete;
         private final Boolean isPublic;
         private final PlanOptionDto.Response planOption;
-        
+
         /* Entity -> Dto */
         public Response(Plan plan) {
             this.id = plan.getId();
@@ -59,7 +59,7 @@ public class PlanDto {
             this.planOption = new PlanOptionDto.Response(plan.getPlanOption());
         }
     }
-    
+
     @Getter
     public static class groupResponse {
         private final int id;
@@ -67,7 +67,7 @@ public class PlanDto {
         private final Boolean isComplete;
         private final LocalDateTime createdAt;
         private final LocalDateTime updatedAt;
-        
+
         public groupResponse(Plan plan) {
             this.id = plan.getId();
             this.goal = plan.getGoal();
