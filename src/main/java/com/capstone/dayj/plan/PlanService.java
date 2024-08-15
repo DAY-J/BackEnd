@@ -45,6 +45,9 @@ public class PlanService {
         savedPlan.update(PlanDto.Request.builder()
                 .planOption(savedPlanOption)
                 .build());
+
+        createRepeatedPlan(planDto, planOptionDto);
+
         return new PlanDto.Response(savedPlan);
     }
     
@@ -120,6 +123,9 @@ public class PlanService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
+
+        createRepeatedPlan(planDto, planOptionDto);
+
         return new PlanDto.Response(findPlan);
     }
     
@@ -140,5 +146,32 @@ public class PlanService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         planRepository.delete(findPlan);
         return String.format("Plan(id: %d) was Deleted", findPlan.getId());
+    }
+
+    public void createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto){
+        if (planOptionDto.getPlanRepeatStartDate()!= null){
+            LocalDate startDate = planOptionDto.getPlanRepeatStartDate().toLocalDate();
+            LocalDate endDate = planOptionDto.getPlanRepeatEndDate().toLocalDate();
+            if(startDate.isAfter(endDate)) throw new CustomException(ErrorCode.DATE_RANGE_ERROR);
+
+            for(LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)){
+                if(planOptionDto.getPlanDaysOfWeek().contains(date.getDayOfWeek())){
+
+                    Plan savedPlan = planRepository.save(planDto.toEntity());
+
+                    PlanOptionDto.Request newPlanOptionDto = new PlanOptionDto.Request();
+
+                    newPlanOptionDto.setPlan(savedPlan);
+                    newPlanOptionDto.setPlanStartTime(date.atStartOfDay());
+                    newPlanOptionDto.setPlanEndTime(date.atTime(1,0,0));
+
+                    PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
+
+                    savedPlan.update(PlanDto.Request.builder()
+                            .planOption(savedPlanOption)
+                            .build());
+                }
+            }
+        }
     }
 }

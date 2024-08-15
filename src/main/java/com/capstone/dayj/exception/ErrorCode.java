@@ -10,6 +10,9 @@ public enum ErrorCode {
     // 400 BAD_REQUEST: 잘못된 요청
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
+    // 400 DATE_RANGE_ERROR: 잘못된 날짜 범위
+    DATE_RANGE_ERROR(HttpStatus.BAD_REQUEST, "시작 날짜는 종료 날짜보다 이전이어야 합니다."),
+
     // 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "허용되지 않은 메서드입니다."),
 
