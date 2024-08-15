@@ -49,7 +49,7 @@ public class PlanController {
     }
     
     @PatchMapping("/{plan_id}")
-    public PlanDto.Response patchPlan(@PathVariable int plan_id,
+    public List<PlanDto.Response> patchPlan(@PathVariable int plan_id,
                                       @Valid @RequestPart(value = "plan") PlanDto.Request planDto,
                                       @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
         return planService.patchPlan(plan_id, planDto, planOptionDto);

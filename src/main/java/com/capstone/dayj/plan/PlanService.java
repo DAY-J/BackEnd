@@ -46,8 +46,12 @@ public class PlanService {
         savedPlan.update(PlanDto.Request.builder()
                 .planOption(savedPlanOption)
                 .build());
-        
-        return createRepeatedPlan(planDto, planOptionDto);
+
+        List<PlanDto.Response> savedPlans = new ArrayList<>();
+        savedPlans.add(new PlanDto.Response(savedPlan));
+        savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
+
+        return savedPlans;
     }
 
     @Transactional(readOnly = true)
@@ -116,15 +120,25 @@ public class PlanService {
     }
 
     @Transactional
-    public PlanDto.Response patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+    public List<PlanDto.Response> patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+//        PlanOption planOption = findPlan.getPlanOption();
+
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
-        
-        createRepeatedPlan(planDto, planOptionDto);
-        
-        return new PlanDto.Response(findPlan);
+
+        //조건문 수정 필요
+//        if (!planOptionDto.getPlanRepeatStartDate().toLocalDate().equals(planOption.getPlanRepeatStartDate().toLocalDate())) {
+//            createRepeatedPlan(planDto, planOptionDto);
+//        }
+
+        List<PlanDto.Response> savedPlans = new ArrayList<>();
+        savedPlans.add(new PlanDto.Response(findPlan));
+        savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
+
+        return savedPlans;
     }
 
     @Transactional
@@ -145,7 +159,7 @@ public class PlanService {
         planRepository.delete(findPlan);
         return String.format("Plan(id: %d) was Deleted", findPlan.getId());
     }
-    
+
     @Transactional
     public List<PlanDto.Response> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         List<PlanDto.Response> savedPlans = new ArrayList<>();
@@ -164,9 +178,9 @@ public class PlanService {
                             .planStartTime(date.atStartOfDay())
                             .planEndTime(date.atTime(1, 0, 0))
                             .build();
-                    
+
                     PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
-                    
+
                     savedPlan.update(PlanDto.Request.builder()
                             .planOption(savedPlanOption)
                             .build());
