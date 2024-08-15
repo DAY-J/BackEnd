@@ -37,20 +37,22 @@ public class PlanService {
     public List<PlanDto.Response> createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-
+        
+        
         planDto.setAppUser(findAppUser);
         Plan savedPlan = planRepository.save(planDto.toEntity());
-
+        
+        
         planOptionDto.setPlan(savedPlan);
         PlanOption savedPlanOption = planOptionRepository.save(planOptionDto.toEntity());
         savedPlan.update(PlanDto.Request.builder()
                 .planOption(savedPlanOption)
                 .build());
-
+        
         List<PlanDto.Response> savedPlans = new ArrayList<>();
         savedPlans.add(new PlanDto.Response(savedPlan));
         savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
-
+        
         return savedPlans;
     }
 
@@ -121,23 +123,24 @@ public class PlanService {
 
     @Transactional
     public List<PlanDto.Response> patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+    public List<PlanDto.Response> patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-
-//        PlanOption planOption = findPlan.getPlanOption();
-
+        
+        LocalDate beforeRepeatStartDate = findPlan.getPlanOption()
+                .getPlanRepeatStartDate()
+                .toLocalDate();
+        
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
-
-        //조건문 수정 필요
-//        if (!planOptionDto.getPlanRepeatStartDate().toLocalDate().equals(planOption.getPlanRepeatStartDate().toLocalDate())) {
-//            createRepeatedPlan(planDto, planOptionDto);
-//        }
-
+        
         List<PlanDto.Response> savedPlans = new ArrayList<>();
         savedPlans.add(new PlanDto.Response(findPlan));
-        savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
-
+        
+        if (!planOptionDto.getPlanRepeatStartDate().toLocalDate().equals(beforeRepeatStartDate)) {
+            savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
+        }
+        
         return savedPlans;
     }
 
@@ -145,7 +148,8 @@ public class PlanService {
     public PlanDto.Response patchPlanImage(int plan_id, MultipartFile image) throws IOException {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-
+        
+        
         PlanDto.Request dto = new PlanDto.Request();
         dto.setPlanPhoto(imageUploader.upload(image));
         findPlan.update(dto);
@@ -177,6 +181,9 @@ public class PlanService {
                             .plan(savedPlan)
                             .planStartTime(date.atStartOfDay())
                             .planEndTime(date.atTime(1, 0, 0))
+                            .planRepeatStartDate(planOptionDto.getPlanRepeatStartDate())
+                            .planRepeatEndDate(planOptionDto.getPlanRepeatEndDate())
+                            .planDaysOfWeek(planOptionDto.getPlanDaysOfWeek())
                             .build();
 
                     PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
