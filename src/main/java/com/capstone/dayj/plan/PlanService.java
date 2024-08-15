@@ -158,12 +158,12 @@ public class PlanService {
                 if(planOptionDto.getPlanDaysOfWeek().contains(date.getDayOfWeek())){
 
                     Plan savedPlan = planRepository.save(planDto.toEntity());
-
-                    PlanOptionDto.Request newPlanOptionDto = new PlanOptionDto.Request();
-
-                    newPlanOptionDto.setPlan(savedPlan);
-                    newPlanOptionDto.setPlanStartTime(date.atStartOfDay());
-                    newPlanOptionDto.setPlanEndTime(date.atTime(1,0,0));
+                    
+                    PlanOptionDto.Request newPlanOptionDto = PlanOptionDto.Request.builder()
+                            .plan(savedPlan)
+                            .planStartTime(date.atStartOfDay())
+                            .planEndTime(date.atTime(1, 0, 0))
+                            .build();
 
                     PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
 
