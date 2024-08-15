@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class PlanService {
 
 
     @Transactional
-    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+    public List<PlanDto.Response> createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
 
@@ -45,10 +46,8 @@ public class PlanService {
         savedPlan.update(PlanDto.Request.builder()
                 .planOption(savedPlanOption)
                 .build());
-
-        createRepeatedPlan(planDto, planOptionDto);
-
-        return new PlanDto.Response(savedPlan);
+        
+        return createRepeatedPlan(planDto, planOptionDto);
     }
 
     @Transactional(readOnly = true)
@@ -122,9 +121,9 @@ public class PlanService {
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
-
+        
         createRepeatedPlan(planDto, planOptionDto);
-
+        
         return new PlanDto.Response(findPlan);
     }
 
@@ -146,38 +145,34 @@ public class PlanService {
         planRepository.delete(findPlan);
         return String.format("Plan(id: %d) was Deleted", findPlan.getId());
     }
-
-    public void createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+    
+    public List<PlanDto.Response> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+        List<PlanDto.Response> savedPlans = new ArrayList<>();
+        
         if (planOptionDto.getPlanRepeatStartDate() != null) {
             LocalDate startDate = planOptionDto.getPlanRepeatStartDate().toLocalDate();
             LocalDate endDate = planOptionDto.getPlanRepeatEndDate().toLocalDate();
             if (startDate.isAfter(endDate)) throw new CustomException(ErrorCode.DATE_RANGE_ERROR);
-
+            
             for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
                 if (planOptionDto.getPlanDaysOfWeek().contains(date.getDayOfWeek())) {
-
-                    PlanDto.Request newPlanDto = PlanDto.Request.builder()
-                            .appUser(planDto.getAppUser())
-                            .planTag(planDto.getPlanTag())
-                            .goal(planDto.getGoal())
-                            .isPublic(planDto.getIsPublic())
-                            .build();
-
-                    Plan savedPlan = planRepository.save(newPlanDto.toEntity());
-
+                    Plan savedPlan = planRepository.save(planDto.toEntity());
+                    
                     PlanOptionDto.Request newPlanOptionDto = PlanOptionDto.Request.builder()
                             .plan(savedPlan)
                             .planStartTime(date.atStartOfDay())
                             .planEndTime(date.atTime(1, 0, 0))
                             .build();
-
+                    
                     PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
-
+                    
                     savedPlan.update(PlanDto.Request.builder()
                             .planOption(savedPlanOption)
                             .build());
+                    savedPlans.add(new PlanDto.Response(savedPlan));
                 }
             }
         }
+        return savedPlans;
     }
 }

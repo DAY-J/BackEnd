@@ -21,7 +21,7 @@ public class PlanController {
     }
     
     @PostMapping
-    public PlanDto.Response createPlan(@PathVariable int app_user_id,
+    public List<PlanDto.Response> createPlan(@PathVariable int app_user_id,
                                        @Valid @RequestPart(value = "plan") PlanDto.Request planDto,
                                        @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
         return planService.createPlan(app_user_id, planDto, planOptionDto);
