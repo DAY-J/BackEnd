@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity
@@ -26,11 +25,8 @@ public class Plan extends BaseEntity {
     
     private String planPhoto;
     
-    @Column(nullable = false)
-    @ColumnDefault("false")
     private Boolean isComplete;
     @Column(nullable = false)
-    @ColumnDefault("false")
     private Boolean isPublic;
     
     @OneToOne(mappedBy = "plan", cascade = CascadeType.REMOVE)
@@ -41,6 +37,11 @@ public class Plan extends BaseEntity {
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     @JsonIgnore
     private AppUser appUser;
+    
+    @PrePersist
+    protected void onCreate() {
+        this.isComplete = false;
+    }
     
     public void update(PlanDto.Request dto) {
         this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());

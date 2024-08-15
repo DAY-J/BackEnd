@@ -146,6 +146,7 @@ public class PlanService {
         return String.format("Plan(id: %d) was Deleted", findPlan.getId());
     }
     
+    @Transactional
     public List<PlanDto.Response> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         List<PlanDto.Response> savedPlans = new ArrayList<>();
         
