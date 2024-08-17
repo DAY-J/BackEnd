@@ -85,6 +85,8 @@ public class PlanService {
     public PlanDto.Response readPlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+        System.out.println("ChildId List: " + findPlan.getChildId());
         return new PlanDto.Response(findPlan);
     }
 
@@ -121,20 +123,17 @@ public class PlanService {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
 
-        LocalDate beforeRepeatStartDate = findPlan.getPlanOption()
-                .getPlanRepeatStartDate()
-                .toLocalDate();
-        LocalDate beforeRepeatEndDate = findPlan.getPlanOption()
-                .getPlanRepeatEndDate()
-                .toLocalDate();
-        List<DayOfWeek> beforeDaysOfWeek = findPlan.getPlanOption()
-                .getPlanDaysOfWeek();
-
-        findPlan.getPlanOption().update(planOptionDto);
-        findPlan.update(planDto);
-
         // 기존 plan에 반복 조건이 있던 경우
-        if (findPlan.getChildId() != null) {
+        if (findPlan.getChildId() != null && !findPlan.getChildId().isEmpty()) {
+
+            LocalDate beforeRepeatStartDate = findPlan.getPlanOption()
+                    .getPlanRepeatStartDate()
+                    .toLocalDate();
+            LocalDate beforeRepeatEndDate = findPlan.getPlanOption()
+                    .getPlanRepeatEndDate()
+                    .toLocalDate();
+            List<DayOfWeek> beforeDaysOfWeek = findPlan.getPlanOption()
+                    .getPlanDaysOfWeek();
 
             // 반복 조건 유지하고 PLAN만 수정하는 경우 -> 자식 계획 부모와 동일하게 수정
             findPlan.getChildId().removeIf(childId -> {
@@ -159,6 +158,10 @@ public class PlanService {
                         .build());
             }
         }
+
+        findPlan.getPlanOption().update(planOptionDto);
+        findPlan.update(planDto);
+
         return new PlanDto.Response(findPlan);
     }
 

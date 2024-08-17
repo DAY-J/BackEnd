@@ -55,7 +55,7 @@ public class Plan extends BaseEntity {
         this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
         this.planPhoto = dto.getPlanPhoto();
         this.isPublic = (dto.getIsPublic() == null ? this.isPublic : dto.getIsPublic());
-        this.isComplete = dto.getIsComplete();
+        this.isComplete = (dto.getIsComplete() == null ? this.isComplete : dto.getIsComplete());
         this.planOption = (dto.getPlanOption() == null ? this.planOption : dto.getPlanOption());
     }
 
