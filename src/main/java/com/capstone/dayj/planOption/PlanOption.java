@@ -51,10 +51,10 @@ public class PlanOption extends BaseEntity {
     public void update(PlanOptionDto.Request dto) {
         this.planStartTime = (dto.getPlanStartTime() == null ? this.planStartTime : dto.getPlanStartTime());
         this.planEndTime = (dto.getPlanEndTime() == null ? this.planEndTime : dto.getPlanEndTime());
-        this.planAlarmTime = (dto.getPlanAlarmTime() == null ? this.planAlarmTime : dto.getPlanAlarmTime());
-        this.planRepeatStartDate = (dto.getPlanRepeatStartDate() == null ? this.planRepeatStartDate : dto.getPlanRepeatStartDate());
-        this.planRepeatEndDate = (dto.getPlanRepeatEndDate() == null ? this.planRepeatEndDate : dto.getPlanRepeatEndDate());
-        this.planDaysOfWeek = (dto.getPlanDaysOfWeek() == null ? this.planDaysOfWeek : dto.getPlanDaysOfWeek());
+        this.planAlarmTime = dto.getPlanAlarmTime();
+        this.planRepeatStartDate = dto.getPlanRepeatStartDate();
+        this.planRepeatEndDate = dto.getPlanRepeatEndDate();
+        this.planDaysOfWeek = dto.getPlanDaysOfWeek();
     }
     
     @Builder

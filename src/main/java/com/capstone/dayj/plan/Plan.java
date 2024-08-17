@@ -50,12 +50,12 @@ public class Plan extends BaseEntity {
     }
 
     public void update(PlanDto.Request dto) {
-        this.childId = (dto.getChildId() == null ? this.getChildId() : dto.getChildId());
+        this.childId = (dto.getChildId() == null ? this.childId : dto.getChildId());
         this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());
         this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
         this.planPhoto = dto.getPlanPhoto();
-        this.isPublic = (dto.getGoal() == null ? this.isPublic : dto.getIsPublic());
-        this.isComplete = (dto.getGoal() == null ? this.isComplete : dto.getIsComplete());
+        this.isPublic = (dto.getIsPublic() == null ? this.isPublic : dto.getIsPublic());
+        this.isComplete = dto.getIsComplete();
         this.planOption = (dto.getPlanOption() == null ? this.planOption : dto.getPlanOption());
     }
 
