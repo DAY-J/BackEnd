@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,6 +19,10 @@ public class Plan extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ElementCollection
+    @CollectionTable(name = "child_id", joinColumns = @JoinColumn(name = "plan_id", referencedColumnName = "id"))
+    private List<Integer> childId;
 
     @Column(nullable = false)
     private Tag planTag;
@@ -44,6 +50,7 @@ public class Plan extends BaseEntity {
     }
 
     public void update(PlanDto.Request dto) {
+        this.childId = (dto.getChildId() == null ? this.getChildId() : dto.getChildId());
         this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());
         this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
         this.planPhoto = dto.getPlanPhoto();
@@ -53,8 +60,9 @@ public class Plan extends BaseEntity {
     }
 
     @Builder
-    public Plan(int id, Tag planTag, String goal, String planPhoto, Boolean isComplete, Boolean isPublic, PlanOption planOption, AppUser appUser) {
+    public Plan(int id, List<Integer> childId, Tag planTag, String goal, String planPhoto, Boolean isComplete, Boolean isPublic, PlanOption planOption, AppUser appUser) {
         this.id = id;
+        this.childId = childId;
         this.planTag = planTag;
         this.goal = goal;
         this.planPhoto = planPhoto;

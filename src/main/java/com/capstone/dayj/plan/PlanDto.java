@@ -7,6 +7,7 @@ import com.capstone.dayj.tag.Tag;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PlanDto {
     @Data
@@ -15,6 +16,7 @@ public class PlanDto {
     @Builder
     public static class Request {
         private int id;
+        private List<Integer> childId;
         private Tag planTag;
         private String planPhoto;
         private String goal;
@@ -26,6 +28,7 @@ public class PlanDto {
         public Plan toEntity() {
             return Plan.builder()
                     .id(id)
+                    .childId(childId)
                     .planTag(planTag)
                     .planPhoto(planPhoto)
                     .goal(goal)
@@ -47,6 +50,7 @@ public class PlanDto {
         private final Boolean isComplete;
         private final Boolean isPublic;
         private final PlanOptionDto.Response planOption;
+        private final List<Integer> childId;
 
         /* Entity -> Dto */
         public Response(Plan plan) {
@@ -57,6 +61,7 @@ public class PlanDto {
             this.isComplete = plan.getIsComplete();
             this.isPublic = plan.getIsPublic();
             this.planOption = new PlanOptionDto.Response(plan.getPlanOption());
+            this.childId = plan.getChildId();
         }
     }
 

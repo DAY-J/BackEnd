@@ -16,11 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,9 +30,8 @@ public class PlanService {
     private final KeywordGenerator keywordGenerator;
     private final ImageUploader imageUploader;
 
-
     @Transactional
-    public List<PlanDto.Response> createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+    public PlanDto.Response createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
@@ -45,15 +42,13 @@ public class PlanService {
         
         planOptionDto.setPlan(savedPlan);
         PlanOption savedPlanOption = planOptionRepository.save(planOptionDto.toEntity());
+
         savedPlan.update(PlanDto.Request.builder()
+                .childId(createRepeatedPlan(planDto, planOptionDto))
                 .planOption(savedPlanOption)
                 .build());
-        
-        List<PlanDto.Response> savedPlans = new ArrayList<>();
-        savedPlans.add(new PlanDto.Response(savedPlan));
-        savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
-        
-        return savedPlans;
+
+        return new PlanDto.Response(savedPlan);
     }
 
     @Transactional(readOnly = true)
@@ -122,26 +117,49 @@ public class PlanService {
     }
 
     @Transactional
-    public List<PlanDto.Response> patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
-    public List<PlanDto.Response> patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+    public PlanDto.Response patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-        
+
         LocalDate beforeRepeatStartDate = findPlan.getPlanOption()
                 .getPlanRepeatStartDate()
                 .toLocalDate();
-        
+        LocalDate beforeRepeatEndDate = findPlan.getPlanOption()
+                .getPlanRepeatEndDate()
+                .toLocalDate();
+        List<DayOfWeek> beforeDaysOfWeek = findPlan.getPlanOption()
+                .getPlanDaysOfWeek();
+
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
-        
-        List<PlanDto.Response> savedPlans = new ArrayList<>();
-        savedPlans.add(new PlanDto.Response(findPlan));
-        
-        if (!planOptionDto.getPlanRepeatStartDate().toLocalDate().equals(beforeRepeatStartDate)) {
-            savedPlans.addAll(createRepeatedPlan(planDto, planOptionDto));
+
+        // 기존 plan에 반복 조건이 있던 경우
+        if (findPlan.getChildId() != null) {
+
+            // 반복 조건 유지하고 PLAN만 수정하는 경우 -> 자식 계획 부모와 동일하게 수정
+            findPlan.getChildId().removeIf(childId -> {
+                Optional<Plan> childPlan = planRepository.findById(childId);
+                childPlan.ifPresent(plan -> plan.update(planDto));
+                return childPlan.isEmpty(); // childId에 해당하는 PLAN이 없으면 childId 리스트에서 제거
+            });
+
+            // 반복 조건 삭제하는 경우
+            if (planOptionDto.getPlanRepeatStartDate() == null) {
+                findPlan.getChildId().forEach(planRepository::deleteById);
+                findPlan.getChildId().clear();
+            }
+
+            // 반복 조건을 변경하는 경우 -> 기존 자식 plan들 삭제 후 새로 생성
+            else if (!planOptionDto.getPlanRepeatStartDate().toLocalDate().equals(beforeRepeatStartDate)
+                    || !planOptionDto.getPlanRepeatEndDate().toLocalDate().equals(beforeRepeatEndDate)
+                    || !planOptionDto.getPlanDaysOfWeek().equals(beforeDaysOfWeek)) {
+                findPlan.getChildId().forEach(planRepository::deleteById);
+                findPlan.update(PlanDto.Request.builder()
+                        .childId(createRepeatedPlan(planDto, planOptionDto))
+                        .build());
+            }
         }
-        
-        return savedPlans;
+        return new PlanDto.Response(findPlan);
     }
 
     @Transactional
@@ -160,14 +178,21 @@ public class PlanService {
     public String deletePlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
+
+        // 부모 plan 삭제 시, 자식 plan 함께 삭제
+        if ((!findPlan.getChildId().isEmpty())) {
+            findPlan.getChildId().forEach(planRepository::deleteById);
+        }
+
         planRepository.delete(findPlan);
+
         return String.format("Plan(id: %d) was Deleted", findPlan.getId());
     }
 
     @Transactional
-    public List<PlanDto.Response> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
-        List<PlanDto.Response> savedPlans = new ArrayList<>();
-        
+    public List<Integer> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
+        List<Integer> childIds = new ArrayList<>();
+
         if (planOptionDto.getPlanRepeatStartDate() != null) {
             LocalDate startDate = planOptionDto.getPlanRepeatStartDate().toLocalDate();
             LocalDate endDate = planOptionDto.getPlanRepeatEndDate().toLocalDate();
@@ -181,9 +206,6 @@ public class PlanService {
                             .plan(savedPlan)
                             .planStartTime(date.atStartOfDay())
                             .planEndTime(date.atTime(1, 0, 0))
-                            .planRepeatStartDate(planOptionDto.getPlanRepeatStartDate())
-                            .planRepeatEndDate(planOptionDto.getPlanRepeatEndDate())
-                            .planDaysOfWeek(planOptionDto.getPlanDaysOfWeek())
                             .build();
 
                     PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
@@ -191,10 +213,11 @@ public class PlanService {
                     savedPlan.update(PlanDto.Request.builder()
                             .planOption(savedPlanOption)
                             .build());
-                    savedPlans.add(new PlanDto.Response(savedPlan));
+
+                    childIds.add(savedPlan.getId());
                 }
             }
         }
-        return savedPlans;
+        return childIds;
     }
 }
