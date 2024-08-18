@@ -163,7 +163,7 @@ public class PlanService {
                     .childId(createRepeatedPlan(planDto, planOptionDto))
                     .build());
         }
-        
+
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
 
