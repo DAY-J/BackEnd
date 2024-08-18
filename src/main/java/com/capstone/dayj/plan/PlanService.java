@@ -86,7 +86,6 @@ public class PlanService {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
 
-        System.out.println("ChildId List: " + findPlan.getChildId());
         return new PlanDto.Response(findPlan);
     }
 
@@ -159,6 +158,12 @@ public class PlanService {
             }
         }
 
+        else {
+            findPlan.update(PlanDto.Request.builder()
+                    .childId(createRepeatedPlan(planDto, planOptionDto))
+                    .build());
+        }
+        
         findPlan.getPlanOption().update(planOptionDto);
         findPlan.update(planDto);
 
