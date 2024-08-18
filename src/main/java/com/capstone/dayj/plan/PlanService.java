@@ -85,7 +85,7 @@ public class PlanService {
     public PlanDto.Response readPlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
-
+        
         return new PlanDto.Response(findPlan);
     }
 
