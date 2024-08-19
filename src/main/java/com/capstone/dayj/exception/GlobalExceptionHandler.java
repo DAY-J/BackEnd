@@ -13,7 +13,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponse> handleCustomException(final CustomException e) {
         log.error("handleCustomException: {}", e.getErrorCode());
-        
         return ResponseEntity
                 .status(e.getErrorCode().getStatus().value())
                 .body(new ErrorResponse(e.getErrorCode()));

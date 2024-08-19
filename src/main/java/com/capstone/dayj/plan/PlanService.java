@@ -176,6 +176,10 @@ public class PlanService {
     
     @Transactional
     public PlanDto.Response patchPlanImage(int plan_id, MultipartFile image) throws IOException {
+        if (image == null || image.isEmpty()) {
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
+        }
+        
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
         

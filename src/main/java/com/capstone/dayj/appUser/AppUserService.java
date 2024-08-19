@@ -21,6 +21,10 @@ public class AppUserService {
     
     @Transactional
     public AppUserDto.Response createAppUser(AppUserDto.Request dto) {
+        if (appUserRepository.existsByNickname(dto.getNickname())) {
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+        
         AppUser savedAppUser = appUserRepository.save(dto.toEntity());
         return new AppUserDto.Response(savedAppUser);
     }
@@ -62,6 +66,10 @@ public class AppUserService {
     
     @Transactional
     public AppUserDto.Response patchProfileImage(int app_user_id, MultipartFile image) throws IOException {
+        if (image == null || image.isEmpty()) {
+            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
+        }
+        
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
