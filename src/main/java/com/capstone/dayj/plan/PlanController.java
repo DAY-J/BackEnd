@@ -43,7 +43,7 @@ public class PlanController {
         return planService.readPlanById(plan_id);
     }
     
-    @GetMapping("/recommend/{tag}")
+    @GetMapping("/reminder/{tag}")
     public Set<String> reminderPlan(@PathVariable int app_user_id, @PathVariable Tag tag) {
         return planService.reminderPlan(app_user_id, tag);
     }
