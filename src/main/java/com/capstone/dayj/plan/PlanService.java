@@ -90,9 +90,9 @@ public class PlanService {
     }
     
     @Transactional
-    public Set<String> recommendPlan(int app_user_id, Tag tag) {
-        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
-                .filter(plan -> plan.getPlanTag().equals(tag)).toList();
+    public Set<String> reminderPlan(int app_user_id, Tag tag) {
+        List<Plan> findPlans = new ArrayList<>(planRepository.findAllByAppUserId(app_user_id).stream()
+                .filter(plan -> plan.getPlanTag().equals(tag)).toList());
         Set<String> recommendGoal = new HashSet<>(Set.of());
         
         if (keywordGenerator.getKeywords().isEmpty()) {
@@ -103,22 +103,22 @@ public class PlanService {
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
         }
         
+        Collections.shuffle(findPlans);
         keywordGenerator.getKeywords().get(tag)
                 .forEach(keyword -> {
                     findPlans.forEach(plan -> {
+                        if (recommendGoal.size() >= 3) return;
                         if (plan.getGoal().contains(keyword))
                             recommendGoal.add(plan.getGoal());
                     });
                 });
         
-        if (recommendGoal.isEmpty()) {
-            recommendGoal.addAll(keywordGenerator.getKeywords().get(tag));
-        }
+        findPlans.forEach(plan -> {
+            if (recommendGoal.size() >= 5) return;
+            recommendGoal.add(plan.getGoal());
+        });
         
-        return recommendGoal
-                .stream()
-                .limit(3)
-                .collect(Collectors.toSet());
+        return recommendGoal;
     }
     
     @Transactional
@@ -128,7 +128,6 @@ public class PlanService {
         
         // 기존 plan에 반복 조건이 있던 경우
         if (findPlan.getChildId() != null && !findPlan.getChildId().isEmpty()) {
-            
             LocalDate beforeRepeatStartDate = findPlan.getPlanOption()
                     .getPlanRepeatStartDate()
                     .toLocalDate();

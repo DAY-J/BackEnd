@@ -39,7 +39,7 @@ public enum ErrorCode {
     
     // 404 POST_NOT_FOUND : 게시물을 찾을 수 없음
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
-
+    
     // 409 DUPLICATE_NICKNAME : 중복된 닉네임
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다."),
 

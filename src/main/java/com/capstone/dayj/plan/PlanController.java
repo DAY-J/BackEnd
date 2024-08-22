@@ -44,8 +44,8 @@ public class PlanController {
     }
     
     @GetMapping("/recommend/{tag}")
-    public Set<String> recommendPlan(@PathVariable int app_user_id, @PathVariable Tag tag) {
-        return planService.recommendPlan(app_user_id, tag);
+    public Set<String> reminderPlan(@PathVariable int app_user_id, @PathVariable Tag tag) {
+        return planService.reminderPlan(app_user_id, tag);
     }
     
     @PatchMapping("/{plan_id}")

@@ -19,7 +19,7 @@ public class Plan extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
     @ElementCollection
     @CollectionTable(name = "child_id", joinColumns = @JoinColumn(name = "plan_id", referencedColumnName = "id"))
     private List<Integer> childId;
