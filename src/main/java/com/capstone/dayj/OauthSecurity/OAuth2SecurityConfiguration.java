@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 
 
 @Configuration
@@ -24,6 +25,10 @@ public class OAuth2SecurityConfiguration {
         return StorageOptions.getDefaultInstance().getService();
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
 
