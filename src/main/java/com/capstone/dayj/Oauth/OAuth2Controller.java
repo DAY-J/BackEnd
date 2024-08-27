@@ -26,4 +26,4 @@ public class OAuth2Controller {
         System.out.println(accessToken);
         return oAuth2AppUserService.googleLogin(accessToken);
     }
-}cd 
+}
