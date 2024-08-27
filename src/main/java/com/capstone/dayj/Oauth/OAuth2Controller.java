@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class OAuth2Controller {
-    private OAuth2AppUserService oAuth2AppUserService;
+    private final OAuth2AppUserService oAuth2AppUserService;
 
     @GetMapping("/loginForm")
     public String home() {
