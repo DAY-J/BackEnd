@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class OAuth2Controller {
+    private OAuth2AppUserService oAuth2AppUserService;
 
     @GetMapping("/loginForm")
     public String home() {
@@ -21,10 +22,9 @@ public class OAuth2Controller {
         return "adminPage";
     }
 
-    @PostMapping("/api/auth/google")
+    @PostMapping("/auth/google")
     public ResponseEntity<String> handleGoogleLogin(@RequestParam("access_token") String accessToken) {
-        System.out.println(accessToken);
-        return ResponseEntity.ok(accessToken);
+        return oAuth2AppUserService.googleLogin(accessToken);
     }
 
 //    @PostMapping("/api/auth/google")

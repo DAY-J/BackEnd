@@ -23,7 +23,6 @@ public class OAuth2AppUserService extends DefaultOAuth2UserService {
 
     private final BCryptPasswordEncoder encoder;
     private final AppUserRepository appUserRepository;
-    private final AppUserService appUserService;
     private final ObjectMapper objectMapper;
 
     public ResponseEntity<String> googleLogin(String accessToken) {
@@ -58,7 +57,7 @@ public class OAuth2AppUserService extends DefaultOAuth2UserService {
                             .nickname(nickname)
                             .isAlarm(isAlarm)
                             .build();
-                    appUserService.createAppUser(newAppUser);
+                    appUserRepository.save(newAppUser.toEntity());
                     return ResponseEntity.ok("User created successfully");
                 }
             } catch (JsonProcessingException e) {
