@@ -215,7 +215,11 @@ public class PlanService {
             
             for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
                 if (planOptionDto.getPlanDaysOfWeek().contains(date.getDayOfWeek())) {
-                    
+                    int hour = 0;
+                    if(planOptionDto.getPlanStartTime() != null ){
+                        hour = planOptionDto.getPlanStartTime().getHour();
+                    }
+
                     PlanDto.Request newPlanDto = PlanDto.Request.builder()
                             .appUser(planDto.getAppUser())
                             .planTag(planDto.getPlanTag())
@@ -224,13 +228,13 @@ public class PlanService {
                             .build();
                     
                     Plan savedPlan = planRepository.save(newPlanDto.toEntity());
-                    
+
                     PlanOptionDto.Request newPlanOptionDto = PlanOptionDto.Request.builder()
                             .plan(savedPlan)
-                            .planStartTime(date.atStartOfDay())
-                            .planEndTime(date.atTime(1, 0, 0))
+                            .planStartTime(date.atTime(hour, 0, 0))
+                            .planEndTime(date.atTime(hour + 1, 0, 0))
                             .build();
-                    
+
                     PlanOption savedPlanOption = planOptionRepository.save(newPlanOptionDto.toEntity());
                     
                     savedPlan.update(PlanDto.Request.builder()
