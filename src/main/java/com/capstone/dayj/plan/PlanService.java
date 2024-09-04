@@ -144,12 +144,11 @@ public class PlanService {
                     LocalDateTime alarmTime = planOptionDto.getPlanAlarmTime() != null
                             ? childPlan.get().getPlanOption().getPlanStartTime().withHour(planOptionDto.getPlanAlarmTime().getHour()).withMinute(planOptionDto.getPlanAlarmTime().getMinute())
                             : null;
-                    PlanOptionDto.Request patchedPlanOption = PlanOptionDto.Request.builder()
+                    plan.getPlanOption().update(PlanOptionDto.Request.builder()
                             .planAlarmTime(alarmTime)
                             .planStartTime(plan.getPlanOption().getPlanStartTime().withHour(planOptionDto.getPlanStartTime().getHour()).withMinute(planOptionDto.getPlanStartTime().getMinute()))
                             .planEndTime(plan.getPlanOption().getPlanEndTime().withHour(planOptionDto.getPlanEndTime().getHour()).withMinute(planOptionDto.getPlanEndTime().getMinute()))
-                            .build(); // 날짜는 유지, 시간만 변경
-                    plan.getPlanOption().update(patchedPlanOption);
+                            .build()); // 날짜는 유지, 시간만 변경
                 });
                 return childPlan.isEmpty(); // childId에 해당하는 PLAN이 없으면 childId 리스트에서 제거
             });
