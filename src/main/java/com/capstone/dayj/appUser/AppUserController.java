@@ -26,15 +26,16 @@ public class AppUserController {
         return appUserService.readAllAppUser();
     }
     
-    @GetMapping("email/{email}")
-    public AppUserDto.Response readAppUserByEmail(@PathVariable String email) {
-        return appUserService.readAppUserByEmail(email);
-    }
-    
     @GetMapping("/{app_user_id}")
     public AppUserDto.Response readAppUserById(@PathVariable int app_user_id) {
         return appUserService.readAppUserById(app_user_id);
     }
+    
+    @GetMapping("username/{username}")
+    public AppUserDto.Response readAppUserByUsername(@PathVariable String username) {
+        return appUserService.readAppUserByUsername(username);
+    }
+    
     
     @PatchMapping("/{app_user_id}")
     public AppUserDto.Response patchAppUser(@PathVariable int app_user_id, @Valid @RequestBody AppUserDto.Request dto) {

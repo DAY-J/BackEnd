@@ -45,8 +45,8 @@ public class AppUserService {
     }
     
     @Transactional(readOnly = true)
-    public AppUserDto.Response readAppUserByEmail(String email) {
-        AppUser findAppUser = appUserRepository.findByEmail(email)
+    public AppUserDto.Response readAppUserByUsername(String username) {
+        AppUser findAppUser = appUserRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
         
         return new AppUserDto.Response(findAppUser);

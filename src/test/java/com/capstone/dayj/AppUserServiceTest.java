@@ -21,10 +21,9 @@ public class AppUserServiceTest {
     @Mock
     private AppUser appUserDto = AppUserDto.Request.builder()
             .id(1)
-            .name("-")
-            .nickname("085NZB0Y9P64969409KQ")
+            .username("-")
             .password("-")
-            .email("-")
+            .nickname("085NZB0Y9P64969409KQ")
             .role("ROLE_USER")
             .isAlarm(true)
             .build()
