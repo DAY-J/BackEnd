@@ -1,9 +1,11 @@
-package com.capstone.dayj.jwt;
+package com.capstone.dayj.jwt.service;
 
 
 import com.capstone.dayj.appUser.AppUserDto;
 import com.capstone.dayj.appUser.AppUserRepository;
-import com.capstone.dayj.util.RandomNickname;
+import com.capstone.dayj.exception.CustomException;
+import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.jwt.dto.JoinDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,17 +19,17 @@ public class JoinService {
     public void joinProcess(JoinDTO dto) {
         String username = dto.getUsername();
         String password = dto.getPassword();
+        String nickname = dto.getNickname();
         
         if (appUserRepository.existsByUsername(username)) {
-            System.out.println("User already exists");
-            return;
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
         
         AppUserDto.Request appUserDtoRequest = AppUserDto.Request.builder()
                 .username(username)
                 .password(bCryptPasswordEncoder.encode(password))
                 .role("ROLE_USER")
-                .nickname(RandomNickname.randomMix(10))
+                .nickname(nickname)
                 .isAlarm(false)
                 .build();
         appUserRepository.save(appUserDtoRequest.toEntity());

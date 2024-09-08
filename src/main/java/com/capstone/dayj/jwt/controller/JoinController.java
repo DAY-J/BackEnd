@@ -1,5 +1,7 @@
-package com.capstone.dayj.jwt;
+package com.capstone.dayj.jwt.controller;
 
+import com.capstone.dayj.jwt.service.JoinService;
+import com.capstone.dayj.jwt.dto.JoinDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

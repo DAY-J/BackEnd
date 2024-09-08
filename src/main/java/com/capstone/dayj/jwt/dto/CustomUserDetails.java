@@ -1,4 +1,4 @@
-package com.capstone.dayj.jwt;
+package com.capstone.dayj.jwt.dto;
 
 import com.capstone.dayj.appUser.AppUser;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,10 @@
-package com.capstone.dayj.jwt;
+package com.capstone.dayj.jwt.util;
 
 import com.capstone.dayj.appUser.AppUserDto;
+import com.capstone.dayj.exception.CustomException;
+import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.jwt.dto.CustomUserDetails;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,25 +23,30 @@ public class JWTFilter extends OncePerRequestFilter {
     
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        // 헤더에서 access키에 담긴 토큰을 꺼냄
+        String accessToken = request.getHeader("access");
         
-        if (authorization == null || !authorization.startsWith("Bearer ")) { // Authorization 헤더 검증
-            System.out.println("token null");
-            filterChain.doFilter(request, response); // 해당 필터 종료 후, (req, req)를 다음 필터로 전달
-            return;
-        }
-        
-        System.out.println("authorization now");
-        String token = authorization.split(" ")[1]; // Bearer 부분 제거 후, 순수 토큰만 획득
-        
-        if (jwtUtil.isExpired(token)) { // 토큰 소멸 시간 검증
-            System.out.println("token expired");
+        if (accessToken == null) {  // 토큰이 없다면 다음 필터로 넘김
             filterChain.doFilter(request, response);
             return;
         }
         
-        String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
+        try { // 토큰 만료 여부 확인
+            jwtUtil.isExpired(accessToken);
+        }
+        catch (ExpiredJwtException e) { // 만료시 다음 필터로 넘기지 않음
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+        }
+        
+        String category = jwtUtil.getCategory(accessToken);
+        
+        if (!category.equals("access")) { // 토큰이 access인지 확인 (발급시 페이로드에 명시)
+            throw new CustomException(ErrorCode.TOKEN_INCONSISTENCY);
+        }
+        
+        // username, role 값을 획득
+        String username = jwtUtil.getUsername(accessToken);
+        String role = jwtUtil.getRole(accessToken);
         
         AppUserDto.Request userDtoRequest = AppUserDto.Request.builder()
                 .username(username)
@@ -45,11 +54,10 @@ public class JWTFilter extends OncePerRequestFilter {
                 .role(role)
                 .build();
         
-        
-        CustomUserDetails customUserDetails = new CustomUserDetails(userDtoRequest.toEntity()); // UserDetails에 회원 정보 객체 담기
-        //스프링 시큐리티 인증 토큰 생성
+        CustomUserDetails customUserDetails = new CustomUserDetails(userDtoRequest.toEntity());
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken); // 세션에 사용자 등록
-        filterChain.doFilter(request, response); // 다음 필터로 (req, res) 전
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+        
+        filterChain.doFilter(request, response);
     }
 }

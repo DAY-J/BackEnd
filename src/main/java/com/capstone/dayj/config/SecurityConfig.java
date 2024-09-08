@@ -1,8 +1,10 @@
 package com.capstone.dayj.config;
 
-import com.capstone.dayj.jwt.JWTFilter;
-import com.capstone.dayj.jwt.JWTUtil;
-import com.capstone.dayj.jwt.LoginFilter;
+import com.capstone.dayj.jwt.repository.RefreshRepository;
+import com.capstone.dayj.jwt.util.CustomLogoutFilter;
+import com.capstone.dayj.jwt.util.JWTFilter;
+import com.capstone.dayj.jwt.util.JWTUtil;
+import com.capstone.dayj.jwt.util.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
     
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -39,10 +43,11 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/join").permitAll()
+                        .requestMatchers("/", "/login", "/join", "/reissue").permitAll()
                         .anyRequest().authenticated())
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JWTFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

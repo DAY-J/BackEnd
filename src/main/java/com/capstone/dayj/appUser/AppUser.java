@@ -25,7 +25,6 @@ public class AppUser extends BaseEntity {
     @Email
     private String username; //유저 구글 이메일
     private String password; //유저 비밀번호
-    @Column(unique = true)
     private String role; //유저 권한
     @Column(nullable = false, unique = true)
     private String nickname; // 유저 닉네임, 중복 불가, 친구 그룹 추가에 사용
