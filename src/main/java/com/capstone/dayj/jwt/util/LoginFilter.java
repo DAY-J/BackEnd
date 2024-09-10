@@ -43,14 +43,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
         
-        //토큰 생성
+        // 토큰 생성
         String access = jwtUtil.createJwt("access", username, role, 480000L); // 8분
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 2달
         
-        //Refresh 토큰 저장
+        // Refresh 토큰 저장
         addRefreshEntity(username, refresh, 86400000L);
         
-        //응답 설정
+        // 응답 설정
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());

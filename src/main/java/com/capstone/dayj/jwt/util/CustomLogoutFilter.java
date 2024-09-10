@@ -74,11 +74,11 @@ public class CustomLogoutFilter extends GenericFilterBean {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
         
-        //로그아웃 진행
-        //Refresh 토큰 DB에서 제거
+        // 로그아웃 진행
+        // Refresh 토큰 DB에서 제거
         refreshRepository.deleteByRefresh(refresh);
         
-        //Refresh 토큰 Cookie 값 0
+        // Refresh 토큰 Cookie 값 0
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
