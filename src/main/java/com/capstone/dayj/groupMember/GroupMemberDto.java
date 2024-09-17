@@ -31,25 +31,20 @@ public class GroupMemberDto {
 
     @Getter
     public static class Response {
-        private final int id;
         private final int appUserId;
         private final String nickname;
-        private StatisticsDto.Response achievementRate;
-        private List<PlanDto.groupResponse> groupMemberPlans;
+        private final StatisticsDto.Response achievementRate;
+        private final List<PlanDto.groupResponse> groupMemberPlans;
 
-        public Response(GroupMember groupMember, int mode) {
-            this.id = groupMember.getId();
+        public Response(GroupMember groupMember) {
             this.appUserId = groupMember.getAppUser().getId();
             this.nickname = groupMember.getAppUser().getNickname();
-            if (mode == 1) { // 달성률 목록 보여줄 때
-                this.achievementRate = groupMember.getAppUser().getStatistics().stream()
-                        .filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new)
-                        .findFirst().orElse(null);
-            } else if (mode == 2) { // 친구 plan 보여줄 때
-                this.groupMemberPlans = groupMember.getAppUser().getPlans().stream()
-                        .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
-                        .map(PlanDto.groupResponse::new).collect(Collectors.toList());
-            }
+            this.achievementRate = groupMember.getAppUser().getStatistics().stream()
+                    .filter(statistics -> statistics.getDate().isEqual(LocalDate.now())).map(StatisticsDto.Response::new)
+                    .findFirst().orElse(null);
+            this.groupMemberPlans = groupMember.getAppUser().getPlans().stream()
+                    .filter(plan -> plan.getIsPublic() && plan.getPlanOption().getPlanStartTime().toLocalDate().isEqual(LocalDate.now()))
+                    .map(PlanDto.groupResponse::new).collect(Collectors.toList());
         }
     }
 }

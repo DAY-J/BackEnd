@@ -35,22 +35,16 @@ public class FriendGroupDto {
         private final String groupGoal;
         private final String groupName;
         private final LocalDateTime createdAt;
-        private final List<GroupMemberDto.Response> achievementList; // 달성률 리스트
-        private final List<GroupMemberDto.Response> groupMemberList; // 그룹 멤버 리스트
+        private final List<GroupMemberDto.Response> groupMemberList; // 닉네임, 달성률, 당일 계획
 
         public Response(FriendGroup friendGroup, int app_user_id) {
             this.id = friendGroup.getId();
             this.groupGoal = friendGroup.getGroupGoal();
             this.groupName = friendGroup.getGroupName();
             this.createdAt = friendGroup.getCreatedAt();
-            this.achievementList = friendGroup.getGroupMember().stream()
-                    .map(groupMember -> new GroupMemberDto.Response(groupMember, 1))
-                    .collect(Collectors.toList());
             this.groupMemberList = friendGroup.getGroupMember().stream()
-                    .filter(groupMember -> groupMember.getAppUser().getId() != app_user_id)
-                    .map(groupMember -> new GroupMemberDto.Response(groupMember, 2))
-                    .collect(Collectors.toList());
-        }
+                    .map(GroupMemberDto.Response::new)
+                    .collect(Collectors.toList());}
     }
 }
 

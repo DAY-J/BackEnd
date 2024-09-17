@@ -140,7 +140,11 @@ public class PlanService {
             findPlan.getChildId().removeIf(childId -> {
                 Optional<Plan> childPlan = planRepository.findById(childId);
                 childPlan.ifPresent(plan -> {
-                    plan.update(planDto);
+                    plan.update(PlanDto.Request.builder()
+                            .goal(planDto.getGoal())
+                            .planTag(planDto.getPlanTag())
+                            .isPublic(planDto.getIsPublic())
+                            .build());
                     LocalDateTime alarmTime = planOptionDto.getPlanAlarmTime() != null
                             ? childPlan.get().getPlanOption().getPlanStartTime().withHour(planOptionDto.getPlanAlarmTime().getHour()).withMinute(planOptionDto.getPlanAlarmTime().getMinute())
                             : null;
@@ -168,7 +172,7 @@ public class PlanService {
                         .childId(createRepeatedPlan(planDto, planOptionDto))
                         .build());
             }
-        } else {
+        } else { // 반복조건이 없었는데 새로 추가한다면
             findPlan.update(PlanDto.Request.builder()
                     .childId(createRepeatedPlan(planDto, planOptionDto))
                     .build());
@@ -218,6 +222,8 @@ public class PlanService {
             LocalDate startDate = planOptionDto.getPlanRepeatStartDate().toLocalDate();
             LocalDate endDate = planOptionDto.getPlanRepeatEndDate().toLocalDate();
             if (startDate.isAfter(endDate)) throw new CustomException(ErrorCode.DATE_RANGE_ERROR);
+            if (startDate.isEqual(planOptionDto.getPlanStartTime().toLocalDate()) || startDate.isBefore(planOptionDto.getPlanStartTime().toLocalDate()))
+                throw new CustomException(ErrorCode.DATE_RANGE_ERROR);
 
             for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
                 if (planOptionDto.getPlanDaysOfWeek().contains(date.getDayOfWeek())) {
