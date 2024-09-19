@@ -6,9 +6,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${LOCAL_DDL_TYPE}
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            redirect-uri: ${LOCAL_RED_URI}
