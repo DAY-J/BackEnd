@@ -3,7 +3,6 @@ package com.capstone.dayj.jwt.util;
 import com.capstone.dayj.jwt.entity.RefreshEntity;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         
         // 응답 설정
         response.setHeader("access", access);
-        response.addCookie(createCookie("refresh", refresh));
+        response.setHeader("refresh", refresh);
         response.setStatus(HttpStatus.OK.value());
     }
     
@@ -70,15 +69,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         refreshEntity.setExpiration(date.toString());
         
         refreshRepository.save(refreshEntity);
-    }
-    
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
-        //cookie.setSecure(true);
-        //cookie.setPath("/");
-        cookie.setHttpOnly(true); // 프론트 단에서 js 공격을 하지 못하도록 httpOnly 설정
-        
-        return cookie;
     }
 }

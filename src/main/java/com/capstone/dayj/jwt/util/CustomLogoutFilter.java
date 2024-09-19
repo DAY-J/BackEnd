@@ -8,7 +8,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,49 +40,36 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
         
         // get refresh token
-        String refresh = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                refresh = cookie.getValue();
-            }
-        }
+        String refreshToken = request.getHeader("refresh");
         
         // refresh null check
-        if (refresh == null) {
+        if (refreshToken == null) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_EMPTY);
         }
         
         // expired check
         try {
-            jwtUtil.isExpired(refresh);
+            jwtUtil.isExpired(refreshToken);
         }
         catch (ExpiredJwtException e) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
         
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(refresh);
+        String category = jwtUtil.getCategory(refreshToken);
         if (!category.equals("refresh")) {
             throw new CustomException(ErrorCode.TOKEN_INCONSISTENCY);
         }
         
         // DB에 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshRepository.existsByRefresh(refreshToken);
         if (!isExist) {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
         
         // 로그아웃 진행
         // Refresh 토큰 DB에서 제거
-        refreshRepository.deleteByRefresh(refresh);
-        
-        // Refresh 토큰 Cookie 값 0
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        
-        response.addCookie(cookie);
+        refreshRepository.deleteByRefresh(refreshToken);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

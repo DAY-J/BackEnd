@@ -6,7 +6,6 @@ import com.capstone.dayj.jwt.entity.RefreshEntity;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import com.capstone.dayj.jwt.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,55 +23,47 @@ public class ReissueService {
     
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
         //get refresh token
-        String refresh = null;
-        Cookie[] cookies = request.getCookies();
+        String refreshToken = request.getHeader("refresh");
         
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                refresh = cookie.getValue();
-            }
-        }
-        
-        if (refresh == null) {
+        if (refreshToken == null) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_EMPTY);
         }
         
         //expired check
         try {
-            jwtUtil.isExpired(refresh);
+            jwtUtil.isExpired(refreshToken);
         }
         catch (ExpiredJwtException e) {
             throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
         
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(refresh);
+        String category = jwtUtil.getCategory(refreshToken);
         
         if (!category.equals("refresh")) {
             throw new CustomException(ErrorCode.TOKEN_INCONSISTENCY);
         }
         
         // DB에 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshRepository.existsByRefresh(refreshToken);
         if (!isExist) {
             throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
         }
         
-        String username = jwtUtil.getUsername(refresh);
-        String role = jwtUtil.getRole(refresh);
+        String username = jwtUtil.getUsername(refreshToken);
+        String role = jwtUtil.getRole(refreshToken);
         
         // make new JWT
         String newAccess = jwtUtil.createJwt("access", username, role, 480000L); // 8분
         String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 2달
         
         // Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
-        refreshRepository.deleteByRefresh(refresh);
+        refreshRepository.deleteByRefresh(refreshToken);
         addRefreshEntity(username, newRefresh, 86400000L);
         
         // response
         response.setHeader("access", newAccess);
-        response.addCookie(createCookie("refresh", newRefresh));
-        
+        response.setHeader("refresh", newRefresh);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
@@ -85,16 +76,5 @@ public class ReissueService {
         refreshEntity.setExpiration(date.toString());
         
         refreshRepository.save(refreshEntity);
-    }
-    
-    private Cookie createCookie(String key, String value) {
-        
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60);
-        //cookie.setSecure(true);
-        //cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        
-        return cookie;
     }
 }

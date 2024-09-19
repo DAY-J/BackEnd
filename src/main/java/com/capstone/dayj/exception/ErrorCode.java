@@ -46,11 +46,15 @@ public enum ErrorCode {
     // 409 DUPLICATE_NICKNAME : 중복된 닉네임
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다."),
     
-    // 409 TOKEN_INCONSISTENCY : token category가 refresh가 아님.
-    TOKEN_INCONSISTENCY(HttpStatus.CONFLICT, "리프레시 토큰이 아닙니다."),
+    // 409 DUPLICATE_USERNAME : 중복된 유저네임(OAuth의 경우 email)
+    DUPLICATE_USERNAME(HttpStatus.CONFLICT, "중복된 유저네임입니다."),
     
     // 409 DUPLICATE_NICKNAME : 중복된 회원
     DUPLICATE_GROUP_MEMBER(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
+    
+    // 409 TOKEN_INCONSISTENCY : token category가 refresh가 아님.
+    TOKEN_INCONSISTENCY(HttpStatus.CONFLICT, "리프레시 토큰이 아닙니다."),
+    
     
     // 413 TOO_MANY_IMAGE: 이미지를 너무 많이 보냈음
     TOO_MANY_IMAGE(HttpStatus.PAYLOAD_TOO_LARGE, "이미지를 1개만 전송해주세요."),

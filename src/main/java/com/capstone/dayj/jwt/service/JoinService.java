@@ -22,6 +22,10 @@ public class JoinService {
         String nickname = dto.getNickname();
         
         if (appUserRepository.existsByUsername(username)) {
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        }
+        
+        if (appUserRepository.existsByNickname(nickname)) {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
         
