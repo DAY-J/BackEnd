@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +20,10 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.UUID;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ImageUploader {
     private static final Logger logger = LoggerFactory.getLogger(ImageUploader.class);
-    
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
     @Value("${spring.cloud.gcp.storage.credentials.location}")

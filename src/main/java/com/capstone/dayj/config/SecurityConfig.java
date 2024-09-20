@@ -1,5 +1,6 @@
 package com.capstone.dayj.config;
 
+import com.capstone.dayj.jwt.dto.JWTProperties;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import com.capstone.dayj.jwt.util.CustomLogoutFilter;
 import com.capstone.dayj.jwt.util.JWTFilter;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final JWTProperties jwtProperties;
     private final RefreshRepository refreshRepository;
     
     @Bean
@@ -45,7 +47,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/login", "/join", "/reissue").permitAll()
                         .anyRequest().authenticated())
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),
+                                jwtProperties, jwtUtil,
+                                refreshRepository),
+                        UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JWTFilter(jwtUtil), LoginFilter.class)
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class)
                 .sessionManagement((session) -> session

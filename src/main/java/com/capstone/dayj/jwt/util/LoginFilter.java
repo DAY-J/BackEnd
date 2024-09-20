@@ -1,5 +1,6 @@
 package com.capstone.dayj.jwt.util;
 
+import com.capstone.dayj.jwt.dto.JWTProperties;
 import com.capstone.dayj.jwt.entity.RefreshEntity;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
@@ -21,6 +22,7 @@ import java.util.Iterator;
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    private final JWTProperties jwtProperties;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     
@@ -43,11 +45,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
         
         // 토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 480000L); // 8분
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 2달
+        Long expiredAccess = jwtProperties.getExpiredAccess();
+        Long expiredRefresh = jwtProperties.getExpiredRefresh();
+        String access = jwtUtil.createJwt("access", username, role, expiredAccess);
+        String refresh = jwtUtil.createJwt("refresh", username, role, expiredRefresh);
         
         // Refresh 토큰 저장
-        addRefreshEntity(username, refresh, 86400000L);
+        addRefreshEntity(username, refresh, expiredRefresh);
         
         // 응답 설정
         response.setHeader("access", access);

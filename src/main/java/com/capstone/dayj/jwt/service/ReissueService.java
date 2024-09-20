@@ -2,6 +2,7 @@ package com.capstone.dayj.jwt.service;
 
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
+import com.capstone.dayj.jwt.dto.JWTProperties;
 import com.capstone.dayj.jwt.entity.RefreshEntity;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import com.capstone.dayj.jwt.util.JWTUtil;
@@ -18,6 +19,7 @@ import java.util.Date;
 @Service
 @RequiredArgsConstructor
 public class ReissueService {
+    private final JWTProperties jwtProperties;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     
@@ -54,8 +56,10 @@ public class ReissueService {
         String role = jwtUtil.getRole(refreshToken);
         
         // make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role, 480000L); // 8분
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 2달
+        Long expiredAccess = jwtProperties.getExpiredAccess();
+        Long expiredRefresh = jwtProperties.getExpiredRefresh();
+        String newAccess = jwtUtil.createJwt("access", username, role, expiredAccess);
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, expiredRefresh);
         
         // Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshRepository.deleteByRefresh(refreshToken);
