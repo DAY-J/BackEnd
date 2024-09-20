@@ -2,7 +2,7 @@ package com.capstone.dayj.jwt.service;
 
 import com.capstone.dayj.exception.CustomException;
 import com.capstone.dayj.exception.ErrorCode;
-import com.capstone.dayj.jwt.dto.JWTProperties;
+import com.capstone.dayj.config.JWTProperties;
 import com.capstone.dayj.jwt.entity.RefreshEntity;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import com.capstone.dayj.jwt.util.JWTUtil;

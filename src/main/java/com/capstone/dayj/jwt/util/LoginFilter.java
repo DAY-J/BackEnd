@@ -1,6 +1,6 @@
 package com.capstone.dayj.jwt.util;
 
-import com.capstone.dayj.jwt.dto.JWTProperties;
+import com.capstone.dayj.config.JWTProperties;
 import com.capstone.dayj.jwt.entity.RefreshEntity;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;

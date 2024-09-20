@@ -1,6 +1,5 @@
 package com.capstone.dayj.config;
 
-import com.capstone.dayj.jwt.dto.JWTProperties;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import com.capstone.dayj.jwt.util.CustomLogoutFilter;
 import com.capstone.dayj.jwt.util.JWTFilter;
