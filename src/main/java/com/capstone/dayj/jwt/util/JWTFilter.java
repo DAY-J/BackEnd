@@ -1,8 +1,6 @@
 package com.capstone.dayj.jwt.util;
 
 import com.capstone.dayj.appUser.AppUserDto;
-import com.capstone.dayj.exception.CustomException;
-import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.jwt.dto.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -35,13 +33,15 @@ public class JWTFilter extends OncePerRequestFilter {
             jwtUtil.isExpired(accessToken);
         }
         catch (ExpiredJwtException e) { // 만료시 다음 필터로 넘기지 않음
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
         
         String category = jwtUtil.getCategory(accessToken);
         
         if (!category.equals("access")) { // 토큰이 access인지 확인 (발급시 페이로드에 명시)
-            throw new CustomException(ErrorCode.TOKEN_INCONSISTENCY);
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            return;
         }
         
         // username, role 값을 획득

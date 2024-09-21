@@ -1,7 +1,5 @@
 package com.capstone.dayj.jwt.util;
 
-import com.capstone.dayj.exception.CustomException;
-import com.capstone.dayj.exception.ErrorCode;
 import com.capstone.dayj.jwt.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -44,7 +42,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
         
         // refresh null check
         if (refreshToken == null) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_EMPTY);
+            response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+            return;
         }
         
         // expired check
@@ -52,19 +51,22 @@ public class CustomLogoutFilter extends GenericFilterBean {
             jwtUtil.isExpired(refreshToken);
         }
         catch (ExpiredJwtException e) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
         
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(refreshToken);
         if (!category.equals("refresh")) {
-            throw new CustomException(ErrorCode.TOKEN_INCONSISTENCY);
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
+            return;
         }
         
         // DB에 저장되어 있는지 확인
         Boolean isExist = refreshRepository.existsByRefresh(refreshToken);
         if (!isExist) {
-            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
         
         // 로그아웃 진행

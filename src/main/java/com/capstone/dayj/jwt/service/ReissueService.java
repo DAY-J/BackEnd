@@ -36,7 +36,7 @@ public class ReissueService {
             jwtUtil.isExpired(refreshToken);
         }
         catch (ExpiredJwtException e) {
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            throw new CustomException(ErrorCode.TOKEN_EXPIRED);
         }
         
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
