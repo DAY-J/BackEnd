@@ -11,11 +11,11 @@ import java.util.List;
 @RequestMapping("/api/post")
 public class PostController {
     private final PostService postService;
-    
+
     public PostController(PostService postService) {
         this.postService = postService;
     }
-    
+
     @PostMapping("/app-user/{app_user_id}")
     public PostDto.Response createPost(
             @PathVariable int app_user_id,
@@ -23,27 +23,27 @@ public class PostController {
             @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return postService.createPost(app_user_id, dto, images);
     }
-    
+
     @GetMapping
     public List<PostDto.Response> readAllPost() {
         return postService.readAllPost();
     }
-    
+
     @GetMapping("/{post_id}")
     public PostDto.Response readPostById(@PathVariable int post_id) {
         return postService.readPostById(post_id);
     }
-    
+
     @GetMapping("tag/{post_tag}")
     public List<PostDto.Response> readPostByTag(@PathVariable Tag post_tag) {
         return postService.readPostByTag(post_tag);
     }
-    
+
     @GetMapping("search/{keyword}")
     public List<PostDto.Response> readPostByKeyword(@PathVariable String keyword) {
         return postService.searchPostsByKeyword(keyword);
     }
-    
+
     @PatchMapping("/{post_id}")
     public PostDto.Response patchPost(
             @PathVariable int post_id,
@@ -51,15 +51,15 @@ public class PostController {
             @RequestPart(value = "images", required = false) List<MultipartFile> images) throws IOException {
         return postService.updatePost(post_id, dto, images);
     }
-    
+
     @PatchMapping("{post_id}/like")
     public PostDto.Response likePost(@PathVariable int post_id) {
         return postService.likePost(post_id);
     }
-    
+
     @DeleteMapping("/{post_id}")
     public String deletePostById(@PathVariable int post_id) {
         return postService.deletePostById(post_id);
     }
-    
+
 }

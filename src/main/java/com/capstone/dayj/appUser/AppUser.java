@@ -5,6 +5,7 @@ import com.capstone.dayj.common.BaseEntity;
 import com.capstone.dayj.groupMember.GroupMember;
 import com.capstone.dayj.plan.Plan;
 import com.capstone.dayj.post.Post;
+import com.capstone.dayj.statistics.Statistics;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -72,6 +73,7 @@ public class AppUser extends BaseEntity {
         this.plans = plans;
         this.posts = posts;
         this.comments = comments;
+        this.statistics = statistics;
     }
 }
 
