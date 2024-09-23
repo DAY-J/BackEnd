@@ -11,14 +11,11 @@ public enum ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     
     // 400 DATE_RANGE_ERROR: 잘못된 날짜 범위
-    DATE_RANGE_ERROR(HttpStatus.BAD_REQUEST, "잘못된 날짜 범위입니다."),
-
-    // 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
-    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "허용되지 않은 메서드입니다."),
-
-    // 500 INTERNAL_SERVER_ERROR: 내부 서버 오류
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),
-
+    DATE_RANGE_ERROR(HttpStatus.BAD_REQUEST, "시작 날짜는 종료 날짜보다 이전이어야 합니다."),
+    
+    // 401 REFRESH_TOKEN_EXPIRED : 리프레시 토큰 만료됨.
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 만료되었습니다."),
+    
     // 404 PLAN_NOT_FOUND : 계획을 찾을 수 없음
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "계획을 찾을 수 없습니다."),
     
