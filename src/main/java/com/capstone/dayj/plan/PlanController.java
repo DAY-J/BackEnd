@@ -4,9 +4,7 @@ import com.capstone.dayj.planOption.PlanOptionDto;
 import com.capstone.dayj.tag.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -54,11 +52,12 @@ public class PlanController {
                                       @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
         return planService.patchPlan(plan_id, planDto, planOptionDto);
     }
-    
-    @PatchMapping("/{plan_id}/image")
-    public PlanDto.Response patchPlanImage(@PathVariable int plan_id, MultipartFile image) throws IOException {
-        return planService.patchPlanImage(plan_id, image);
-    }
+  
+    // TODO
+//    @PatchMapping("/{plan_id}/image")
+//    public PlanDto.Response patchPlanImage(@PathVariable int plan_id, MultipartFile image) throws IOException {
+//        return planService.patchPlanImage(plan_id, image);
+//    }
     
     @DeleteMapping("/{plan_id}")
     public String deletePlanById(@PathVariable int plan_id) {

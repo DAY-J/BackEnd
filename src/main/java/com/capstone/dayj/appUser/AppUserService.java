@@ -7,9 +7,7 @@ import com.capstone.dayj.util.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,21 +62,22 @@ public class AppUserService {
         return new AppUserDto.Response(findAppUser);
     }
     
-    @Transactional
-    public AppUserDto.Response patchProfileImage(int app_user_id, MultipartFile image) throws IOException {
-        if (image == null || image.isEmpty()) {
-            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
-        }
-        
-        AppUser findAppUser = appUserRepository.findById(app_user_id)
-                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
-        
-        AppUserDto.Request dto = AppUserDto.Request.builder()
-                .profilePhoto(imageUploader.upload(image))
-                .build();
-        findAppUser.update(dto);
-        return new AppUserDto.Response(findAppUser);
-    }
+    // TODO
+//    @Transactional
+//    public AppUserDto.Response patchProfileImage(int app_user_id, MultipartFile image) throws IOException {
+//        if (image == null || image.isEmpty()) {
+//            throw new CustomException(ErrorCode.IMAGE_UPLOAD_FAIL);
+//        }
+//
+//        AppUser findAppUser = appUserRepository.findById(app_user_id)
+//                .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
+//
+//        AppUserDto.Request dto = AppUserDto.Request.builder()
+//                .profilePhoto(imageUploader.upload(image))
+//                .build();
+//        findAppUser.update(dto);
+//        return new AppUserDto.Response(findAppUser);
+//    }
     
     
     @Transactional

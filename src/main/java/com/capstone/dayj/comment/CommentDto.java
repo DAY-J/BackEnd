@@ -7,10 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 public class CommentDto {
-    
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class Request {
         private int id;

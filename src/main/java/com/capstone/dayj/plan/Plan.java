@@ -23,54 +23,54 @@ public class Plan extends BaseEntity {
     @ElementCollection
     @CollectionTable(name = "child_id", joinColumns = @JoinColumn(name = "plan_id", referencedColumnName = "id"))
     private List<Integer> childId;
-
+    
     @Column(nullable = false)
     private Tag planTag;
     @Column(nullable = false)
     private String goal;
 
-    private String planPhoto;
-
+//    private String planPhoto;
+    
     private Boolean isComplete;
     @Column(nullable = false)
     private Boolean isPublic;
-
+    
     @OneToOne(mappedBy = "plan", cascade = CascadeType.REMOVE)
-    @JsonManagedReference
+    @JsonManagedReference // OneToOne에서는 누가 주인인지 알 수 있어서 사용해 봄.
     private PlanOption planOption;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id")
     @JsonIgnore
     private AppUser appUser;
-
+    
     @PrePersist
     protected void onCreate() {
         this.isComplete = false;
     }
-
+    
     public void update(PlanDto.Request dto) {
         this.childId = (dto.getChildId() == null ? this.childId : dto.getChildId());
         this.planTag = (dto.getPlanTag() == null ? this.planTag : dto.getPlanTag());
         this.goal = (dto.getGoal() == null ? this.goal : dto.getGoal());
-        this.planPhoto = dto.getPlanPhoto();
+//        this.planPhoto = dto.getPlanPhoto();
         this.isPublic = (dto.getIsPublic() == null ? this.isPublic : dto.getIsPublic());
         this.isComplete = (dto.getIsComplete() == null ? this.isComplete : dto.getIsComplete());
         this.planOption = (dto.getPlanOption() == null ? this.planOption : dto.getPlanOption());
     }
-
+    
     @Builder
-    public Plan(int id, List<Integer> childId, Tag planTag, String goal, String planPhoto, Boolean isComplete, Boolean isPublic, PlanOption planOption, AppUser appUser) {
+    public Plan(int id, List<Integer> childId, Tag planTag, String goal, Boolean isComplete, Boolean isPublic, PlanOption planOption, AppUser appUser) {
         this.id = id;
         this.childId = childId;
         this.planTag = planTag;
         this.goal = goal;
-        this.planPhoto = planPhoto;
+//        this.planPhoto = planPhoto;
         this.isComplete = isComplete;
         this.isPublic = isPublic;
         this.planOption = planOption;
         this.appUser = appUser;
-
+        
     }
 }
 

@@ -2,9 +2,7 @@ package com.capstone.dayj.appUser;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -42,10 +40,11 @@ public class AppUserController {
         return appUserService.patchAppUser(app_user_id, dto);
     }
     
-    @PatchMapping("/image")
-    public AppUserDto.Response patchSettingImage(@PathVariable int app_user_id, MultipartFile image) throws IOException {
-        return appUserService.patchProfileImage(app_user_id, image);
-    }
+    // TODO
+//    @PatchMapping("/image")
+//    public AppUserDto.Response patchSettingImage(@PathVariable int app_user_id, MultipartFile image) throws IOException {
+//        return appUserService.patchProfileImage(app_user_id, image);
+//    }
     
     @DeleteMapping("/{app_user_id}")
     public AppUserDto.Response deleteAppUserById(@PathVariable int app_user_id) {

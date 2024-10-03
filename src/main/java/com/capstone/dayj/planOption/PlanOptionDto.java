@@ -1,7 +1,9 @@
 package com.capstone.dayj.planOption;
 
 import com.capstone.dayj.plan.Plan;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -9,11 +11,8 @@ import java.util.List;
 
 public class PlanOptionDto {
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class Request {
-        private int id;
         private LocalDateTime planAlarmTime;
         private LocalDateTime planStartTime;
         private LocalDateTime planEndTime;
@@ -24,7 +23,6 @@ public class PlanOptionDto {
         
         public PlanOption toEntity() {
             return PlanOption.builder()
-                    .id(id)
                     .planAlarmTime(planAlarmTime)
                     .planStartTime(planStartTime)
                     .planEndTime(planEndTime)

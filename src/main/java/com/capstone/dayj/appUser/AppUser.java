@@ -29,7 +29,7 @@ public class AppUser extends BaseEntity {
     private String role; //유저 권한
     @Column(nullable = false, unique = true)
     private String nickname; // 유저 닉네임, 중복 불가, 친구 그룹 추가에 사용
-    private String profilePhoto;
+    //    private String profilePhoto;
     @Column(nullable = false)
     @ColumnDefault("false")
     private Boolean isAlarm;
@@ -57,17 +57,17 @@ public class AppUser extends BaseEntity {
     public void update(AppUserDto.Request dto) {
         this.nickname = (dto.getNickname() == null ? this.nickname : dto.getNickname());
         this.isAlarm = (dto.getIsAlarm() == null ? this.isAlarm : dto.getIsAlarm());
-        this.profilePhoto = (dto.getProfilePhoto() == null ? this.profilePhoto : dto.getProfilePhoto());
+//        this.profilePhoto = (dto.getProfilePhoto() == null ? this.profilePhoto : dto.getProfilePhoto());
     }
     
     @Builder
-    public AppUser(int id, String nickname, String password, String username, String role, String profilePhoto, Boolean isAlarm, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, List<Statistics> statistics) {
+    public AppUser(int id, String nickname, String password, String username, String role, Boolean isAlarm, List<GroupMember> groupMembers, List<Plan> plans, List<Post> posts, List<Comment> comments, List<Statistics> statistics) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
         this.nickname = nickname;
-        this.profilePhoto = profilePhoto;
+//        this.profilePhoto = profilePhoto;
         this.isAlarm = isAlarm;
         this.groupMembers = groupMembers;
         this.plans = plans;
