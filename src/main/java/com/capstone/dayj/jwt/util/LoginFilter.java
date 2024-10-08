@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+@Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -54,6 +56,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         
         // Refresh 토큰 저장
         addRefreshEntity(username, refresh, expiredRefresh);
+        
+        String coloredUser = "\u001B[01m\u001B[36m" + username + "\u001B[0m"; // 초록색
+        log.info("\u001B[40m\u001B[35m" + "User Login : {}", coloredUser);
         
         // 응답 설정
         response.setHeader("access", access);

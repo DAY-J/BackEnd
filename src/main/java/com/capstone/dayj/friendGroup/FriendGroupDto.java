@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 public class FriendGroupDto {
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class Request {
         private int id;

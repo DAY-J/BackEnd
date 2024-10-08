@@ -20,7 +20,6 @@ public class AppUserServiceTest {
     private AppUserRepository appUserRepository;
     @Mock
     private AppUser appUserDto = AppUserDto.Request.builder()
-            .id(1)
             .username("-")
             .password("-")
             .nickname("085NZB0Y9P64969409KQ")

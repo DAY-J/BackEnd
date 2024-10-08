@@ -8,8 +8,6 @@ import java.time.LocalDate;
 public class StatisticsDto {
 
     @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     @Builder
     public static class Request {
         private LocalDate date;

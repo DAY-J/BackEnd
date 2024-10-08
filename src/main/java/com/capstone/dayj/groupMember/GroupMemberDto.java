@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 public class GroupMemberDto {
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class Request {
         private int id;

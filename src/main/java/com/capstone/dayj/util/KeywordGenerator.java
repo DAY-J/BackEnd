@@ -9,12 +9,12 @@ import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @Getter
 @RequiredArgsConstructor
 public class KeywordGenerator {
@@ -25,7 +25,7 @@ public class KeywordGenerator {
     @PostConstruct
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정 keyword 갱신
     public void init() {
-        for (Tag tag : Tag.values()) {
+        for (Tag tag : Tag.values()) { // 모든 태그에 대해 키워드 생성
             List<Plan> findPlans = planRepository.findAll()
                     .stream()
                     .filter(plan -> plan.getPlanTag().equals(tag))
@@ -34,26 +34,27 @@ public class KeywordGenerator {
             if (findPlans.isEmpty()) {
                 keywords.put(tag, null);
             }
-            
-            Map<String, Integer> cnt = new HashMap<String, Integer>(Map.of()); // {단어, 개수}
-            findPlans.forEach(plan -> {
-                komoran.analyze(plan.getGoal())
-                        .getNouns()
-                        .forEach(keyword -> {
-                            if (cnt.containsKey(keyword)) {
-                                cnt.replace(keyword, cnt.get(keyword) + 1);
-                            }
-                            else {
-                                cnt.put(keyword, 1);
-                            }
-                        });
-            });
-            
-            keywords.put(tag, cnt.entrySet()
-                    .stream()
-                    .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toSet()));
+            else {
+                Map<String, Integer> cnt = new HashMap<String, Integer>(Map.of()); // {단어, 개수}
+                findPlans.forEach(plan -> {
+                    komoran.analyze(plan.getGoal())
+                            .getNouns() // 계획 제목으로부터 명사만 추출 => 명사가 곧 keyword
+                            .forEach(keyword -> { // 키워드의 빈도수를 counting => 유저들의 계획 트렌드를 반영
+                                if (cnt.containsKey(keyword)) {
+                                    cnt.replace(keyword, cnt.get(keyword) + 1);
+                                }
+                                else {
+                                    cnt.put(keyword, 1);
+                                }
+                            });
+                });
+                
+                keywords.put(tag, cnt.entrySet()
+                        .stream()
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue())) // 빈도수의 내림차순으로 정렬
+                        .map(Map.Entry::getKey) // 빈도는 제외하고 키워드만 저장
+                        .collect(Collectors.toSet()));
+            }
         }
         
         System.out.println("========================= keyword generator ========================");
