@@ -14,13 +14,11 @@ public class GroupMemberDto {
     @Data
     @Builder
     public static class Request {
-        private int id;
         private AppUser appUser;
         private FriendGroup friendGroup;
 
         public GroupMember toEntity() {
             return GroupMember.builder()
-                    .id(id)
                     .appUser(appUser)
                     .friendGroup(friendGroup)
                     .build();

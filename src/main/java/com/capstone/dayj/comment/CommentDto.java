@@ -2,7 +2,9 @@ package com.capstone.dayj.comment;
 
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.post.Post;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +12,6 @@ public class CommentDto {
     @Data
     @Builder
     public static class Request {
-        private int id;
         private int parentId;
         private String content;
         private Boolean isAnonymous;
@@ -19,7 +20,6 @@ public class CommentDto {
         
         public Comment toEntity() {
             return Comment.builder()
-                    .id(id)
                     .parentId(parentId)
                     .content(content)
                     .isAnonymous(isAnonymous)

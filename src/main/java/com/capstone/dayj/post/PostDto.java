@@ -3,7 +3,9 @@ package com.capstone.dayj.post;
 import com.capstone.dayj.appUser.AppUser;
 import com.capstone.dayj.comment.CommentDto;
 import com.capstone.dayj.tag.Tag;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,11 +13,8 @@ import java.util.stream.Collectors;
 
 public class PostDto {
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     @Builder
     public static class Request {
-        private int id;
         private int postView;
         private int postLike;
         private String postTitle;
@@ -27,7 +26,6 @@ public class PostDto {
         
         public Post toEntity() {
             return Post.builder()
-                    .id(id)
                     .postView(postView)
                     .postLike(postLike)
                     .postTitle(postTitle)
