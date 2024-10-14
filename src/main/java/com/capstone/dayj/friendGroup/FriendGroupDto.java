@@ -12,14 +12,12 @@ public class FriendGroupDto {
     @Data
     @Builder
     public static class Request {
-        private int id;
         private String groupGoal;
         private String groupName;
         private List<GroupMember> groupMembers;
 
         public FriendGroup toEntity() {
             return FriendGroup.builder()
-                    .id(id)
                     .groupGoal(groupGoal)
                     .groupName(groupName)
                     .groupMember(groupMembers)
