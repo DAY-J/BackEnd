@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,10 +26,18 @@ public class KeywordGenerator {
     @PostConstruct
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정 keyword 갱신
     public void init() {
+        LocalDate beforeThreeMonth = LocalDate.now().minusMonths(3); // 오늘로부터 3개월 전의 날짜
+        List<Plan> findPlans = planRepository.findAll()
+                .stream()
+                .filter(plan -> plan.getPlanOption() // 3개월 이내의 계획만 필터링 (트렌드 반영을 위한 날짜 제한)
+                        .getPlanStartTime().toLocalDate()
+                        .isAfter(beforeThreeMonth))
+                .toList();
+        
         for (Tag tag : Tag.values()) { // 모든 태그에 대해 키워드 생성
-            List<Plan> findPlans = planRepository.findAll()
+            List<Plan> tagPlans = findPlans
                     .stream()
-                    .filter(plan -> plan.getPlanTag().equals(tag))
+                    .filter(plan -> plan.getPlanTag().equals(tag)) // 3개월 이내의 계획중 각 태그에 맞는 계획 추출
                     .toList();
             
             if (findPlans.isEmpty()) {
