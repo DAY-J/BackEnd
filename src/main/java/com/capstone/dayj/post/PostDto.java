@@ -15,8 +15,6 @@ public class PostDto {
     @Data
     @Builder
     public static class Request {
-        private int postView;
-        private int postLike;
         private String postTitle;
         private String postContent;
         private Tag postTag;
@@ -26,8 +24,6 @@ public class PostDto {
         
         public Post toEntity() {
             return Post.builder()
-                    .postView(postView)
-                    .postLike(postLike)
                     .postTitle(postTitle)
                     .postContent(postContent)
                     .postTag(postTag)
