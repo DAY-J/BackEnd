@@ -87,6 +87,39 @@ public class PlanService {
         return new PlanDto.Response(findPlan);
     }
     
+//    @Transactional()
+//    public List<String> reminderTest(int app_user_id, Tag tag) {
+//        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id)
+//                .stream()
+//                .filter(plan -> plan.getPlanTag().equals(tag))
+//                .toList();
+//
+//        if (findPlans.isEmpty()) { // 계획이 하나도 없는 경우 에러 throw
+//            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+//        }
+//
+//        Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
+//        Map<String, Integer> cnt = new HashMap<>(Map.of()); // { 단어, 개수 }
+//        findPlans.forEach(plan -> {
+//            komoran.analyze(plan.getGoal()).getNouns()
+//                    .forEach(keyword -> {
+//                        if (cnt.containsKey(keyword)) {
+//                            cnt.replace(keyword, cnt.get(keyword) + 1);
+//                        }
+//                        else {
+//                            cnt.put(keyword, 1);
+//                        }
+//                    });
+//        });
+//
+//        return cnt.entrySet().stream()
+//                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+//                .map(Map.Entry::getKey)
+//                .limit(3)
+//                .toList();
+//    }
+    
+    
     @Transactional
     public Set<String> reminderPlan(int app_user_id, Tag tag) {
         List<Plan> findPlans = new ArrayList<>(planRepository.findAllByAppUserId(app_user_id).stream()
