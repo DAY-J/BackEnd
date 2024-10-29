@@ -40,12 +40,12 @@ public class KeywordGenerator {
                     .filter(plan -> plan.getPlanTag().equals(tag)) // 3개월 이내의 계획중 각 태그에 맞는 계획 추출
                     .toList();
             
-            if (findPlans.isEmpty()) {
+            if (tagPlans.isEmpty()) {
                 keywords.put(tag, null);
             }
             else {
                 Map<String, Integer> cnt = new HashMap<String, Integer>(Map.of()); // {단어, 개수}
-                findPlans.forEach(plan -> {
+                tagPlans.forEach(plan -> {
                     komoran.analyze(plan.getGoal())
                             .getNouns() // 계획 제목으로부터 명사만 추출 => 명사가 곧 keyword
                             .forEach(keyword -> { // 키워드의 빈도수를 counting => 유저들의 계획 트렌드를 반영
