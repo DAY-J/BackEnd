@@ -22,7 +22,7 @@ public class KeywordGenerator {
     private final PlanRepository planRepository;
     private final Komoran komoran = new Komoran(DEFAULT_MODEL.FULL); // Tokenizer
     private final Map<Tag, Set<String>> keywords = new HashMap<Tag, Set<String>>();
-    
+
     @PostConstruct
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정 keyword 갱신
     public void init() {
@@ -33,13 +33,13 @@ public class KeywordGenerator {
                         .getPlanStartTime().toLocalDate()
                         .isAfter(beforeThreeMonth))
                 .toList();
-        
+
         for (Tag tag : Tag.values()) { // 모든 태그에 대해 키워드 생성
             List<Plan> tagPlans = findPlans
                     .stream()
                     .filter(plan -> plan.getPlanTag().equals(tag)) // 3개월 이내의 계획중 각 태그에 맞는 계획 추출
                     .toList();
-            
+
             if (tagPlans.isEmpty()) {
                 keywords.put(tag, null);
             }
@@ -57,15 +57,16 @@ public class KeywordGenerator {
                                 }
                             });
                 });
-                
+
                 keywords.put(tag, cnt.entrySet()
                         .stream()
                         .sorted(Collections.reverseOrder(Map.Entry.comparingByValue())) // 빈도수의 내림차순으로 정렬
+                        .limit(10) // 키워드가 너무 많으면 트렌드가 아니어도 리마인더 리스트에 포함될 수 있으므로 10개로 제한하여 트렌드 반영
                         .map(Map.Entry::getKey) // 빈도는 제외하고 키워드만 저장
                         .collect(Collectors.toSet()));
             }
         }
-        
+
         System.out.println("========================= keyword generator ========================");
         for (var item : keywords.keySet())
             System.out.printf(String.format("key : %s , value : %s\n", item, keywords.get(item)));
