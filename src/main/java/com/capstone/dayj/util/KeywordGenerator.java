@@ -8,6 +8,7 @@ import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @Getter
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class KeywordGenerator {
     private final PlanRepository planRepository;
     private final Komoran komoran = new Komoran(DEFAULT_MODEL.FULL); // Tokenizer
     private final Map<Tag, Set<String>> keywords = new HashMap<Tag, Set<String>>();
-
+    
     @PostConstruct
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정 keyword 갱신
     public void init() {
@@ -33,18 +35,18 @@ public class KeywordGenerator {
                         .getPlanStartTime().toLocalDate()
                         .isAfter(beforeThreeMonth))
                 .toList();
-
+        
         for (Tag tag : Tag.values()) { // 모든 태그에 대해 키워드 생성
             List<Plan> tagPlans = findPlans
                     .stream()
                     .filter(plan -> plan.getPlanTag().equals(tag)) // 3개월 이내의 계획중 각 태그에 맞는 계획 추출
                     .toList();
-
+            
             if (tagPlans.isEmpty()) {
                 keywords.put(tag, null);
             }
             else {
-                Map<String, Integer> cnt = new HashMap<String, Integer>(Map.of()); // {단어, 개수}
+                Map<String, Integer> cnt = new HashMap<>(Map.of()); // {단어, 개수}
                 tagPlans.forEach(plan -> {
                     komoran.analyze(plan.getGoal())
                             .getNouns() // 계획 제목으로부터 명사만 추출 => 명사가 곧 keyword
@@ -57,7 +59,7 @@ public class KeywordGenerator {
                                 }
                             });
                 });
-
+                
                 keywords.put(tag, cnt.entrySet()
                         .stream()
                         .sorted(Collections.reverseOrder(Map.Entry.comparingByValue())) // 빈도수의 내림차순으로 정렬
@@ -66,10 +68,9 @@ public class KeywordGenerator {
                         .collect(Collectors.toSet()));
             }
         }
-
-        System.out.println("========================= keyword generator ========================");
-        for (var item : keywords.keySet())
-            System.out.printf(String.format("key : %s , value : %s\n", item, keywords.get(item)));
-        System.out.println("===================== keyword generate complete ====================");
+        
+        log.info("========================= keyword generator ========================");
+        keywords.forEach((key, value) -> log.info(String.format("TAG : %s - %s", key, value)));
+        log.info("===================== keyword generate complete ====================");
     }
 }
