@@ -11,6 +11,8 @@ import com.capstone.dayj.tag.Tag;
 import com.capstone.dayj.util.ImageUploader;
 import com.capstone.dayj.util.KeywordGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +50,40 @@ public class PlanService {
         return new PlanDto.Response(savedPlan);
     }
     
+    // 캐시 사용 전
+//    @Transactional(readOnly = true)
+//    public List<PlanDto.Response> readAllPlanByDate(int app_user_id, LocalDate date) {
+//        List<Plan> findPlans;
+//
+//        if (date == null) {
+//            findPlans = planRepository.findAll();
+//        }
+//        else {
+//            findPlans = planRepository.findAllByAppUserId(app_user_id).stream()
+//                    .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
+//                    .toList();
+//        }
+//
+//        if (findPlans.isEmpty())
+//            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+//
+//        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
+//    }
+
+//    @Transactional(readOnly = true)
+//    public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag, LocalDate date) {
+//        List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag).stream()
+//                .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
+//                .toList();
+//
+//        if (findPlans.isEmpty())
+//            throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
+//
+//        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
+//    }
+    
     @Transactional(readOnly = true)
+    @Cacheable(value = "plansByDate", key = "#app_user_id + #date.toString()", unless = "#result == null || #result.isEmpty()")
     public List<PlanDto.Response> readAllPlanByDate(int app_user_id, LocalDate date) {
         List<Plan> findPlans;
         
@@ -64,10 +99,11 @@ public class PlanService {
         if (findPlans.isEmpty())
             throw new CustomException(ErrorCode.PLAN_NOT_FOUND);
         
-        return findPlans.stream().map(PlanDto.Response::new).collect(Collectors.toList());
+        return findPlans.stream().map(PlanDto.Response::new).toList();
     }
     
     @Transactional(readOnly = true)
+    @Cacheable(value = "plansByTag", key = "#app_user_id + #date.toString() + #plan_tag", unless = "#result == null || #result.isEmpty()")
     public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag, LocalDate date) {
         List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag).stream()
                 .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
@@ -87,6 +123,8 @@ public class PlanService {
         return new PlanDto.Response(findPlan);
     }
     
+    
+    // 전처리 전
 //    @Transactional()
 //    public List<String> reminderTest(int app_user_id, Tag tag) {
 //        List<Plan> findPlans = planRepository.findAllByAppUserId(app_user_id)
@@ -153,6 +191,7 @@ public class PlanService {
     }
     
     @Transactional
+    @CacheEvict(value = {"plansByDate", "plansByTag"}, allEntries = true)
     public PlanDto.Response patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
@@ -234,6 +273,7 @@ public class PlanService {
 //    }
     
     @Transactional
+    @CacheEvict(value = {"plansByDate", "plansByTag"}, allEntries = true)
     public String deletePlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
@@ -244,11 +284,11 @@ public class PlanService {
         }
         
         planRepository.delete(findPlan);
-        
         return String.format("Plan(id: %d) was Deleted", findPlan.getId());
     }
     
     @Transactional
+    @CacheEvict(value = {"plansByDate", "plansByTag"}, allEntries = true)
     public List<Integer> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         List<Integer> childIds = new ArrayList<>();
         
