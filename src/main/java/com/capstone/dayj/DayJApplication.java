@@ -12,7 +12,7 @@ import java.util.TimeZone;
 
 @EnableJpaAuditing
 @EnableScheduling // 스케줄러 활성화
-@EnableCaching // redis
+@EnableCaching
 @ConfigurationPropertiesScan
 @SpringBootApplication
 public class DayJApplication {
