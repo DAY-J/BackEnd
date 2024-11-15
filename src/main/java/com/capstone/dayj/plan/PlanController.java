@@ -52,7 +52,7 @@ public class PlanController {
                                       @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
         return planService.patchPlan(plan_id, planDto, planOptionDto);
     }
-  
+    
     // TODO
 //    @PatchMapping("/{plan_id}/image")
 //    public PlanDto.Response patchPlanImage(@PathVariable int plan_id, MultipartFile image) throws IOException {
@@ -61,6 +61,6 @@ public class PlanController {
     
     @DeleteMapping("/{plan_id}")
     public String deletePlanById(@PathVariable int plan_id) {
-        return planService.deletePlanById(plan_id);
+        return planService.deletePlanById(plan_id); // app_user_id는 캐시 제거할 때 key 값으로 사용
     }
 }

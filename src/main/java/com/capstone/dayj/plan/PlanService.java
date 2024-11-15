@@ -32,6 +32,7 @@ public class PlanService {
     private final ImageUploader imageUploader;
     
     @Transactional
+    @CacheEvict(cacheNames = "plans", allEntries = true)
     public PlanDto.Response createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
@@ -83,7 +84,7 @@ public class PlanService {
 //    }
     
     @Transactional(readOnly = true)
-    @Cacheable(value = "plansByDate", key = "#app_user_id + #date.toString()", unless = "#result == null || #result.isEmpty()")
+    @Cacheable(cacheNames = "plans", key = "#app_user_id + ':' + #date", unless = "#result == null || #result.isEmpty()")
     public List<PlanDto.Response> readAllPlanByDate(int app_user_id, LocalDate date) {
         List<Plan> findPlans;
         
@@ -103,7 +104,7 @@ public class PlanService {
     }
     
     @Transactional(readOnly = true)
-    @Cacheable(value = "plansByTag", key = "#app_user_id + #date.toString() + #plan_tag", unless = "#result == null || #result.isEmpty()")
+    @Cacheable(cacheNames = "plans", key = "#app_user_id + ':' + #plan_tag + ':' + #date", unless = "#result == null || #result.isEmpty()")
     public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag, LocalDate date) {
         List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag).stream()
                 .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
@@ -191,7 +192,7 @@ public class PlanService {
     }
     
     @Transactional
-    @CacheEvict(value = {"plansByDate", "plansByTag"}, allEntries = true)
+    @CacheEvict(cacheNames = "plans", allEntries = true)
     public PlanDto.Response patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
@@ -273,7 +274,7 @@ public class PlanService {
 //    }
     
     @Transactional
-    @CacheEvict(value = {"plansByDate", "plansByTag"}, allEntries = true)
+    @CacheEvict(cacheNames = "plans", allEntries = true)
     public String deletePlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
@@ -288,7 +289,6 @@ public class PlanService {
     }
     
     @Transactional
-    @CacheEvict(value = {"plansByDate", "plansByTag"}, allEntries = true)
     public List<Integer> createRepeatedPlan(PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         List<Integer> childIds = new ArrayList<>();
         
