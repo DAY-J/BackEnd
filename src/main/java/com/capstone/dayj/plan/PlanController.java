@@ -61,6 +61,6 @@ public class PlanController {
     
     @DeleteMapping("/{plan_id}")
     public String deletePlanById(@PathVariable int plan_id) {
-        return planService.deletePlanById(plan_id); // app_user_id는 캐시 제거할 때 key 값으로 사용
+        return planService.deletePlanById(plan_id);
     }
 }
