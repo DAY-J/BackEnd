@@ -52,7 +52,7 @@ public class PlanController {
                                       @Valid @RequestPart(value = "planOption") PlanOptionDto.Request planOptionDto) {
         return planService.patchPlan(plan_id, planDto, planOptionDto);
     }
-  
+    
     // TODO
 //    @PatchMapping("/{plan_id}/image")
 //    public PlanDto.Response patchPlanImage(@PathVariable int plan_id, MultipartFile image) throws IOException {

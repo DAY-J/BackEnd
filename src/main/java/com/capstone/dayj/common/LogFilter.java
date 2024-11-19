@@ -22,6 +22,7 @@ public class LogFilter implements Filter {
         long startTime = System.currentTimeMillis();
         
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String httpMethod = httpRequest.getMethod();
         String uri = httpRequest.getRequestURI();
         chain.doFilter(request, response); // 다음 필터 또는 서블릿 호출
         
@@ -29,6 +30,6 @@ public class LogFilter implements Filter {
         
         String coloredUri = "\u001B[01m\u001B[32m" + uri + "\u001B[0m"; // 초록색
         String coloredDuration = "\u001B[01m\u001B[33m" + duration + " ms" + "\u001B[0m"; // 노란색
-        log.info("\u001B[40m\u001B[35m" + "Request URI: {}" + "\u001B[40m\u001B[35m" + ", Duration: {}", coloredUri, coloredDuration);
+        log.info("\u001B[40m\u001B[35m" + "{} - Request URI: {}" + "\u001B[40m\u001B[35m" + ", Duration: {}", httpMethod, coloredUri, coloredDuration);
     }
 }

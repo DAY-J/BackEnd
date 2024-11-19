@@ -1,8 +1,15 @@
 spring:
-    datasource:
-        url: jdbc:mysql://localhost:3306/${LOCAL_DATABASE_NAME}?serverTimezone=Asia/Seoul
-        username: ${LOCAL_DATABASE_USERNAME}
-        password: ${LOCAL_DATABASE_PASSWORD}
-    jpa:
-        hibernate:
-            ddl-auto: ${LOCAL_DDL_TYPE}
+  datasource:
+    url: jdbc:mysql://localhost:3306/${LOCAL_DATABASE_NAME}?serverTimezone=Asia/Seoul
+    username: ${LOCAL_DATABASE_USERNAME}
+    password: ${LOCAL_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: ${LOCAL_DDL_TYPE}
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
+  serializer:
+    key: org.springframework.data.redis.serializer.StringRedisSerializer
+    value: org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
