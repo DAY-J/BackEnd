@@ -32,7 +32,7 @@ public class PlanService {
     private final ImageUploader imageUploader;
     
     @Transactional
-    @CacheEvict(cacheNames = "plans", allEntries = true)
+    @CacheEvict(cacheNames = "plans", allEntries = true) // 계획 데이터 변동 -> 캐시 일관성 유지를 위해 cache clear
     public PlanDto.Response createPlan(int app_user_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         AppUser findAppUser = appUserRepository.findById(app_user_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.APP_USER_NOT_FOUND));
@@ -104,7 +104,7 @@ public class PlanService {
     }
     
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "plans", key = "#app_user_id + ':' + #plan_tag + ':' + #date", unless = "#result == null || #result.isEmpty()")
+    @Cacheable(cacheNames = "plans", key = "#app_user_id + ':' + #plan_tag + ':' + #date", unless = "#result == null || #result.isEmpty()") 
     public List<PlanDto.Response> readAllPlanByPlanTag(int app_user_id, Tag plan_tag, LocalDate date) {
         List<Plan> findPlans = planRepository.findAllByAppUserIdAndPlanTag(app_user_id, plan_tag).stream()
                 .filter(plan -> plan.getPlanOption().getPlanStartTime().toLocalDate().equals(date))
@@ -162,7 +162,7 @@ public class PlanService {
     @Transactional
     public Set<String> reminderPlan(int app_user_id, Tag tag) {
         List<Plan> findPlans = new ArrayList<>(planRepository.findAllByAppUserId(app_user_id).stream()
-                .filter(plan -> plan.getPlanTag().equals(tag)).toList());
+                .filter(plan -> plan.getPlanTag().equals(tag)).toList()); // 특정 유저의 계획 중에 tag에 해당하는 모든 계획 find
         Set<String> recommendGoal = new HashSet<>(Set.of());
         
         if (keywordGenerator.getKeywords().isEmpty()) {
@@ -174,17 +174,17 @@ public class PlanService {
         }
         
         Collections.shuffle(findPlans); // 다양한 계획을 보여주기 위해서 셔플
-        keywordGenerator.getKeywords().get(tag)
+        keywordGenerator.getKeywords().get(tag) // 키워드 생성기에 생성된 키워드 중 tag에 해당하는 키워드 가져옴
                 .forEach(keyword -> { // 키워드 순회
                     findPlans.forEach(plan -> { // 위에서 찾은 유저의 계획 순회
-                        if (recommendGoal.size() >= 3) return; // 키워드 포함 계획 상한 => 3개
+                        if (recommendGoal.size() >= 3) return; // 키워드 포함 계획의 상한 => 3개
                         if (plan.getGoal().contains(keyword)) // 키워드를 포함하는 계획이면 리스트에 추가
                             recommendGoal.add(plan.getGoal());
                     });
                 });
         
         findPlans.forEach(plan -> { // 키워드를 포함하지 않는 과거 계획도 보여주기 위해 추가
-            if (recommendGoal.size() >= 5) return; // 전체적인 반환 리스트 상한 => 5개
+            if (recommendGoal.size() >= 5) return; // 전체적인 리스트 크기의 상한 => 5개
             recommendGoal.add(plan.getGoal());
         });
         
@@ -192,7 +192,7 @@ public class PlanService {
     }
     
     @Transactional
-    @CacheEvict(cacheNames = "plans", allEntries = true)
+    @CacheEvict(cacheNames = "plans", allEntries = true) // 계획 데이터 변동 -> 캐시 일관성 유지를 위해 cache clear
     public PlanDto.Response patchPlan(int plan_id, PlanDto.Request planDto, PlanOptionDto.Request planOptionDto) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
@@ -274,7 +274,7 @@ public class PlanService {
 //    }
     
     @Transactional
-    @CacheEvict(cacheNames = "plans", allEntries = true)
+    @CacheEvict(cacheNames = "plans", allEntries = true) // 계획 데이터 변동 -> 캐시 일관성 유지를 위해 cache clear
     public String deletePlanById(int plan_id) {
         Plan findPlan = planRepository.findById(plan_id)
                 .orElseThrow(() -> new CustomException(ErrorCode.PLAN_NOT_FOUND));
