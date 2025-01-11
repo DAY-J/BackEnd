@@ -39,7 +39,7 @@ public class PlanOption extends BaseEntity {
     @JsonBackReference
     private Plan plan;
     
-    @PrePersist
+    @PrePersist // Entity가 영속되기 전 작업 수행
     protected void onCreate() {
         if (planStartTime == null)
             this.planStartTime = LocalDateTime.now();
